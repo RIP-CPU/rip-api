@@ -27,7 +27,7 @@ public class Series implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="entity_series_id")
+	@Column(name="id")
 	private Long id;
 	
 	@Column(name="series_instance_uid", length=100)
@@ -62,12 +62,18 @@ public class Series implements Serializable {
     @Column(name="created_date", updatable = false, insertable=true)
 	private Date createdDate;
 	
+	@Column(name="created_by", length=25)
+	private String createdBy;
+	
 	@Temporal(TemporalType.TIMESTAMP)
     @Column(name="modified_date", insertable = true, updatable=true)
 	private Date modifiedDate;
+	
+	@Column(name="modified_by", length=25)
+	private String modifiedBy;
 		
 	@ManyToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(name="entity_study_id")
+	@JoinColumn(name="study_id")
 	private Study study;
 
 	@OneToOne(mappedBy = "series")

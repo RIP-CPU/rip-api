@@ -37,7 +37,7 @@ public class Study implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="entity_study_id")
+	@Column(name="id")
 	private Long id;	
 
 	@Column(name="study_id", length=50)
@@ -75,12 +75,18 @@ public class Study implements Serializable {
     @Column(name="created_date", updatable = false, insertable=true)
 	private Date createdDate;
 	
+	@Column(name="created_by", length=25)
+	private String createdBy;
+	
 	@Temporal(TemporalType.TIMESTAMP)
     @Column(name="modified_date", insertable = true, updatable=true)
 	private Date modifiedDate;
+	
+	@Column(name="modified_by", length=25)
+	private String modifiedBy;
 
 	@ManyToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(name="entity_patient_id")
+	@JoinColumn(name="patient_id")
 	private Patient patient; 
 	
 	@OneToMany(mappedBy = "study")

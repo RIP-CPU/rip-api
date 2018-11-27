@@ -35,7 +35,7 @@ public class Patient implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)	
-	@Column(name="entity_patient_id")	
+	@Column(name="id")	
 	private Long id;	
 	
 	@Column(name="patient_id", length=100)
@@ -58,9 +58,15 @@ public class Patient implements Serializable {
     @Column(name="created_date", updatable = false, insertable=true)
 	private Date createdDate;
 	
+	@Column(name="created_by", length=25)
+	private String createdBy;
+	
 	@Temporal(TemporalType.TIMESTAMP)
     @Column(name="modified_date", insertable = true, updatable=true)
 	private Date modifiedDate;
+	
+	@Column(name="modified_by", length=25)
+	private String modifiedBy;
 
 	@OneToMany(mappedBy = "patient")
 	private Collection<Study> study;

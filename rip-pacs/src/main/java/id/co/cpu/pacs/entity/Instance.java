@@ -25,10 +25,10 @@ public class Instance implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="entity_instance_id")
+	@Column(name="id")
 	private Long id;
 	
-	@Column(name="sop_instance_UID", length=100)
+	@Column(name="sop_instance_uid", length=100)
 	private String sopInstanceUID;
 	
 	@Column(name="sop_class_uid", length=100)
@@ -91,12 +91,18 @@ public class Instance implements Serializable {
     @Column(name="created_date", updatable = false, insertable=true)
 	private Date createdDate;
 	
+	@Column(name="created_by", length=25)
+	private String createdBy;
+	
 	@Temporal(TemporalType.TIMESTAMP)
     @Column(name="modified_date", insertable = true, updatable=true)
 	private Date modifiedDate;
+	
+	@Column(name="modified_by", length=25)
+	private String modifiedBy;
 
 	@ManyToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(name="entity_series_id")
+	@JoinColumn(name="series_id")
 	private Series series;
 
 	public Instance() {

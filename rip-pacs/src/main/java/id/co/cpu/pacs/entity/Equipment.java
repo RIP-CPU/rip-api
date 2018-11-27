@@ -23,7 +23,7 @@ public class Equipment implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)	
-	@Column(name="entity_equipment_id")
+	@Column(name="id")
 	private Long id;
 	
 	@Column(name="modality", length=50)
@@ -60,12 +60,18 @@ public class Equipment implements Serializable {
     @Column(name="created_date", updatable = false, insertable=true)
 	private Date createdDate;
 	
+	@Column(name="created_by", length=25)
+	private String createdBy;
+	
 	@Temporal(TemporalType.TIMESTAMP)
     @Column(name="modified_date", insertable = true, updatable=true)
 	private Date modifiedDate;
 	
+	@Column(name="modified_by", length=25)
+	private String modifiedBy;
+	
 	@OneToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(name="entity_series_id")
+	@JoinColumn(name="series_id")
 	private Series series;
 		
 	public Equipment() {
