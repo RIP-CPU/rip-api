@@ -1,5 +1,5 @@
-/rip-pacs/target
-/rip-pacs/.settings
-/rip-pacs/.classpath
-/rip-pacs/.project
-/rip-pacs/.springBeans
+target
+.settings
+.classpath
+.project
+.springBeans

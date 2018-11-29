@@ -3,14 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 27, 2018 at 05:21 PM
+-- Generation Time: Nov 29, 2018 at 02:56 AM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 7.2.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
-SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -30,19 +29,19 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `mst_equipment` (
   `id` bigint(20) NOT NULL,
-  `modality` varchar(50) NOT NULL,
-  `conversion_type` varchar(50) NOT NULL,
+  `modality` varchar(50) DEFAULT NULL,
+  `conversion_type` varchar(50) DEFAULT NULL,
   `station_name` varchar(60) NOT NULL,
   `institution_name` varchar(100) NOT NULL,
-  `institution_address` varchar(150) NOT NULL,
-  `institutional_department_name` varchar(50) NOT NULL,
+  `institution_address` varchar(150) DEFAULT NULL,
+  `institutional_department_name` varchar(50) DEFAULT NULL,
   `manufacturer` varchar(100) NOT NULL,
-  `manufacturer_model_name` varchar(100) NOT NULL,
+  `manufacturer_model_name` varchar(100) DEFAULT NULL,
   `software_version` varchar(100) NOT NULL,
-  `device_serial_number` varchar(100) NOT NULL,
-  `created_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `device_serial_number` varchar(100) DEFAULT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
-  `modified_date` timestamp NULL DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
   `modified_by` varchar(25) DEFAULT NULL,
   `series_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -58,25 +57,25 @@ CREATE TABLE `mst_instance` (
   `sop_instance_uid` varchar(100) NOT NULL,
   `sop_class_uid` varchar(100) NOT NULL,
   `instance_number` int(11) NOT NULL,
-  `patient_orientation` varchar(40) NOT NULL,
-  `media_storage_sop_instance_uid` varchar(100) NOT NULL,
+  `patient_orientation` varchar(40) DEFAULT NULL,
+  `media_storage_sop_instance_uid` varchar(100) DEFAULT NULL,
   `transfer_syntax_uid` varchar(100) NOT NULL,
-  `acquisition_date_time` date NOT NULL,
+  `acquisition_date_time` datetime NOT NULL,
   `image_type` varchar(40) NOT NULL,
   `pixel_spacing` float NOT NULL,
-  `image_orientation` varchar(40) NOT NULL,
-  `image_position` varchar(80) NOT NULL,
-  `slice_thickness` float NOT NULL,
-  `slice_location` float NOT NULL,
-  `window_center` varchar(40) NOT NULL,
-  `window_width` varchar(40) NOT NULL,
-  `xray_tube_current` int(11) NOT NULL,
-  `exposure_time` int(11) NOT NULL,
-  `kvp` varchar(40) NOT NULL,
-  `content_date_time` date NOT NULL,
-  `created_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `image_orientation` varchar(40) DEFAULT NULL,
+  `image_position` varchar(80) DEFAULT NULL,
+  `slice_thickness` float DEFAULT NULL,
+  `slice_location` float DEFAULT NULL,
+  `window_center` varchar(40) DEFAULT NULL,
+  `window_width` varchar(40) DEFAULT NULL,
+  `xray_tube_current` int(11) DEFAULT NULL,
+  `exposure_time` int(11) DEFAULT NULL,
+  `kvp` varchar(40) DEFAULT NULL,
+  `content_date_time` datetime NOT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
-  `modified_date` timestamp NULL DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
   `modified_by` varchar(25) DEFAULT NULL,
   `series_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -93,10 +92,10 @@ CREATE TABLE `mst_patient` (
   `patient_name` varchar(100) NOT NULL,
   `patient_sex` varchar(10) NOT NULL,
   `patient_birthday` date NOT NULL,
-  `patient_age` varchar(10) NOT NULL,
-  `created_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `patient_age` varchar(10) DEFAULT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
-  `modified_date` timestamp NULL DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
   `modified_by` varchar(25) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -110,16 +109,16 @@ CREATE TABLE `mst_series` (
   `id` bigint(20) NOT NULL,
   `series_instance_uid` varchar(100) NOT NULL,
   `series_number` int(20) NOT NULL,
-  `series_description` varchar(100) NOT NULL,
-  `body_part_examined` varchar(40) NOT NULL,
-  `patient_position` varchar(30) NOT NULL,
-  `laterality` varchar(100) NOT NULL,
-  `protocol_name` varchar(100) NOT NULL,
-  `operators_name` varchar(50) NOT NULL,
-  `series_date_time` date NOT NULL,
-  `created_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `series_description` varchar(100) DEFAULT NULL,
+  `body_part_examined` varchar(40) DEFAULT NULL,
+  `patient_position` varchar(30) DEFAULT NULL,
+  `laterality` varchar(100) DEFAULT NULL,
+  `protocol_name` varchar(100) DEFAULT NULL,
+  `operators_name` varchar(50) DEFAULT NULL,
+  `series_date_time` datetime NOT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
-  `modified_date` timestamp NULL DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
   `modified_by` varchar(25) DEFAULT NULL,
   `study_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -132,19 +131,19 @@ CREATE TABLE `mst_series` (
 
 CREATE TABLE `mst_study` (
   `id` bigint(20) NOT NULL,
-  `study_id` varchar(50) NOT NULL,
-  `study_description` text NOT NULL,
-  `study_instance_uid` varchar(100) NOT NULL,
-  `accession_number` varchar(30) NOT NULL,
+  `study_id` varchar(50) DEFAULT NULL,
+  `study_description` text,
+  `study_instance_uid` varchar(100) DEFAULT NULL,
+  `accession_number` varchar(30) DEFAULT NULL,
   `study_date_time` date NOT NULL,
-  `referring_physician_name` varchar(100) NOT NULL,
+  `referring_physician_name` varchar(100) DEFAULT NULL,
   `additional_patient_history` text,
   `admitting_diagnoses_description` varchar(200) DEFAULT NULL,
-  `study_status_id` varchar(40) NOT NULL,
-  `study_priority_id` varchar(40) NOT NULL,
-  `created_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `study_status_id` varchar(40) DEFAULT NULL,
+  `study_priority_id` varchar(40) DEFAULT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
-  `modified_date` timestamp NULL DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
   `modified_by` varchar(25) DEFAULT NULL,
   `patient_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -207,7 +206,7 @@ ALTER TABLE `mst_instance`
 -- AUTO_INCREMENT for table `mst_patient`
 --
 ALTER TABLE `mst_patient`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `mst_series`

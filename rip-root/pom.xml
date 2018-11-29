@@ -457,16 +457,25 @@
 			<id>dcm4chee-maven</id>
 			<name>DCM4CHE Repository</name>
 			<url>http://www.dcm4che.org/maven2</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>central-maven</id>
 			<name>Central Maven Snapshots</name>
 			<url>http://central.maven.org/maven2</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>maven-snapshots</id>
 			<name>Maven Snapshots</name>
 			<url>http://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>spring-snapshots</id>
