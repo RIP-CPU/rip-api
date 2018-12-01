@@ -3,13 +3,14 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 29, 2018 at 02:56 AM
+-- Generation Time: Dec 01, 2018 at 04:09 PM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 7.2.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -28,7 +29,7 @@ START TRANSACTION;
 --
 
 CREATE TABLE `mst_equipment` (
-  `id` bigint(20) NOT NULL,
+  `equipment_uuid` varchar(36) NOT NULL,
   `modality` varchar(50) DEFAULT NULL,
   `conversion_type` varchar(50) DEFAULT NULL,
   `station_name` varchar(60) NOT NULL,
@@ -39,11 +40,13 @@ CREATE TABLE `mst_equipment` (
   `manufacturer_model_name` varchar(100) DEFAULT NULL,
   `software_version` varchar(100) NOT NULL,
   `device_serial_number` varchar(100) DEFAULT NULL,
+  `version` int(11) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
   `modified_date` datetime DEFAULT NULL,
   `modified_by` varchar(25) DEFAULT NULL,
-  `series_id` bigint(20) NOT NULL
+  `series_uuid` varchar(36) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -53,7 +56,7 @@ CREATE TABLE `mst_equipment` (
 --
 
 CREATE TABLE `mst_instance` (
-  `id` bigint(20) NOT NULL,
+  `instance_uuid` varchar(36) NOT NULL,
   `sop_instance_uid` varchar(100) NOT NULL,
   `sop_class_uid` varchar(100) NOT NULL,
   `instance_number` int(11) NOT NULL,
@@ -73,11 +76,13 @@ CREATE TABLE `mst_instance` (
   `exposure_time` int(11) DEFAULT NULL,
   `kvp` varchar(40) DEFAULT NULL,
   `content_date_time` datetime NOT NULL,
+  `version` int(11) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
   `modified_date` datetime DEFAULT NULL,
   `modified_by` varchar(25) DEFAULT NULL,
-  `series_id` bigint(20) NOT NULL
+  `series_uuid` varchar(36) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -87,12 +92,14 @@ CREATE TABLE `mst_instance` (
 --
 
 CREATE TABLE `mst_patient` (
-  `id` bigint(20) NOT NULL,
+  `patient_uuid` varchar(36) NOT NULL,
   `patient_id` varchar(100) NOT NULL,
   `patient_name` varchar(100) NOT NULL,
   `patient_sex` varchar(10) NOT NULL,
   `patient_birthday` date NOT NULL,
   `patient_age` varchar(10) DEFAULT NULL,
+  `version` int(11) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
   `modified_date` datetime DEFAULT NULL,
@@ -106,7 +113,7 @@ CREATE TABLE `mst_patient` (
 --
 
 CREATE TABLE `mst_series` (
-  `id` bigint(20) NOT NULL,
+  `series_uuid` varchar(36) NOT NULL,
   `series_instance_uid` varchar(100) NOT NULL,
   `series_number` int(20) NOT NULL,
   `series_description` varchar(100) DEFAULT NULL,
@@ -116,11 +123,13 @@ CREATE TABLE `mst_series` (
   `protocol_name` varchar(100) DEFAULT NULL,
   `operators_name` varchar(50) DEFAULT NULL,
   `series_date_time` datetime NOT NULL,
+  `version` int(11) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
   `modified_date` datetime DEFAULT NULL,
   `modified_by` varchar(25) DEFAULT NULL,
-  `study_id` bigint(20) NOT NULL
+  `study_uuid` varchar(36) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -130,7 +139,7 @@ CREATE TABLE `mst_series` (
 --
 
 CREATE TABLE `mst_study` (
-  `id` bigint(20) NOT NULL,
+  `study_uuid` varchar(36) NOT NULL,
   `study_id` varchar(50) DEFAULT NULL,
   `study_description` text,
   `study_instance_uid` varchar(100) DEFAULT NULL,
@@ -141,11 +150,101 @@ CREATE TABLE `mst_study` (
   `admitting_diagnoses_description` varchar(200) DEFAULT NULL,
   `study_status_id` varchar(40) DEFAULT NULL,
   `study_priority_id` varchar(40) DEFAULT NULL,
+  `version` int(11) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
   `modified_date` datetime DEFAULT NULL,
   `modified_by` varchar(25) DEFAULT NULL,
-  `patient_id` bigint(20) NOT NULL
+  `patient_uuid` varchar(36) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth_access_token`
+--
+
+CREATE TABLE `oauth_access_token` (
+  `token_id` varchar(255) DEFAULT NULL,
+  `token` binary(1) DEFAULT NULL,
+  `authentication_id` varchar(255) NOT NULL,
+  `user_name` varchar(255) DEFAULT NULL,
+  `client_id` varchar(255) DEFAULT NULL,
+  `authentication` binary(1) DEFAULT NULL,
+  `refresh_token` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth_approvals`
+--
+
+CREATE TABLE `oauth_approvals` (
+  `userId` varchar(255) DEFAULT NULL,
+  `clientId` varchar(255) DEFAULT NULL,
+  `scope` varchar(255) DEFAULT NULL,
+  `status` varchar(10) DEFAULT NULL,
+  `expiresAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `lastModifiedAt` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth_client_details`
+--
+
+CREATE TABLE `oauth_client_details` (
+  `client_id` varchar(255) NOT NULL,
+  `resource_ids` varchar(255) DEFAULT NULL,
+  `client_secret` varchar(255) DEFAULT NULL,
+  `scope` varchar(255) DEFAULT NULL,
+  `authorized_grant_types` varchar(255) DEFAULT NULL,
+  `web_server_redirect_uri` varchar(255) DEFAULT NULL,
+  `authorities` varchar(255) DEFAULT NULL,
+  `access_token_validity` int(11) DEFAULT NULL,
+  `refresh_token_validity` int(11) DEFAULT NULL,
+  `additional_information` varchar(4096) DEFAULT NULL,
+  `autoapprove` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth_client_token`
+--
+
+CREATE TABLE `oauth_client_token` (
+  `token_id` varchar(255) DEFAULT NULL,
+  `token` binary(1) DEFAULT NULL,
+  `authentication_id` varchar(255) NOT NULL,
+  `user_name` varchar(255) DEFAULT NULL,
+  `client_id` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth_code`
+--
+
+CREATE TABLE `oauth_code` (
+  `code` varchar(255) DEFAULT NULL,
+  `authentication` binary(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oauth_refresh_token`
+--
+
+CREATE TABLE `oauth_refresh_token` (
+  `token_id` varchar(255) DEFAULT NULL,
+  `token` binary(1) DEFAULT NULL,
+  `authentication` binary(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -156,69 +255,53 @@ CREATE TABLE `mst_study` (
 -- Indexes for table `mst_equipment`
 --
 ALTER TABLE `mst_equipment`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `series_id` (`series_id`);
+  ADD PRIMARY KEY (`equipment_uuid`),
+  ADD KEY `series_uuid` (`series_uuid`);
 
 --
 -- Indexes for table `mst_instance`
 --
 ALTER TABLE `mst_instance`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `series_id` (`series_id`);
+  ADD PRIMARY KEY (`instance_uuid`),
+  ADD KEY `series_uuid` (`series_uuid`);
 
 --
 -- Indexes for table `mst_patient`
 --
 ALTER TABLE `mst_patient`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`patient_uuid`);
 
 --
 -- Indexes for table `mst_series`
 --
 ALTER TABLE `mst_series`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `study_id` (`study_id`);
+  ADD PRIMARY KEY (`series_uuid`),
+  ADD KEY `study_uuid` (`study_uuid`);
 
 --
 -- Indexes for table `mst_study`
 --
 ALTER TABLE `mst_study`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `mst_study_ibfk_1` (`patient_id`);
+  ADD PRIMARY KEY (`study_uuid`),
+  ADD KEY `patient_uuid` (`patient_uuid`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- Indexes for table `oauth_access_token`
 --
+ALTER TABLE `oauth_access_token`
+  ADD PRIMARY KEY (`authentication_id`);
 
 --
--- AUTO_INCREMENT for table `mst_equipment`
+-- Indexes for table `oauth_client_details`
 --
-ALTER TABLE `mst_equipment`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `oauth_client_details`
+  ADD PRIMARY KEY (`client_id`);
 
 --
--- AUTO_INCREMENT for table `mst_instance`
+-- Indexes for table `oauth_client_token`
 --
-ALTER TABLE `mst_instance`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `mst_patient`
---
-ALTER TABLE `mst_patient`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `mst_series`
---
-ALTER TABLE `mst_series`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `mst_study`
---
-ALTER TABLE `mst_study`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `oauth_client_token`
+  ADD PRIMARY KEY (`authentication_id`);
 
 --
 -- Constraints for dumped tables
@@ -228,25 +311,25 @@ ALTER TABLE `mst_study`
 -- Constraints for table `mst_equipment`
 --
 ALTER TABLE `mst_equipment`
-  ADD CONSTRAINT `mst_equipment_ibfk_1` FOREIGN KEY (`series_id`) REFERENCES `mst_series` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `mst_equipment_ibfk_1` FOREIGN KEY (`series_uuid`) REFERENCES `mst_series` (`series_uuid`);
 
 --
 -- Constraints for table `mst_instance`
 --
 ALTER TABLE `mst_instance`
-  ADD CONSTRAINT `mst_instance_ibfk_1` FOREIGN KEY (`series_id`) REFERENCES `mst_series` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `mst_instance_ibfk_1` FOREIGN KEY (`series_uuid`) REFERENCES `mst_series` (`series_uuid`);
 
 --
 -- Constraints for table `mst_series`
 --
 ALTER TABLE `mst_series`
-  ADD CONSTRAINT `mst_series_ibfk_1` FOREIGN KEY (`study_id`) REFERENCES `mst_study` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `mst_series_ibfk_1` FOREIGN KEY (`study_uuid`) REFERENCES `mst_study` (`study_uuid`);
 
 --
 -- Constraints for table `mst_study`
 --
 ALTER TABLE `mst_study`
-  ADD CONSTRAINT `mst_study_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `mst_patient` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `mst_study_ibfk_1` FOREIGN KEY (`patient_uuid`) REFERENCES `mst_patient` (`patient_uuid`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
