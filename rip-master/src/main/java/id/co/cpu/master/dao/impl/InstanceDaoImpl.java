@@ -23,7 +23,7 @@ public class InstanceDaoImpl extends AbstractJpaDao<Instance> implements Instanc
 	}
 		
 	@Override
-	public List<Instance> findBySeriesId(Long seriesId){
+	public List<Instance> findBySeriesId(String seriesId){
 		
 		try{
 			return entityManager.createQuery("select i from Instance i  where i.series.id = :seriesId", Instance.class)
@@ -47,7 +47,7 @@ public class InstanceDaoImpl extends AbstractJpaDao<Instance> implements Instanc
 	}
 	
 	@Override 
-	public List<Instance> findAllByPatientId(Long patientId){
+	public List<Instance> findAllByPatientId(String patientId){
 		
 		try{
 			

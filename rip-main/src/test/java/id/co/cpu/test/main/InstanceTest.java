@@ -83,7 +83,7 @@ public class InstanceTest extends TestCase{
 	@Ignore
 	public void testFindByPKTBLSeriesID(){
 		
-		List<Instance> instances = instanceDao.findBySeriesId(1L);
+		List<Instance> instances = instanceDao.findBySeriesId("");
 		
 		for(Instance instance : instances){
 			//print instance
@@ -126,7 +126,7 @@ public class InstanceTest extends TestCase{
 		
 		
 		Patient patient = new Patient();
-		patient.setPatientID("451123");
+		patient.setPatientId("451123");
 		patient.setPatientName("Nomine^Alerta");
 		patient.setPatientAge("45F");
 		patient.setPatientSex("F");
@@ -171,10 +171,10 @@ public class InstanceTest extends TestCase{
 	@Test
 	public void testAllInstancesByPatientID(){
 		
-		List<Instance> instances = instanceDao.findAllByPatientId(2L);
+		List<Instance> instances = instanceDao.findAllByPatientId("");
 		assertEquals(0, instances.size());
 		
-		instances = instanceDao.findAllByPatientId(1L);
+		instances = instanceDao.findAllByPatientId("");
 		assertTrue(instances.size() > 0);
 		
 		int i=0;

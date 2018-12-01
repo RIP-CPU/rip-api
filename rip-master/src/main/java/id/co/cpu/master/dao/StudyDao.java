@@ -12,7 +12,7 @@ public interface StudyDao{
 	Study update(Study study);
 	List<Study> findAll(int firstResult, int maxResults);
 	Long count();
-	Study findById(long id);
-	List<Study> findByPatientId(Long patientId);
+	Study findById(String id);
+	List<Study> findByPatientId(String patientId);
 	Study findByStudyInstanceUID(String studyInstanceUID);
 }

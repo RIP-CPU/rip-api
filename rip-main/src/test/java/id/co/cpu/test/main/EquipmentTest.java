@@ -32,7 +32,7 @@ public class EquipmentTest extends TestCase{
 	@Test
 	public void testfindByPKTBLSeriesID(){
 		
-		Equipment equipment = equipmentDao.findBySeriesId(3L);
+		Equipment equipment = equipmentDao.findBySeriesId("");
 		assertNotNull(equipment);
 		LOG.info(equipment.toString());
 	}

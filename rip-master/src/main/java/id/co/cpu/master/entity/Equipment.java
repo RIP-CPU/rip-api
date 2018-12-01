@@ -1,30 +1,41 @@
 package id.co.cpu.master.entity;
 
-import java.io.Serializable;
-import java.lang.String;
 import java.util.Date;
-import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
 
-import id.co.cpu.master.entity.Series;
+import org.hibernate.annotations.GenericGenerator;
 
-/**
- * Entity implementation class for Entity: Equipment
- *
- */
+import id.co.cpu.common.entity.BaseAuditEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name="mst_equipment")
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
-public class Equipment implements Serializable {
+public class Equipment extends BaseAuditEntity {
 
 	private static final long serialVersionUID = 6245262777427705812L;
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)	
-	@Column(name="id")
-	private Long id;
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@GeneratedValue(generator = "uuid")
+    @Column(name = "equipment_uuid", nullable = false, unique=true)
+	private String id;
 	
 	@Column(name="modality", length=50)
 	private String modality;
@@ -56,119 +67,9 @@ public class Equipment implements Serializable {
 	@Column(name="device_serial_number", length=100)
 	private String deviceSerialNumber;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-    @Column(name="created_date", updatable = false, insertable=true)
-	private Date createdDate;
-	
-	@Column(name="created_by", length=25)
-	private String createdBy;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-    @Column(name="modified_date", insertable = true, updatable=true)
-	private Date modifiedDate;
-	
-	@Column(name="modified_by", length=25)
-	private String modifiedBy;
-	
 	@OneToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(name="series_id")
+	@JoinColumn(name="series_uuid")
 	private Series series;
-		
-	public Equipment() {
-		super();
-	}
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getModality() {
-		return this.modality;
-	}
-	public void setModality(String modality) {
-		this.modality = modality;
-	}
-	
-	public String getConversionType(){
-		return this.conversionType;
-	}
-	public void setConversionType(String conversionType){
-		this.conversionType = conversionType;
-	}
-	
-	public String getStationName() {
-		return this.stationName;
-	}
-	public void setStationName(String stationName) {
-		this.stationName = stationName;
-	}
-	
-	public String getInstitutionName() {
-		return this.institutionName;
-	}
-	public void setInstitutionName(String institutionName) {
-		this.institutionName = institutionName;
-	}
-	
-	public String getInstitutionAddress() {
-		return this.institutionAddress;
-	}
-	public void setInstitutionAddress(String institutionAddress) {
-		this.institutionAddress = institutionAddress;
-	}
-	
-	public String getInstitutionalDepartmentName() {
-		return this.institutionalDepartmentName;
-	}
-	public void setInstitutionalDepartmentName(String institutionalDepartmentName) {
-		this.institutionalDepartmentName = institutionalDepartmentName;
-	}
-	
-	public String getManufacturer() {
-		return this.manufacturer;
-	}
-	public void setManufacturer(String manufacturer) {
-		this.manufacturer = manufacturer;
-	}
-	
-	public String getManufacturerModelName() {
-		return this.manufacturerModelName;
-	}
-	public void setManufacturerModelName(String manufacturerModelName) {
-		this.manufacturerModelName = manufacturerModelName;
-	}
-	
-	public String getSoftwareVersion() {
-		return this.softwareVersion;
-	}
-	public void setSoftwareVersion(String softwareVersion) {
-		this.softwareVersion = softwareVersion;
-	}
-	
-	public String getDeviceSerialNumber() {
-		return this.deviceSerialNumber;
-	}
-	public void setDeviceSerialNumber(String deviceSerialNumber) {
-		this.deviceSerialNumber = deviceSerialNumber;
-	}
-	
-	public Date getCreatedDate() {
-		return this.createdDate;
-	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-	
-	public Date getModifiedDate() {
-		return this.modifiedDate;
-	}
-	public void setModifiedDate(Date modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
 	
 	@PreUpdate
     @PrePersist
@@ -178,12 +79,6 @@ public class Equipment implements Serializable {
         	createdDate = new Date();
         }
     }
-	public Series getSeries() {
-	    return series;
-	}
-	public void setSeries(Series param) {
-	    this.series = param;
-	}
 	
 	@Override
 	public String toString(){

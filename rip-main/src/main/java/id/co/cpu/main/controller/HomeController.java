@@ -83,9 +83,9 @@ public class HomeController {
 	@RequestMapping(value = "/server", method = RequestMethod.GET)
 	public String server( @RequestParam(defaultValue="1", value="page", required=false) Integer page,
 	@RequestParam(defaultValue="10", value="size", required=false) Integer size, 
-	@RequestParam(defaultValue="0", value="pkTBLPatientID", required=false) Long pkTBLPatientID,
-	@RequestParam(defaultValue="0", value="pkTBLStudyID", required=false) Long pkTBLStudyID,
-	@RequestParam(defaultValue="0", value="pkTBLSeriesID", required=false) Long pkTBLSeriesID,
+	@RequestParam(defaultValue="0", value="pkTBLPatientID", required=false) String pkTBLPatientID,
+	@RequestParam(defaultValue="0", value="pkTBLStudyID", required=false) String pkTBLStudyID,
+	@RequestParam(defaultValue="0", value="pkTBLSeriesID", required=false) String pkTBLSeriesID,
 	Model model){ 
 		
 		LOG.debug("server()");
@@ -106,9 +106,9 @@ public class HomeController {
 	    model.addAttribute("maxPages", maxPages);	    
 	    
 	    //get related study, series and instance objects
-	    List<Study> studies = (pkTBLPatientID != 0)?studyDao.findByPatientId(pkTBLPatientID): studyDao.findByPatientId(patients.get(0).getId());
-	   	List<Series> serieses = (pkTBLStudyID != 0)?seriesDao.findByStudyId(pkTBLStudyID): seriesDao.findByStudyId(studies.get(0).getId());
-	    List<Instance> instances = (pkTBLSeriesID != 0)?instanceDao.findBySeriesId(pkTBLSeriesID): instanceDao.findBySeriesId(serieses.get(0).getId());
+	    List<Study> studies = (!pkTBLPatientID.isEmpty())?studyDao.findByPatientId(pkTBLPatientID): studyDao.findByPatientId(patients.get(0).getId());
+	   	List<Series> serieses = (!pkTBLStudyID.isEmpty())?seriesDao.findByStudyId(pkTBLStudyID): seriesDao.findByStudyId(studies.get(0).getId());
+	    List<Instance> instances = (!pkTBLSeriesID.isEmpty())?instanceDao.findBySeriesId(pkTBLSeriesID): instanceDao.findBySeriesId(serieses.get(0).getId());
 	    
 	    //add to our model
 	    model.addAttribute("studies", studies);
@@ -122,7 +122,7 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/details/{pkTBLInstanceID}", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getImage(@PathVariable Long pkTBLInstanceID, HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public ResponseEntity<byte[]> getImage(@PathVariable String pkTBLInstanceID, HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
 		java.io.File tempImage = null;   
 	   	Instance instance = instanceDao.findById(pkTBLInstanceID);
@@ -160,7 +160,7 @@ public class HomeController {
 	
 	
 	@RequestMapping(value="/showimage/{pkTBLInstanceID}", method = RequestMethod.GET)
-	public @ResponseBody String showImage(@PathVariable Long pkTBLInstanceID) throws IOException {
+	public @ResponseBody String showImage(@PathVariable String pkTBLInstanceID) throws IOException {
 		
 		String img = "";
 		File file = null;
@@ -217,9 +217,9 @@ public class HomeController {
 	
 	
 	@RequestMapping(value = "/details", method = RequestMethod.GET)
-	public String showDetails(@RequestParam(defaultValue="0", value="pkTBLPatientID", required=false) Long pkTBLPatientID, Model model){ 
+	public String showDetails(@RequestParam(defaultValue="0", value="pkTBLPatientID", required=false) String pkTBLPatientID, Model model){ 
 		
-		if(pkTBLPatientID != 0){		
+		if(!pkTBLPatientID.isEmpty()){		
 		    //add to our model		    
 		    model.addAttribute("patient", patientDao.findById(pkTBLPatientID));			
 		}
@@ -275,25 +275,25 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/study", method = RequestMethod.GET)
-	public @ResponseBody AjaxStudy study(@RequestParam(defaultValue="0", value="pkTBLStudyID", required=false) Long pkTBLStudyID){		
+	public @ResponseBody AjaxStudy study(@RequestParam(defaultValue="0", value="pkTBLStudyID", required=false) String pkTBLStudyID){		
 		Study study = studyDao.findById(pkTBLStudyID);			
 		return new AjaxStudy(true, study);
 	}
 	
 	@RequestMapping(value="/series", method = RequestMethod.GET)
-	public @ResponseBody AjaxSeries series(@RequestParam(defaultValue="0", value="pkTBLSeriesID", required=false) Long pkTBLSeriesID){		
+	public @ResponseBody AjaxSeries series(@RequestParam(defaultValue="0", value="pkTBLSeriesID", required=false) String pkTBLSeriesID){		
 		Series series = seriesDao.findById(pkTBLSeriesID); 	
 		return new AjaxSeries(true, series);
 	}
 	
 	@RequestMapping(value="/instance", method = RequestMethod.GET)
-	public @ResponseBody AjaxInstance instance(@RequestParam(defaultValue="0", value="pkTBLInstanceID", required=false) Long pkTBLInstanceID){		
+	public @ResponseBody AjaxInstance instance(@RequestParam(defaultValue="0", value="pkTBLInstanceID", required=false) String pkTBLInstanceID){		
 		Instance instance = instanceDao.findById(pkTBLInstanceID); 	
 		return new AjaxInstance(true, instance);
 	}
 	
 	@RequestMapping(value="/patient", method = RequestMethod.GET)
-	public @ResponseBody AjaxPatient patient(@RequestParam(defaultValue="0", value="pkTBLPatientID", required=false) Long pkTBLPatientID){		
+	public @ResponseBody AjaxPatient patient(@RequestParam(defaultValue="0", value="pkTBLPatientID", required=false) String pkTBLPatientID){		
 		Patient patient = patientDao.findById(pkTBLPatientID); 	
 		return new AjaxPatient(true, patient);
 	}

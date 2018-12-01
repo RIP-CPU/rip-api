@@ -1,6 +1,5 @@
 package id.co.cpu.master.entity;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
@@ -8,35 +7,37 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.GenericGenerator;
 
-/**
- * Entity implementation class for Entity: Study
- *
- */
+import id.co.cpu.common.entity.BaseAuditEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name="mst_study")
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
-public class Study implements Serializable {
+public class Study extends BaseAuditEntity {
 
 	private static final long serialVersionUID = 6126899965207417288L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
-	private Long id;	
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@GeneratedValue(generator = "uuid")
+    @Column(name = "study_uuid", nullable = false, unique=true)
+	private String id;	
 
 	@Column(name="study_id", length=50)
 	private String studyID;
@@ -68,160 +69,13 @@ public class Study implements Serializable {
 	
 	@Column(name="study_priority_id", length=40)
 	private String studyPriorityID;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-    @Column(name="created_date", updatable = false, insertable=true)
-	private Date createdDate;
-	
-	@Column(name="created_by", length=25)
-	private String createdBy;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-    @Column(name="modified_date", insertable = true, updatable=true)
-	private Date modifiedDate;
-	
-	@Column(name="modified_by", length=25)
-	private String modifiedBy;
 
 	@ManyToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(name="patient_id")
+	@JoinColumn(name="patient_uuid")
 	private Patient patient; 
 	
 	@OneToMany(mappedBy = "study")
-	private Collection<Series> series;	
-	
-	public Study() {
-		super();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getStudyID() {
-		return this.studyID;
-	}
-
-	public void setStudyID(String studyID) {
-		this.studyID = studyID;
-	}
-
-	public String getStudyDescription() {
-		return studyDescription;
-	}
-
-	public void setStudyDescription(String studyDescription) {
-		this.studyDescription = studyDescription;
-	}
-
-	public String getStudyInstanceUID() {
-		return this.studyInstanceUID;
-	}
-
-	public void setStudyInstanceUID(String studyInstanceUID) {
-		this.studyInstanceUID = studyInstanceUID;
-	}
-
-	public String getAccessionNumber() {
-		return this.accessionNumber;
-	}
-
-	public void setAccessionNumber(String accessionNumber) {
-		this.accessionNumber = accessionNumber;
-	}
-
-	public Date getStudyDateTime() {
-		return this.studyDateTime;
-	}
-
-	public void setStudyDateTime(Date studyDateTime) {
-		this.studyDateTime = studyDateTime;
-	}
-
-	public String getReferringPhysicianName() {
-		return this.referringPhysicianName;
-	}
-
-	public void setReferringPhysicianName(String referringPhysicianName) {
-		this.referringPhysicianName = referringPhysicianName;
-	}
-
-	public String getAdditionalPatientHistory() {
-		return this.additionalPatientHistory;
-	}
-
-	public void setAdditionalPatientHistory(String additionalPatientHistory) {
-		this.additionalPatientHistory = additionalPatientHistory;
-	}
-
-	public String getAdmittingDiagnosesDescription() {
-		return this.admittingDiagnosesDescription;
-	}
-
-	public void setAdmittingDiagnosesDescription(String admittingDiagnosesDescription) {
-		this.admittingDiagnosesDescription = admittingDiagnosesDescription;
-	}
-
-	public String getStudyStatusID() {
-		return this.studyStatusID;
-	}
-
-	public void setStudyStatusID(String studyStatusID) {
-		this.studyStatusID = studyStatusID;
-	}
-
-	public String getStudyPriorityID() {
-		return this.studyPriorityID;
-	}
-
-	public void setStudyPriorityID(String studyPriorityID) {
-		this.studyPriorityID = studyPriorityID;
-	}
-
-	public Date getCreatedDate() {
-		return this.createdDate;
-	}
-
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public Date getModifiedDate() {
-		return this.modifiedDate;
-	}
-
-	public void setModifiedDate(Date modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
-
-	@PreUpdate
-	@PrePersist
-	public void updateTimeStamps() {
-		modifiedDate = new Date();
-		if (createdDate == null) {
-			createdDate = new Date();
-		}
-	}
-
-	public Patient getPatient() {
-		return patient;
-	}
-
-	public void setPatient(Patient param) {
-		this.patient = param;
-	}
-
-	public Collection<Series> getSeries() {
-		return series;
-	}
-
-	public void setSeries(Collection<Series> param) {
-		this.series = param;
-	}
+	private Collection<Series> series;
 
 	@Override
 	public String toString() {

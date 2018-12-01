@@ -93,7 +93,7 @@ public class SeriesTest extends TestCase{
 		
 		
 		Patient patient = new Patient();
-		patient.setPatientID("ABC98711");
+		patient.setPatientId("ABC98711");
 		patient.setPatientName("Alisa Bateley");
 		patient.setPatientAge("35F");
 		patient.setPatientSex("F");
@@ -146,7 +146,7 @@ public class SeriesTest extends TestCase{
 	@Test
 	public void testFindByID(){
 		
-		Series series = seriesDao.findById(1);
+		Series series = seriesDao.findById("");
 		assertNotNull(series);
 		LOG.info(series.toString());
 	}
@@ -155,7 +155,7 @@ public class SeriesTest extends TestCase{
 	@Ignore
 	public void testFindByStudyID(){
 		
-		List<Series> serieses = seriesDao.findByStudyId(1L);
+		List<Series> serieses = seriesDao.findByStudyId("");
 		if(serieses.size() <=0 ){
 			LOG.info("No Series record found!");
 		}else{		
@@ -180,10 +180,10 @@ public class SeriesTest extends TestCase{
 	@Test
 	public void testAllByPkPatientID(){
 		
-		List<Series> serieses = seriesDao.findAllByPatientId(2L);
+		List<Series> serieses = seriesDao.findAllByPatientId("");
 		assertEquals(0, serieses.size());
 		
-		serieses = seriesDao.findAllByPatientId(1L);
+		serieses = seriesDao.findAllByPatientId("");
 		assertTrue(serieses.size() > 0);
 		
 		int i=0;

@@ -15,7 +15,7 @@ public class DicomEntityBuilder {
 		Patient patient = new Patient();
 		patient.setPatientAge(patientAge);
 		patient.setPatientBirthday(patientBirthday);
-		patient.setPatientID(patientID);
+		patient.setPatientId(patientID);
 		patient.setPatientName(patientName);
 		patient.setPatientSex(patientSex);
 		

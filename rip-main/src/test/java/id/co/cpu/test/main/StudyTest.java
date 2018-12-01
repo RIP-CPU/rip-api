@@ -58,7 +58,7 @@ public class StudyTest extends TestCase{
 		study.setStudyDateTime(Calendar.getInstance().getTime());
 
 		Patient patient = new Patient();
-		patient.setPatientID("RA299111");
+		patient.setPatientId("RA299111");
 		patient.setPatientName("Albert Doe");
 		patient.setPatientAge("26M");
 		patient.setPatientSex("M");
@@ -80,7 +80,7 @@ public class StudyTest extends TestCase{
 	@Ignore
 	public void testFindByID(){
 		//test a null study object that does not exist
-		Study study = studyDao.findById(3);		
+		Study study = studyDao.findById("");		
 		LOG.info(study.toString());
 		assertNotNull(study);
 	}	
@@ -96,7 +96,7 @@ public class StudyTest extends TestCase{
 	@Test
 	@Ignore
 	public void testFindByPatientID(){
-		List<Study> studies = studyDao.findByPatientId(1L);
+		List<Study> studies = studyDao.findByPatientId("");
 		for(Study study : studies){
 			Patient patient = study.getPatient();
 			LOG.info("Patient: {}", patient.toString());

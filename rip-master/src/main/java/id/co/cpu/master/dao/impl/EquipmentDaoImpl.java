@@ -50,7 +50,7 @@ public class EquipmentDaoImpl extends AbstractJpaDao<Equipment> implements Equip
 	}*/
 	
 	@Override 
-	public Equipment findBySeriesId(Long seriesId){
+	public Equipment findBySeriesId(String seriesId){
 		
 		try{
 			return entityManager.createQuery("select e from Equipment e  where e.series.id LIKE :seriesId", Equipment.class)

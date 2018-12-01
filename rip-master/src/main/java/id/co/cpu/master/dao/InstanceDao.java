@@ -10,8 +10,8 @@ public interface InstanceDao {
 	Instance update(Instance instance);
 	List<Instance> findAll(int firstResult, int maxResults);
 	Long count();
-	Instance findById(long id);
-	List<Instance> findBySeriesId(Long seriesId);
-	Instance  findBySopInstanceUID(String sopInstanceUID);
-	List<Instance> findAllByPatientId(Long patientId);
+	Instance findById(String id);
+	List<Instance> findBySeriesId(String seriesId);
+	Instance findBySopInstanceUID(String sopInstanceUID);
+	List<Instance> findAllByPatientId(String patientId);
 }

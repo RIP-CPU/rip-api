@@ -23,7 +23,7 @@ public class SeriesDaoImpl extends AbstractJpaDao<Series>   implements SeriesDao
 	}
 		
 	@Override
-	public List<Series> findByStudyId(Long studyId){
+	public List<Series> findByStudyId(String studyId){
 		
 		try{
 			return entityManager.createQuery("select sr from Series sr  where sr.study.id = :studyId", Series.class)
@@ -60,7 +60,7 @@ public class SeriesDaoImpl extends AbstractJpaDao<Series>   implements SeriesDao
 	}
 	
 	@Override 
-	public List<Series> findAllByPatientId(Long patientId){
+	public List<Series> findAllByPatientId(String patientId){
 		
 		try{
 			

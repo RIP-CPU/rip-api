@@ -58,11 +58,11 @@ public class DBServiceImpl implements DBService {
 		
 		LOG.info("In process; Patient Name: {}, Patient ID: {}", reader.getPatientName(), reader.getPatientID());
 		//check if patient exists
-		Patient patient = patientDao.findByPatientID(reader.getPatientID());
+		Patient patient = patientDao.findByPatientId(reader.getPatientID());
 		if(patient == null){//let's create new patient
 			patient = DicomEntityBuilder.newPatient(reader.getPatientAge(), reader.getPatientBirthDay(), reader.getPatientID(), reader.getPatientName(), reader.getPatientSex());				
 			patientDao.save(patient);
-			patient = patientDao.findByPatientID(reader.getPatientID());
+			patient = patientDao.findByPatientId(reader.getPatientID());
 		}else{
 			//LOG.info("Patient already exists; Patient Name: {}, Patient ID: {} ", reader.getPatientName(), reader.getPatientID());
 		}

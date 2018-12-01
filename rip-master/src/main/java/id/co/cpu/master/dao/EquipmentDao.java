@@ -10,6 +10,6 @@ public interface EquipmentDao {
 	Equipment update(Equipment equipment);
 	List<Equipment> findAll(int firstResult, int maxResults);
 	Long count();
-	Equipment findById(long id);
-	Equipment findBySeriesId(Long seriesId);
+	Equipment findById(String id);
+	Equipment findBySeriesId(String seriesId);
 }

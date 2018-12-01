@@ -57,7 +57,7 @@ public class PatientTest extends TestCase{
 	public void testPatientObject(){
 		
 		Patient p = new Patient();
-		p.setPatientID("TA147216");
+		p.setPatientId("TA147216");
 		p.setPatientName("Adam^Clay");
 		p.setPatientAge("49Y");
 		p.setPatientSex("M");
@@ -82,7 +82,7 @@ public class PatientTest extends TestCase{
 	@Test
 	public void testfindByPatientID(){
 		
-		Patient patient = patientDao.findByPatientID("WM002275878");
+		Patient patient = patientDao.findByPatientId("WM002275878");
 		assertNotNull(patient);
 		LOG.info(patient.toString());
 	}
