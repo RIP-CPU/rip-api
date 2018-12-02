@@ -83,8 +83,8 @@ public class Equipment extends BaseAuditEntity {
 	@Override
 	public String toString(){
 		return String.format(
-				"Equipment[id=%d, modality=%s, conversionType=%s, stationName=%s, institutionName=%s, institutionAddress=%s, institutionalDepartmentName=%s, manufacturer=%s, manufacturerModelName=%s, softwareVersion=%s, deviceSerialNumber=%s, createdDate=%s, modifiedDate=%s]", 
-				id, modality, conversionType, stationName, institutionName, institutionAddress, institutionalDepartmentName, manufacturer, manufacturerModelName, softwareVersion, deviceSerialNumber, createdDate, modifiedDate);
+				"Equipment[id=%s, modality=%s, conversionType=%s, stationName=%s, institutionName=%s, institutionAddress=%s, institutionalDepartmentName=%s, manufacturer=%s, manufacturerModelName=%s, softwareVersion=%s, deviceSerialNumber=%s]", 
+				id, modality, conversionType, stationName, institutionName, institutionAddress, institutionalDepartmentName, manufacturer, manufacturerModelName, softwareVersion, deviceSerialNumber);
 	}
 	   
 }

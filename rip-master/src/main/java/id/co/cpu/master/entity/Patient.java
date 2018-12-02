@@ -58,9 +58,8 @@ public class Patient extends BaseAuditEntity {
 	@Override
 	public String toString() {
 		return String.format(
-				"Patient[id=%d, patientID=%s, patientName=%s, patientSex=%s, patientBirthday=%s, patientAge=%s, createdDate=%s, modifiedDate=%s]",
-				id, patientId, patientName, patientSex, patientBirthday, patientAge, createdDate,
-				modifiedDate);
+				"Patient[id=%s, patientId=%s, patientName=%s, patientSex=%s, patientBirthday=%s, patientAge=%s]",
+				id, patientId, patientName, patientSex, patientBirthday, patientAge);
 	}
 	
 }

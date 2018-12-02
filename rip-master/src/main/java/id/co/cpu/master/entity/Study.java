@@ -80,10 +80,10 @@ public class Study extends BaseAuditEntity {
 	@Override
 	public String toString() {
 		return String.format(
-				"Study[id=%d, studyID=%s, studyDescription=%s, studyInstanceUID=%s, accessionNumber=%s, studyDateTime=%s, referringPhysicianName=%s, additionalPatientHistory=%s, admittingDiagnosesDescription=%s, studyStatusID=%s, studyPriorityID=%s, createdDate=%s, modifiedDate=%s, patientID=%s]",
+				"Study[id=%s, studyID=%s, studyDescription=%s, studyInstanceUID=%s, accessionNumber=%s, studyDateTime=%s, referringPhysicianName=%s, additionalPatientHistory=%s, admittingDiagnosesDescription=%s, studyStatusID=%s, studyPriorityID=%s, patientID=%s]",
 				id, studyID, studyDescription, studyInstanceUID, accessionNumber, studyDateTime,
 				referringPhysicianName, additionalPatientHistory, admittingDiagnosesDescription, studyStatusID,
-				studyPriorityID, createdDate, modifiedDate, patient.getId());
+				studyPriorityID, patient.getPatientId());
 	}
 	
    

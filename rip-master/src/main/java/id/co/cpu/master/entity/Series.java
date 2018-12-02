@@ -81,9 +81,9 @@ public class Series extends BaseAuditEntity {
 	@Override
 	public String toString() {
 		return String.format(
-				"Series[id=%d, seriesInstanceUID=%s, seriesNumber=%d, seriesDescription=%s, bodyPartExamined=%s, patientPosition=%s, laterality=%s, protocolName=%s, operatorsName=%s, seriesDateTime=%s, createdDate=%s, modifiedDate=%s]",
+				"Series[id=%s, seriesInstanceUID=%s, seriesNumber=%d, seriesDescription=%s, bodyPartExamined=%s, patientPosition=%s, laterality=%s, protocolName=%s, operatorsName=%s, seriesDateTime=%s]",
 				id, seriesInstanceUID, seriesNumber, seriesDescription, bodyPartExamined, patientPosition,
-				laterality, protocolName, operatorsName, seriesDateTime, createdDate, modifiedDate);
+				laterality, protocolName, operatorsName, seriesDateTime);
 	}
    
 }

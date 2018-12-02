@@ -103,7 +103,7 @@ public class Instance extends BaseAuditEntity {
 	@Override
 	public String toString() {
 		return String.format(
-				"Instance[id=%d, sopInstanceUID=%s, sopClassUID=%s, instanceNumber=%d, patientOrientation=%s, mediaStorageSopInstanceUID=%s, acquisitionDateTime=%s, imageType=%s, pixelSpacing=%f, imageOrientation=%s, imagePosition=%s, sliceThickness=%f, sliceLocation=%f, windowCenter=%s, windowWidth=%s, xrayTubeCurrent=%d, exposureTime=%d, kvp=%s, contentDateTime=%s, createdDate=%s, modifiedDate=%s]",
+				"Instance[id=%s, sopInstanceUID=%s, sopClassUID=%s, instanceNumber=%d, patientOrientation=%s, mediaStorageSopInstanceUID=%s, acquisitionDateTime=%s, imageType=%s, pixelSpacing=%f, imageOrientation=%s, imagePosition=%s, sliceThickness=%f, sliceLocation=%f, windowCenter=%s, windowWidth=%s, xrayTubeCurrent=%d, exposureTime=%d, kvp=%s, contentDateTime=%s, createdDate=%s, modifiedDate=%s]",
 				id, sopInstanceUID, sopClassUID, instanceNumber, patientOrientation, mediaStorageSopInstanceUID,
 				acquisitionDateTime, imageType, pixelSpacing, imageOrientation, imagePosition, sliceThickness,
 				sliceLocation, windowCenter, windowWidth, xrayTubeCurrent, exposureTime, kvp, contentDateTime,
