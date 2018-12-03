@@ -26,7 +26,7 @@ import lombok.Data;
 public class BaseAuditEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "version")
+	@Column(name = "version", nullable = false)
 	@Version
 	protected int version;
 

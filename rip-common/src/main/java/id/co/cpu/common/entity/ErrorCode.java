@@ -1,4 +1,4 @@
-package id.co.cpu.common.exceptions;
+package id.co.cpu.common.entity;
 
 import org.springframework.http.HttpStatus;
 

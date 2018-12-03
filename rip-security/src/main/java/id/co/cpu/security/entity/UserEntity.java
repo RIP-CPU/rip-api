@@ -2,7 +2,6 @@ package id.co.cpu.security.entity;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -23,16 +22,17 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import id.co.cpu.common.entity.BaseAuditEntity;
-import id.co.cpu.common.utils.PropertiesUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=false, exclude={"roles"})
+@ToString(exclude={"roles"})
 @Entity
 @Table(name = "sec_user")
 public class UserEntity extends BaseAuditEntity implements UserDetails {
@@ -46,16 +46,16 @@ public class UserEntity extends BaseAuditEntity implements UserDetails {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@GeneratedValue(generator = "uuid")
     @Column(name = "user_uuid", nullable = false, unique=true)
-	private String userUUID;
+	private String id;
 
-	@Column(name = "username", nullable = false, unique = true)
+	@Column(name = "username", nullable = false, unique = true, length = 25)
 	private String username;
 
 	@Column(name = "password", nullable = false)
 	private String password;
 
 	@Column(name = "account_enabled", nullable = false)
-	private boolean enabled = false;
+	private boolean enabled = true;
 
 	@Column(name = "account_non_expired", nullable = false)
 	private boolean accountNonExpired = true;
@@ -104,18 +104,12 @@ public class UserEntity extends BaseAuditEntity implements UserDetails {
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
-	@JoinTable(name = "r_user_role", joinColumns = {
-			@JoinColumn(name = "userUUID") }, inverseJoinColumns = @JoinColumn(name = "roleUUID") )
+	@JoinTable(name = "sec_r_user_role",
+		joinColumns = {
+			@JoinColumn(name = "user_uuid", referencedColumnName = "user_uuid")}, 
+		inverseJoinColumns = 
+			@JoinColumn(name = "role_uuid", referencedColumnName = "role_uuid"))
 	private Set<RoleEntity> roles = new HashSet<RoleEntity>();
-
-	/*****************************
-	 * - Transient Field -
-	 ****************************/
-	private String passwordConfirm;
-	private String captcha;
-	private String enabledStr;
-	private String accountNonLockedStr;
-	private Properties prop;
 
 	@Override
 	@Transient
@@ -123,109 +117,6 @@ public class UserEntity extends BaseAuditEntity implements UserDetails {
 		Set<GrantedAuthority> authorities = new LinkedHashSet<GrantedAuthority>();
 		authorities.addAll(roles);
 		return authorities;
-	}
-
-	@Transient
-	public String getPasswordConfirm() {
-		return passwordConfirm;
-	}
-
-	public void setPasswordConfirm(String passwordConfirm) {
-		this.passwordConfirm = passwordConfirm;
-	}
-
-	@Transient
-	public String getCaptcha() {
-		return captcha;
-	}
-
-	public void setCaptcha(String captcha) {
-		this.captcha = captcha;
-	}
-
-	public void addRole(RoleEntity role) {
-		if (roles == null) {
-			roles = new HashSet<RoleEntity>();
-		}
-		roles.add(role);
-	}
-
-	public void setEnabled() {
-		this.enabled = enabledStr.equalsIgnoreCase("1");
-	}
-
-	@Transient
-	public String getEnabledStr() {
-		return enabledStr;
-	}
-
-	public void setEnabledStr(String enabledStr) {
-		this.enabledStr = enabledStr;
-	}
-
-	public void setEnabledStr() {
-		if (enabled) {
-			enabledStr = "1";
-		} else {
-			enabledStr = "0";
-		}
-	}
-
-	public void setAccountNonLocked() {
-		this.accountNonLocked = accountNonLockedStr.equalsIgnoreCase("1");
-	}
-
-	@Transient
-	public String getAccountNonLockedStr() {
-		return accountNonLockedStr;
-	}
-
-	public void setAccountNonLockedStr(String accountNonLockedStr) {
-		this.accountNonLockedStr = accountNonLockedStr;
-	}
-
-	public void setAccountNonLockedStr() {
-		if (accountNonLocked) {
-			accountNonLockedStr = "1";
-		} else {
-			accountNonLockedStr = "0";
-		}
-	}
-
-	@Column(name = "RAW", nullable = true)
-	public String getRaw() {
-		if (prop == null)
-			prop = new Properties();
-		raw = PropertiesUtil.toString(prop);
-		return raw;
-	}
-
-	public void setRaw(String raw) {
-		this.raw = raw;
-		prop = PropertiesUtil.fromString(raw);
-	}
-
-	@Transient
-	public Properties getProp() {
-		return prop;
-	}
-
-	public void setProp(Properties prop) {
-		this.prop = prop;
-	}
-
-	@Transient
-	public String getCustomProp(String key) {
-		if (prop == null)
-			prop = new Properties();
-		return (String) prop.get(key);
-	}
-
-	public void setCustomProp(String key, String value) {
-		if (prop == null)
-			prop = new Properties();
-		prop.put(key, value);
-		getRaw();
 	}
 
 }
