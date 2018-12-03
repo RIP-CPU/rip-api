@@ -3,6 +3,7 @@ package id.co.cpu.common.entity;
 public enum ResourceCode {
 
 	PROFILE("profile"),
+	SECURITY("security"),
 	MASTER("master"),
 	REPORT("report");
 	

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2018 at 03:56 AM
+-- Generation Time: Dec 03, 2018 at 06:28 AM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 7.2.8
 
@@ -167,11 +167,11 @@ CREATE TABLE `mst_study` (
 
 CREATE TABLE `oauth_access_token` (
   `token_id` varchar(255) DEFAULT NULL,
-  `token` binary(1) DEFAULT NULL,
+  `token` blob,
   `authentication_id` varchar(255) NOT NULL,
   `user_name` varchar(255) DEFAULT NULL,
   `client_id` varchar(255) DEFAULT NULL,
-  `authentication` binary(1) DEFAULT NULL,
+  `authentication` blob,
   `refresh_token` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -215,10 +215,9 @@ CREATE TABLE `oauth_client_details` (
 --
 
 INSERT INTO `oauth_client_details` (`client_id`, `resource_ids`, `client_secret`, `scope`, `authorized_grant_types`, `web_server_redirect_uri`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additional_information`, `autoapprove`) VALUES
-('appclient', 'marketplace', 'appclient001', 'demo', 'client_credentials', '', 'APP_CLIENT_OAUTH2', 7200, 0, NULL, '1'),
-('jsclient', 'marketplace', NULL, 'demo', 'implicit', '', 'APP_CLIENT_OAUTH2', 7200, 0, NULL, '1'),
-('rip-core', 'profile', 'secretrip01', 'full', 'password', '', 'APP_CLIENT_OAUTH2', 7200, 0, NULL, '1'),
-('webclient', 'marketplace', 'webclient123', 'demo', 'authorization_code, refresh_token', 'http://rip.cpu.co.id:69', 'APP_CLIENT_OAUTH2', 180, 1800, NULL, '0');
+('rip-3rd', 'profile,master', 'secretrip3rd01', 'read,write,check_token', 'authorization_code,refresh_token', 'http://rip.cpu.co.id:69/oauth/secure', 'ROLE_END', 3600, 1800, NULL, '0'),
+('rip-core', 'profile,security,master,report', 'secretrip01', 'read,write,trust,check_token', 'password,refresh_token', '', 'ROLE_ADMIN,ROLE_RADIOGRAPHER,ROLE_DOCTOR,ROLE_END', 7200, 3600, NULL, '1'),
+('rip-mobile', 'profile,security,master', 'secretrip02', 'read,write,check_token', 'password,refresh_token', '', 'ROLE_END', 7200, 3600, NULL, '1');
 
 -- --------------------------------------------------------
 
@@ -228,7 +227,7 @@ INSERT INTO `oauth_client_details` (`client_id`, `resource_ids`, `client_secret`
 
 CREATE TABLE `oauth_client_token` (
   `token_id` varchar(255) DEFAULT NULL,
-  `token` binary(1) DEFAULT NULL,
+  `token` blob,
   `authentication_id` varchar(255) NOT NULL,
   `user_name` varchar(255) DEFAULT NULL,
   `client_id` varchar(255) DEFAULT NULL
@@ -242,7 +241,7 @@ CREATE TABLE `oauth_client_token` (
 
 CREATE TABLE `oauth_code` (
   `code` varchar(255) DEFAULT NULL,
-  `authentication` binary(1) DEFAULT NULL
+  `authentication` blob
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -253,8 +252,8 @@ CREATE TABLE `oauth_code` (
 
 CREATE TABLE `oauth_refresh_token` (
   `token_id` varchar(255) DEFAULT NULL,
-  `token` binary(1) DEFAULT NULL,
-  `authentication` binary(1) DEFAULT NULL
+  `token` blob,
+  `authentication` blob
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -280,7 +279,10 @@ CREATE TABLE `sec_role` (
 --
 
 INSERT INTO `sec_role` (`role_uuid`, `role_name`, `description`, `version`, `is_active`, `created_date`, `created_by`, `modified_date`, `modified_by`) VALUES
-('06be80df-5c41-42a7-9050-b328312d2f3a', 'ROLE_ADMIN', 'Role Administrator', 0, 1, '2018-12-02 20:52:28', NULL, NULL, NULL);
+('06be80df-5c41-42a7-9050-b328312d2f3a', 'ROLE_ADMIN', 'Role Administrator', 0, 1, '2018-12-02 20:52:28', NULL, NULL, NULL),
+('1af2403b-a4f8-4492-94c1-5d6ab8b4a094', 'ROLE_RADIOGRAPHER', 'Role Radiographer', 0, 1, '2018-12-03 11:57:36', NULL, NULL, NULL),
+('d46b4b13-4159-4f5c-923d-5d8dfe3f48de', 'ROLE_DOCTOR', 'Role Doctor', 0, 1, '2018-12-03 11:57:36', NULL, NULL, NULL),
+('d68a2ea7-f1cb-484c-a3d4-b669ef3ff3c8', 'ROLE_END', 'Role Patient', 0, 1, '2018-12-03 11:57:36', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 

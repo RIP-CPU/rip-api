@@ -2,20 +2,26 @@ package id.co.cpu.common.configuration;
 
 import java.util.Map;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 public class JwtHazelcastTokenConfiguration {
 	
     @Value("${security.oauth2.resource.jwt.key-value}")
     private String jwtKey;
+
+    @Autowired
+    private DataSource dataSource;
     
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
@@ -41,6 +47,6 @@ public class JwtHazelcastTokenConfiguration {
 
     @Bean
     public TokenStore tokenStore() {
-        return new JwtTokenStore(jwtAccessTokenConverter());
+        return new JdbcTokenStore(dataSource);
     }
 }
