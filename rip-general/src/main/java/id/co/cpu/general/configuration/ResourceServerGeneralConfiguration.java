@@ -1,4 +1,4 @@
-package id.co.cpu.master.configuration;
+package id.co.cpu.general.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -12,14 +12,14 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import id.co.cpu.common.utils.ResourceCode;
 
-@Configuration("resourceServerMaster")
+@Configuration("resourceServerGeneral")
 @EnableResourceServer
-public class ResourceServerMasterConfiguration extends ResourceServerConfigurerAdapter {
+public class ResourceServerGeneralConfiguration extends ResourceServerConfigurerAdapter {
 
     @Autowired
     private TokenStore tokenStore;
     
-    private String resourceId = ResourceCode.MASTER.getResourceId();
+    private String resourceId = ResourceCode.GENERAL.getResourceId();
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {

@@ -1,10 +1,11 @@
-package id.co.cpu.common.entity;
+package id.co.cpu.common.utils;
 
 public enum ResourceCode {
 
 	PROFILE("profile"),
 	SECURITY("security"),
 	MASTER("master"),
+	GENERAL("general"),
 	REPORT("report");
 	
 	private final String resourceId;

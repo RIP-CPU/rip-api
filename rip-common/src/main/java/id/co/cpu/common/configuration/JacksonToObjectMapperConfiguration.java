@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+
+import id.co.cpu.common.utils.DateUtil;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -48,7 +51,7 @@ class JsonDateSerializer extends StdSerializer<Date>{
 		super(t);
 	}
 	
-	private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat format = new SimpleDateFormat(DateUtil.DEFAULT_FORMAT_DATE);
 
 	@Override
 	public void serialize(Date value, JsonGenerator gen, SerializerProvider provider) throws IOException {
@@ -64,7 +67,7 @@ class JsonDateSerializer extends StdSerializer<Date>{
 class JsonDateDeserializer extends StdDeserializer<Date> {
 	 
 	private static final long serialVersionUID = 1L;
-	private SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat formatter = new SimpleDateFormat(DateUtil.DEFAULT_FORMAT_DATE);
  
     public JsonDateDeserializer() {
         this(null);
@@ -100,7 +103,7 @@ class JsonDateTimeSerializer extends StdSerializer<Calendar>{
 		super(t);
 	}
 
-	private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private SimpleDateFormat format = new SimpleDateFormat(DateUtil.DEFAULT_FORMAT_DATE_TIME);
 
 	@Override
 	public void serialize(Calendar value, JsonGenerator gen, SerializerProvider provider) throws IOException {
@@ -116,7 +119,7 @@ class JsonDateTimeSerializer extends StdSerializer<Calendar>{
 class JsonDateTimeDeserializer extends StdDeserializer<Calendar> {
 
 	private static final long serialVersionUID = 1L;
-	private SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private SimpleDateFormat formatter = new SimpleDateFormat(DateUtil.DEFAULT_FORMAT_DATE_TIME);
 
 	public JsonDateTimeDeserializer() {
 		this(null);

@@ -1,6 +1,6 @@
 package id.co.cpu.common.exceptions;
 
-import id.co.cpu.common.entity.ErrorCode;
+import id.co.cpu.common.utils.ErrorCode;
 
 public class SystemErrorException extends Exception {
 

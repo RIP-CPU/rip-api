@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
-import id.co.cpu.common.entity.ResourceCode;
+import id.co.cpu.common.utils.ResourceCode;
 
 @Configuration("resourceServerProfile")
 @EnableResourceServer
@@ -34,21 +34,25 @@ public class ResourceServerProfileConfiguration extends ResourceServerConfigurer
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
         .csrf().disable()
         .authorizeRequests()
-        .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+"/vw/get/**")
+        .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/get/**")
+    		.access("#oauth2.hasScope('read')")
+        .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/param/**")
+    		.access("#oauth2.hasScope('read')")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/vw/post/**")
         	.access("#oauth2.hasScope('read')")
-        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+"/vw/post/**")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/vw/param/**")
         	.access("#oauth2.hasScope('read')")
-        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+"/trx/add/**")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/trx/add/**")
         	.access("#oauth2.hasScope('write')")
-        .antMatchers(HttpMethod.PUT,"/api/"		+resourceId+"/trx/put/**")
+        .antMatchers(HttpMethod.PUT,"/api/"		+resourceId+ "/trx/put/**")
         	.access("#oauth2.hasScope('write')")
-        .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+"/vw/auth/**")
+        .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/auth/**")
         	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
-        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+"/vw/auth/**")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/vw/auth/**")
         	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
-        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+"/trx/auth/**")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/trx/auth/**")
         	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
-        .antMatchers(HttpMethod.DELETE,"/api/"	+resourceId+"/trx/auth/**")
+        .antMatchers(HttpMethod.DELETE,"/api/"	+resourceId+ "/trx/auth/**")
         	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
         .anyRequest().authenticated();
     }

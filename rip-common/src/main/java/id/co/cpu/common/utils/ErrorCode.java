@@ -1,4 +1,4 @@
-package id.co.cpu.common.entity;
+package id.co.cpu.common.utils;
 
 import org.springframework.http.HttpStatus;
 

@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import id.co.cpu.common.entity.ErrorCode;
 import id.co.cpu.common.http.ApiErrorResponse;
+import id.co.cpu.common.utils.ErrorCode;
 
 public class BaseControllerException {
 

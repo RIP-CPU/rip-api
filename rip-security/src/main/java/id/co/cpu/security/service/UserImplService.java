@@ -15,8 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import id.co.cpu.common.entity.ErrorCode;
 import id.co.cpu.common.exceptions.SystemErrorException;
+import id.co.cpu.common.utils.ErrorCode;
 import id.co.cpu.security.dao.UserRepo;
 import id.co.cpu.security.entity.UserEntity;
 

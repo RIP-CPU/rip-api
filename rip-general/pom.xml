@@ -2,18 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>rip-main</artifactId>
-	<packaging>war</packaging>
+	<artifactId>rip-general</artifactId>
+	<name>rip-general</name>
+	<packaging>jar</packaging>
 	<parent>
 		<relativePath>../rip-root</relativePath>
 		<groupId>id.co.cpu</groupId>
 		<artifactId>rip-root</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-
-	<properties>
-		<application.name>rip-main</application.name>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -81,6 +78,7 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -109,17 +107,12 @@
 		</dependency>
 		<dependency>
 			<groupId>id.co.cpu</groupId>
-			<artifactId>rip-master</artifactId>
+			<artifactId>rip-pacs</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>id.co.cpu</groupId>
-			<artifactId>rip-security</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>id.co.cpu</groupId>
-			<artifactId>rip-general</artifactId>
+			<artifactId>rip-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -128,11 +121,13 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
@@ -166,6 +161,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>net.logstash.logback</groupId>
 			<artifactId>logstash-logback-encoder</artifactId>
@@ -199,54 +195,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>app</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.2</version>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<!-- here the phase you need -->
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/</outputDirectory>
-							<resources>
-								<resource>
-									<directory>docker</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>application.properties</include>
-					<include>bootstrap.yml</include>
-					<include>logback.xml</include>
-					<include>c3p0.properties</include>
-				</includes>
-			</resource>
-		</resources>
+		<finalName>${project.name}-${project.version}</finalName>
 	</build>
 </project>
