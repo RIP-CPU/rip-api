@@ -26,8 +26,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 @Entity
-@Table(name="mst_equipment")
-public class Equipment extends BaseAuditEntity {
+@Table(name="dcm_equipment")
+public class EquipmentDicomEntity extends BaseAuditEntity {
 
 	private static final long serialVersionUID = 6245262777427705812L;
 
@@ -69,7 +69,7 @@ public class Equipment extends BaseAuditEntity {
 	
 	@OneToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name="series_uuid")
-	private Series series;
+	private SeriesDicomEntity series;
 	
 	@PreUpdate
     @PrePersist

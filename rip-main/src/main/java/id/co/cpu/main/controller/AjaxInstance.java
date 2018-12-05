@@ -1,13 +1,13 @@
 package id.co.cpu.main.controller;
 
-import id.co.cpu.master.entity.Instance;
+import id.co.cpu.master.entity.InstanceDicomEntity;
 
 public class AjaxInstance {
 
 	private Boolean success;
-	private Instance instance;
+	private InstanceDicomEntity instance;
 	
-	public AjaxInstance(Boolean success, Instance instance){
+	public AjaxInstance(Boolean success, InstanceDicomEntity instance){
 		this.success = success;
 		this.instance = instance;
 	}
@@ -20,11 +20,11 @@ public class AjaxInstance {
 		this.success = success;
 	}
 	
-	public Instance getInstance() {
+	public InstanceDicomEntity getInstance() {
 		return instance;
 	}
 
-	public void setInstance(Instance instance) {
+	public void setInstance(InstanceDicomEntity instance) {
 		this.instance = instance;
 	}
 

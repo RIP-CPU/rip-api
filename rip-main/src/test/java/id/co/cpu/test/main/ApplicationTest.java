@@ -90,7 +90,7 @@ public class ApplicationTest {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(primaryDataSource());
-        em.setPersistenceUnitName("dbdicom");
+        em.setPersistenceUnitName("rip");
         em.setPackagesToScan(new String[]{"org.easy.entity"}); // package where are the @Entity classes are located, usually your domain package
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter(); // JPA implementation 
         em.setJpaVendorAdapter(vendorAdapter);    

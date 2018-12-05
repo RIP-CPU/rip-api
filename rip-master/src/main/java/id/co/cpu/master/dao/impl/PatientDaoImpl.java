@@ -7,17 +7,17 @@ import org.springframework.stereotype.Repository;
 
 import id.co.cpu.master.dao.AbstractJpaDao;
 import id.co.cpu.master.dao.PatientDao;
-import id.co.cpu.master.entity.Patient;
+import id.co.cpu.master.entity.PatientDicomEntity;
 
 @Repository
-public class PatientDaoImpl extends AbstractJpaDao<Patient> implements PatientDao {
+public class PatientDaoImpl extends AbstractJpaDao<PatientDicomEntity> implements PatientDao {
 	
-	@PersistenceContext(unitName = "dbdicom")
+	@PersistenceContext(unitName = "rip")
 	private EntityManager entityManager;
 
 	public PatientDaoImpl(){
 		super();
-		setClazz(Patient.class);
+		setClazz(PatientDicomEntity.class);
 	}
 	
 	/*@Transactional
@@ -50,10 +50,10 @@ public class PatientDaoImpl extends AbstractJpaDao<Patient> implements PatientDa
 	}*/
 	
 	@Override 
-	public Patient findByPatientId(String patientId){
+	public PatientDicomEntity findByPatientId(String patientId){
 		
 		try{
-			return entityManager.createQuery("select p from Patient p where p.patientId LIKE :patientId", Patient.class)
+			return entityManager.createQuery("select p from PatientDicomEntity p where p.patientId LIKE :patientId", PatientDicomEntity.class)
 			.setParameter("patientId", patientId)			
 			.getSingleResult();
 		}catch(Exception e){			

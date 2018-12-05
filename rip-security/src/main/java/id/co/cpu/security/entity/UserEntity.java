@@ -75,9 +75,6 @@ public class UserEntity extends BaseAuditEntity implements UserDetails {
 	@Column(name = "address", nullable = false)
 	private String address;
 
-	@Column(name = "division_code", nullable = true)
-	private String divisionCode;
-
 	@Column(name = "city", nullable = true)
 	private String city;
 
@@ -93,6 +90,9 @@ public class UserEntity extends BaseAuditEntity implements UserDetails {
 	@Column(name = "mobile_number", nullable = true)
 	private String mobileNumber;
 
+	@Column(name = "image", nullable = false)
+	private String image;
+
 	@Column(name = "description", nullable = true)
 	private String description;
 
@@ -101,6 +101,9 @@ public class UserEntity extends BaseAuditEntity implements UserDetails {
 
 	@Column(name = "raw", nullable = true)
 	private String raw;
+
+	@Column(name = "locale", nullable = false)
+	private String locale = "en-US";
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)

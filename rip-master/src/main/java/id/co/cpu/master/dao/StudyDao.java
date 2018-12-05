@@ -3,16 +3,16 @@ package id.co.cpu.master.dao;
 
 import java.util.List;
 
-import id.co.cpu.master.entity.Study;
+import id.co.cpu.master.entity.StudyDicomEntity;
 
 
 public interface StudyDao{
 
-	void save(Study study);
-	Study update(Study study);
-	List<Study> findAll(int firstResult, int maxResults);
+	void save(StudyDicomEntity study);
+	StudyDicomEntity update(StudyDicomEntity study);
+	List<StudyDicomEntity> findAll(int firstResult, int maxResults);
 	Long count();
-	Study findById(String id);
-	List<Study> findByPatientId(String patientId);
-	Study findByStudyInstanceUID(String studyInstanceUID);
+	StudyDicomEntity findById(String id);
+	List<StudyDicomEntity> findByPatientId(String patientId);
+	StudyDicomEntity findByStudyInstanceUID(String studyInstanceUID);
 }

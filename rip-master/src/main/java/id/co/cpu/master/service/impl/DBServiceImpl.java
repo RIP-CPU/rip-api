@@ -14,11 +14,11 @@ import id.co.cpu.master.dao.InstanceDao;
 import id.co.cpu.master.dao.PatientDao;
 import id.co.cpu.master.dao.SeriesDao;
 import id.co.cpu.master.dao.StudyDao;
-import id.co.cpu.master.entity.Equipment;
-import id.co.cpu.master.entity.Instance;
-import id.co.cpu.master.entity.Patient;
-import id.co.cpu.master.entity.Series;
-import id.co.cpu.master.entity.Study;
+import id.co.cpu.master.entity.EquipmentDicomEntity;
+import id.co.cpu.master.entity.InstanceDicomEntity;
+import id.co.cpu.master.entity.PatientDicomEntity;
+import id.co.cpu.master.entity.SeriesDicomEntity;
+import id.co.cpu.master.entity.StudyDicomEntity;
 import id.co.cpu.master.service.DBService;
 import id.co.cpu.master.utils.DicomEntityBuilder;
 import id.co.cpu.pacs.component.ActiveDicoms;
@@ -45,7 +45,7 @@ public class DBServiceImpl implements DBService {
 	@Autowired
 	EquipmentDao equipmentDao;	
 	
-	@PersistenceContext(unitName = "dbdicom")
+	@PersistenceContext(unitName = "rip")
 	private EntityManager entityManager;
 	
 	@Autowired
@@ -54,11 +54,11 @@ public class DBServiceImpl implements DBService {
 	
 	@Transactional
 	@Override
-	public Patient buildPatient(DicomReader reader){		
+	public PatientDicomEntity buildPatient(DicomReader reader){		
 		
 		LOG.info("In process; Patient Name: {}, Patient ID: {}", reader.getPatientName(), reader.getPatientID());
 		//check if patient exists
-		Patient patient = patientDao.findByPatientId(reader.getPatientID());
+		PatientDicomEntity patient = patientDao.findByPatientId(reader.getPatientID());
 		if(patient == null){//let's create new patient
 			patient = DicomEntityBuilder.newPatient(reader.getPatientAge(), reader.getPatientBirthDay(), reader.getPatientID(), reader.getPatientName(), reader.getPatientSex());				
 			patientDao.save(patient);
@@ -73,10 +73,10 @@ public class DBServiceImpl implements DBService {
 	
 	@Transactional
 	@Override
-	public Study buildStudy(DicomReader reader,Patient patient){
+	public StudyDicomEntity buildStudy(DicomReader reader,PatientDicomEntity patient){
 		
 		//check if study exists
-		Study study = studyDao.findByStudyInstanceUID(reader.getStudyInstanceUID());
+		StudyDicomEntity study = studyDao.findByStudyInstanceUID(reader.getStudyInstanceUID());
 		if(study == null){//let's create new study
 			study = DicomEntityBuilder.newStudy(reader.getAccessionNumber(), reader.getAdditionalPatientHistory(), reader.getAdmittingDiagnosesDescription(),
 						reader.getReferringPhysicianName(), reader.getSeriesDateTime(), reader.getStudyID(), reader.getStudyDescription(), reader.getStudyInstanceUID(), reader.getStudyPriorityID(), 
@@ -93,10 +93,10 @@ public class DBServiceImpl implements DBService {
 	
 	@Transactional
 	@Override
-	public Series buildSeries(DicomReader reader, Study study){
+	public SeriesDicomEntity buildSeries(DicomReader reader, StudyDicomEntity study){
 		
 		//check if series exists
-		Series series = seriesDao.findBySeriesInstanceUID(reader.getSeriesInstanceUID(), reader.getSeriesNumber());			
+		SeriesDicomEntity series = seriesDao.findBySeriesInstanceUID(reader.getSeriesInstanceUID(), reader.getSeriesNumber());			
 		if(series == null){//let's create new series
 			series = DicomEntityBuilder.newSeries(reader.getBodyPartExamined(), reader.getLaterality(), reader.getOperatorsName(), reader.getPatientPosition(),
 						reader.getProtocolName(), reader.getSeriesDateTime(), reader.getSeriesDescription(), reader.getSeriesInstanceUID(), reader.getSeriesNumber());
@@ -112,10 +112,10 @@ public class DBServiceImpl implements DBService {
 	
 	@Transactional
 	@Override
-	public Equipment buildEquipment(DicomReader reader, Series series){
+	public EquipmentDicomEntity buildEquipment(DicomReader reader, SeriesDicomEntity series){
 		
 		//check if equipment exists
-		Equipment equipment = equipmentDao.findBySeriesId(series.getId());
+		EquipmentDicomEntity equipment = equipmentDao.findBySeriesId(series.getId());
 		if(equipment == null){
 			equipment = DicomEntityBuilder.newEquipment(reader.getConversionType(), reader.getDeviceSerialNumber(), reader.getInstitutionAddress(),			
 					reader.getInstitutionName(), reader.getInstitutionalDepartmentName(), reader.getManufacturer(), reader.getManufacturerModelName(), 
@@ -133,10 +133,10 @@ public class DBServiceImpl implements DBService {
 	
 	@Transactional
 	@Override
-	public Instance buildInstance(DicomReader reader, Series series){
+	public InstanceDicomEntity buildInstance(DicomReader reader, SeriesDicomEntity series){
 		
 		//check first if instance exists
-		Instance instance = instanceDao.findBySopInstanceUID(reader.getSOPInstanceUID());			
+		InstanceDicomEntity instance = instanceDao.findBySopInstanceUID(reader.getSOPInstanceUID());			
 		if(instance == null){//let's create new instance along with dependent objects
 			instance = DicomEntityBuilder.newInstance(  reader.getAcquisitionDateTime(), reader.getContentDateTime(), reader.getExposureTime(),
 						reader.getImageOrientation(), reader.getImagePosition(), reader.getImageType(), reader.getInstanceNumber(), reader.getKvp(), 
@@ -163,17 +163,17 @@ public class DBServiceImpl implements DBService {
 		{		
 			LOG.info("=================================================================================================================================");
 			printStats(reader.getPatientName() + " "+ reader.getPatientID() + " " + reader.getPatientAge() + " " + reader.getPatientSex() + " Started");
-			Patient patient = buildPatient(reader);			
+			PatientDicomEntity patient = buildPatient(reader);			
 			activeDicoms.add(reader.getMediaStorageSopInstanceUID(), patient.toString());
 			
 			if(patient != null)
 			{				
-				Study study = buildStudy(reader, patient);				
+				StudyDicomEntity study = buildStudy(reader, patient);				
 				if(study != null){
-					Series series = buildSeries(reader, study);		
+					SeriesDicomEntity series = buildSeries(reader, study);		
 					if(series != null){
-						Equipment equipment = buildEquipment(reader, series);//one2one relationship with series						
-						Instance instance = buildInstance(reader, series);
+						EquipmentDicomEntity equipment = buildEquipment(reader, series);//one2one relationship with series						
+						InstanceDicomEntity instance = buildInstance(reader, series);
 						
 						//update entity modification dates according to the instance creation
 						series.setModifiedDate(instance.getCreatedDate());

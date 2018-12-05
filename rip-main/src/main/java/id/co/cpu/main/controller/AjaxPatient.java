@@ -1,13 +1,13 @@
 package id.co.cpu.main.controller;
 
-import id.co.cpu.master.entity.Patient;
+import id.co.cpu.master.entity.PatientDicomEntity;
 
 public class AjaxPatient {
 
 	private Boolean success;
-	private Patient patient;
+	private PatientDicomEntity patient;
 	
-	public AjaxPatient(Boolean success, Patient patient){
+	public AjaxPatient(Boolean success, PatientDicomEntity patient){
 		this.success = success;
 		this.patient = patient;
 	}
@@ -20,11 +20,11 @@ public class AjaxPatient {
 		this.success = success;
 	}
 
-	public Patient getPatient() {
+	public PatientDicomEntity getPatient() {
 		return patient;
 	}
 
-	public void setPatient(Patient patient) {
+	public void setPatient(PatientDicomEntity patient) {
 		this.patient = patient;
 	}
 }

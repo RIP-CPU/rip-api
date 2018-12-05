@@ -8,17 +8,17 @@ import org.springframework.stereotype.Repository;
 
 import id.co.cpu.master.dao.AbstractJpaDao;
 import id.co.cpu.master.dao.EquipmentDao;
-import id.co.cpu.master.entity.Equipment;
+import id.co.cpu.master.entity.EquipmentDicomEntity;
 
 @Repository
-public class EquipmentDaoImpl extends AbstractJpaDao<Equipment> implements EquipmentDao {
+public class EquipmentDaoImpl extends AbstractJpaDao<EquipmentDicomEntity> implements EquipmentDao {
 	
-	@PersistenceContext(unitName = "dbdicom")
+	@PersistenceContext(unitName = "rip")
 	private EntityManager entityManager;
 	
 	public EquipmentDaoImpl(){
 		super();
-		setClazz(Equipment.class);
+		setClazz(EquipmentDicomEntity.class);
 	}
 	
 	/*@Transactional
@@ -50,10 +50,10 @@ public class EquipmentDaoImpl extends AbstractJpaDao<Equipment> implements Equip
 	}*/
 	
 	@Override 
-	public Equipment findBySeriesId(String seriesId){
+	public EquipmentDicomEntity findBySeriesId(String seriesId){
 		
 		try{
-			return entityManager.createQuery("select e from Equipment e  where e.series.id LIKE :seriesId", Equipment.class)
+			return entityManager.createQuery("select e from EquipmentDicomEntity e  where e.series.id LIKE :seriesId", EquipmentDicomEntity.class)
 			.setParameter("seriesId", seriesId)			
 			.getSingleResult();
 		}catch(Exception e){			

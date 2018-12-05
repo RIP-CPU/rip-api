@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import id.co.cpu.master.dao.EquipmentDao;
-import id.co.cpu.master.entity.Equipment;
+import id.co.cpu.master.entity.EquipmentDicomEntity;
 import junit.framework.TestCase;
 
 @Ignore
@@ -32,7 +32,7 @@ public class EquipmentTest extends TestCase{
 	@Test
 	public void testfindByPKTBLSeriesID(){
 		
-		Equipment equipment = equipmentDao.findBySeriesId("");
+		EquipmentDicomEntity equipment = equipmentDao.findBySeriesId("");
 		assertNotNull(equipment);
 		LOG.info(equipment.toString());
 	}

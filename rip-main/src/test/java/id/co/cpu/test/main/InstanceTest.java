@@ -18,11 +18,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import id.co.cpu.master.dao.EquipmentDao;
 import id.co.cpu.master.dao.InstanceDao;
-import id.co.cpu.master.entity.Equipment;
-import id.co.cpu.master.entity.Instance;
-import id.co.cpu.master.entity.Patient;
-import id.co.cpu.master.entity.Series;
-import id.co.cpu.master.entity.Study;
+import id.co.cpu.master.entity.EquipmentDicomEntity;
+import id.co.cpu.master.entity.InstanceDicomEntity;
+import id.co.cpu.master.entity.PatientDicomEntity;
+import id.co.cpu.master.entity.SeriesDicomEntity;
+import id.co.cpu.master.entity.StudyDicomEntity;
 import id.co.cpu.master.service.DBService;
 import junit.framework.TestCase;
 
@@ -47,22 +47,22 @@ public class InstanceTest extends TestCase{
 	@Test
 	public void testList()
 	{
-		List<Instance> instances = instanceDao.findAll(1,10);
+		List<InstanceDicomEntity> instances = instanceDao.findAll(1,10);
 		
 		if(instances.size() <= 0){
 			LOG.info("no instances found!");
 		}else{			
-			for(Instance instance : instances){
+			for(InstanceDicomEntity instance : instances){
 				//print instance
 				LOG.info("instance: {}", instance);				
 				//get series
-				Series series = instance.getSeries();				
+				SeriesDicomEntity series = instance.getSeries();				
 				LOG.info("series: {}", series.toString());			
 				//get study
-				Study study = series.getStudy();				
+				StudyDicomEntity study = series.getStudy();				
 				LOG.info("study: {}", study.toString());
 				//get patient
-				Patient patient = study.getPatient();
+				PatientDicomEntity patient = study.getPatient();
 				LOG.info("patient: {}", patient.toString());
 			}
 		}		
@@ -72,7 +72,7 @@ public class InstanceTest extends TestCase{
 	@Test
 	public void testfindBySopInstanceUID(){
 		
-		Instance instance = instanceDao.findBySopInstanceUID("1.3.12.2.1107.5.1.4.55292.30000015032113073778100003751");
+		InstanceDicomEntity instance = instanceDao.findBySopInstanceUID("1.3.12.2.1107.5.1.4.55292.30000015032113073778100003751");
 		assertNotNull(instance);
 		LOG.info(instance.toString());
 		instance = instanceDao.findBySopInstanceUID("1.3.12.2.1107.5.1.4.55292.3000001503211307377810000375188888888");
@@ -83,19 +83,19 @@ public class InstanceTest extends TestCase{
 	@Ignore
 	public void testFindByPKTBLSeriesID(){
 		
-		List<Instance> instances = instanceDao.findBySeriesId("");
+		List<InstanceDicomEntity> instances = instanceDao.findBySeriesId("");
 		
-		for(Instance instance : instances){
+		for(InstanceDicomEntity instance : instances){
 			//print instance
 			LOG.info("instance: {}", instance);				
 			//get series
-			Series series = instance.getSeries();				
+			SeriesDicomEntity series = instance.getSeries();				
 			LOG.info("series: {}", series.toString());			
 			//get study
-			Study study = series.getStudy();				
+			StudyDicomEntity study = series.getStudy();				
 			LOG.info("study: {}", study.toString());
 			//get patient
-			Patient patient = study.getPatient();
+			PatientDicomEntity patient = study.getPatient();
 			LOG.info("patient: {}", patient.toString());
 			
 			LOG.info("-----------------------------------------------------------------------------------------------------------------");		
@@ -107,25 +107,25 @@ public class InstanceTest extends TestCase{
 	@Rollback(false)
 	public void testInstanceObject(){
 		
-		Instance instance = new Instance();
+		InstanceDicomEntity instance = new InstanceDicomEntity();
 		instance.setKvp("8");
 		instance.setPixelSpacing(2.56f);
 		instance.setInstanceNumber(1);
 		instance.setImageType("CT Image");
 		
-		Series series = new Series();		
+		SeriesDicomEntity series = new SeriesDicomEntity();		
 		series.setOperatorsName("Elizabeth Uranus");
 		series.setSeriesNumber(1);
 		series.setSeriesDescription("CT Image with over 100 images");		
 			
 		
-		Study study = new Study();
+		StudyDicomEntity study = new StudyDicomEntity();
 		study.setReferringPhysicianName("Anderson Yola");
 		study.setStudyID("4593DB");
 		study.setStudyDateTime(Calendar.getInstance().getTime());
 		
 		
-		Patient patient = new Patient();
+		PatientDicomEntity patient = new PatientDicomEntity();
 		patient.setPatientId("451123");
 		patient.setPatientName("Nomine^Alerta");
 		patient.setPatientAge("45F");
@@ -152,7 +152,7 @@ public class InstanceTest extends TestCase{
 		assertNotNull(patient.getId());
 		
 		//you need to test Equipment separately because it is one-To-One
-		Equipment equipment = new Equipment();
+		EquipmentDicomEntity equipment = new EquipmentDicomEntity();
 		equipment.setInstitutionName("St. Vincent");
 		equipment.setDeviceSerialNumber("897423587");
 		equipment.setInstitutionalDepartmentName("Radiology Clinic");	
@@ -171,24 +171,24 @@ public class InstanceTest extends TestCase{
 	@Test
 	public void testAllInstancesByPatientID(){
 		
-		List<Instance> instances = instanceDao.findAllByPatientId("");
+		List<InstanceDicomEntity> instances = instanceDao.findAllByPatientId("");
 		assertEquals(0, instances.size());
 		
 		instances = instanceDao.findAllByPatientId("");
 		assertTrue(instances.size() > 0);
 		
 		int i=0;
-		for(Instance instance : instances){
+		for(InstanceDicomEntity instance : instances){
 			//print instance
 			LOG.info(++i + "- instance: {}", instance);				
 			//get series
-			Series series = instance.getSeries();				
+			SeriesDicomEntity series = instance.getSeries();				
 			LOG.info("series: {}", series.toString());			
 			//get study
-			Study study = series.getStudy();				
+			StudyDicomEntity study = series.getStudy();				
 			LOG.info("study: {}", study.toString());
 			//get patient
-			Patient patient = study.getPatient();
+			PatientDicomEntity patient = study.getPatient();
 			LOG.info("patient: {}", patient.toString());
 		}
 		

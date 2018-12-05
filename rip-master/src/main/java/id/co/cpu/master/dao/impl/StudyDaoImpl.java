@@ -9,24 +9,24 @@ import org.springframework.stereotype.Repository;
 
 import id.co.cpu.master.dao.AbstractJpaDao;
 import id.co.cpu.master.dao.StudyDao;
-import id.co.cpu.master.entity.Study;
+import id.co.cpu.master.entity.StudyDicomEntity;
 
 @Repository
-public class StudyDaoImpl extends AbstractJpaDao<Study> implements StudyDao {
+public class StudyDaoImpl extends AbstractJpaDao<StudyDicomEntity> implements StudyDao {
 	
-	@PersistenceContext(unitName = "dbdicom")
+	@PersistenceContext(unitName = "rip")
 	private EntityManager entityManager;	
 	
 	public StudyDaoImpl(){
 		super();
-		setClazz(Study.class);
+		setClazz(StudyDicomEntity.class);
 	}
 		
 	@Override
-	public List<Study> findByPatientId(String patientId){
+	public List<StudyDicomEntity> findByPatientId(String patientId){
 		
 		try{
-			return entityManager.createQuery("select s from Study s  where s.patient.id = :patientId", Study.class)
+			return entityManager.createQuery("select s from StudyDicomEntity s  where s.patient.id = :patientId", StudyDicomEntity.class)
 			.setParameter("patientId", patientId)			
 			.getResultList();
 		}catch(Exception e){			
@@ -35,10 +35,10 @@ public class StudyDaoImpl extends AbstractJpaDao<Study> implements StudyDao {
 	}
 	
 	@Override 
-	public Study findByStudyInstanceUID(String studyInstanceUID){
+	public StudyDicomEntity findByStudyInstanceUID(String studyInstanceUID){
 		
 		try{
-			return entityManager.createQuery("select s from Study s  where s.studyInstanceUID = :studyInstanceUID", Study.class)
+			return entityManager.createQuery("select s from StudyDicomEntity s  where s.studyInstanceUID = :studyInstanceUID", StudyDicomEntity.class)
 			.setParameter("studyInstanceUID", studyInstanceUID)			
 			.getSingleResult();
 		}catch(Exception e){			

@@ -2,14 +2,14 @@ package id.co.cpu.master.dao;
 
 import java.util.List;
 
-import id.co.cpu.master.entity.Equipment;
+import id.co.cpu.master.entity.EquipmentDicomEntity;
 
 public interface EquipmentDao {
 
-	void save(Equipment equipment);
-	Equipment update(Equipment equipment);
-	List<Equipment> findAll(int firstResult, int maxResults);
+	void save(EquipmentDicomEntity equipment);
+	EquipmentDicomEntity update(EquipmentDicomEntity equipment);
+	List<EquipmentDicomEntity> findAll(int firstResult, int maxResults);
 	Long count();
-	Equipment findById(String id);
-	Equipment findBySeriesId(String seriesId);
+	EquipmentDicomEntity findById(String id);
+	EquipmentDicomEntity findBySeriesId(String seriesId);
 }

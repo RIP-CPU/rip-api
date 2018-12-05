@@ -18,10 +18,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import id.co.cpu.master.dao.EquipmentDao;
 import id.co.cpu.master.dao.SeriesDao;
-import id.co.cpu.master.entity.Equipment;
-import id.co.cpu.master.entity.Patient;
-import id.co.cpu.master.entity.Series;
-import id.co.cpu.master.entity.Study;
+import id.co.cpu.master.entity.EquipmentDicomEntity;
+import id.co.cpu.master.entity.PatientDicomEntity;
+import id.co.cpu.master.entity.SeriesDicomEntity;
+import id.co.cpu.master.entity.StudyDicomEntity;
 import junit.framework.TestCase;
 
 
@@ -44,17 +44,17 @@ public class SeriesTest extends TestCase{
 	@Test
 	public void testList(){
 		
-		List<Series> serieses = seriesDao.findAll(0,3);//show only the first 3 records
+		List<SeriesDicomEntity> serieses = seriesDao.findAll(0,3);//show only the first 3 records
 		
 		if(serieses.size() <=0 ){
 			LOG.info("No Series record found!");
 		}else{		
-			for(Series series : serieses){			
-				Study study = series.getStudy();
+			for(SeriesDicomEntity series : serieses){			
+				StudyDicomEntity study = series.getStudy();
 				LOG.info("study: {}", study.toString());
 				LOG.info("series: {}", series.toString());
 				
-				Equipment eqp = series.getEquipment();
+				EquipmentDicomEntity eqp = series.getEquipment();
 				if(eqp != null){
 					LOG.info("equipment: {}", eqp.toString());
 				}else{
@@ -79,20 +79,20 @@ public class SeriesTest extends TestCase{
 	@Rollback(false)
 	public void testSeriesObject(){
 		
-		Series series = new Series();		
+		SeriesDicomEntity series = new SeriesDicomEntity();		
 		series.setOperatorsName("Michelle Kaitlin Aust");
 		series.setSeriesNumber(1);
 		series.setSeriesDescription("Patient broke his leg");
 		
 			
 		
-		Study study = new Study();
+		StudyDicomEntity study = new StudyDicomEntity();
 		study.setReferringPhysicianName("Erin Zoela");
 		study.setStudyID("E321WQ");
 		study.setStudyDateTime(Calendar.getInstance().getTime());
 		
 		
-		Patient patient = new Patient();
+		PatientDicomEntity patient = new PatientDicomEntity();
 		patient.setPatientId("ABC98711");
 		patient.setPatientName("Alisa Bateley");
 		patient.setPatientAge("35F");
@@ -116,7 +116,7 @@ public class SeriesTest extends TestCase{
 		assertNotNull(patient.getId());
 		
 		//you need to test Equipment separately because it is one-To-One
-		Equipment equipment = new Equipment();
+		EquipmentDicomEntity equipment = new EquipmentDicomEntity();
 		equipment.setInstitutionName("UAMS");
 		equipment.setDeviceSerialNumber("45093");
 		equipment.setInstitutionalDepartmentName("Radiology Clinic");	
@@ -135,7 +135,7 @@ public class SeriesTest extends TestCase{
 	@Test
 	public void testfindBySeriesInstanceUID(){
 		
-		Series series = seriesDao.findBySeriesInstanceUID("1.3.12.2.1107.5.1.4.55292.30000015032113073778100003742");
+		SeriesDicomEntity series = seriesDao.findBySeriesInstanceUID("1.3.12.2.1107.5.1.4.55292.30000015032113073778100003742");
 		assertNotNull(series);
 		series = seriesDao.findBySeriesInstanceUID("1.3.12.2.1107.5.1.4.55292.30000015032113073778100003742", 2);
 		assertNotNull(series);
@@ -146,7 +146,7 @@ public class SeriesTest extends TestCase{
 	@Test
 	public void testFindByID(){
 		
-		Series series = seriesDao.findById("");
+		SeriesDicomEntity series = seriesDao.findById("");
 		assertNotNull(series);
 		LOG.info(series.toString());
 	}
@@ -155,16 +155,16 @@ public class SeriesTest extends TestCase{
 	@Ignore
 	public void testFindByStudyID(){
 		
-		List<Series> serieses = seriesDao.findByStudyId("");
+		List<SeriesDicomEntity> serieses = seriesDao.findByStudyId("");
 		if(serieses.size() <=0 ){
 			LOG.info("No Series record found!");
 		}else{		
-			for(Series series : serieses){			
-				Study study = series.getStudy();
+			for(SeriesDicomEntity series : serieses){			
+				StudyDicomEntity study = series.getStudy();
 				LOG.info("study: {}", study.toString());
 				LOG.info("series: {}", series.toString());
 				
-				Equipment eqp = series.getEquipment();
+				EquipmentDicomEntity eqp = series.getEquipment();
 				if(eqp != null){
 					LOG.info("equipment: {}", eqp.toString());
 				}else{
@@ -180,19 +180,19 @@ public class SeriesTest extends TestCase{
 	@Test
 	public void testAllByPkPatientID(){
 		
-		List<Series> serieses = seriesDao.findAllByPatientId("");
+		List<SeriesDicomEntity> serieses = seriesDao.findAllByPatientId("");
 		assertEquals(0, serieses.size());
 		
 		serieses = seriesDao.findAllByPatientId("");
 		assertTrue(serieses.size() > 0);
 		
 		int i=0;
-		for(Series series : serieses){			
-			Study study = series.getStudy();
+		for(SeriesDicomEntity series : serieses){			
+			StudyDicomEntity study = series.getStudy();
 			LOG.info("study: {}", study.toString());
 			LOG.info(++i + "- Series: {}", series.toString());
 				
-			Equipment eqp = series.getEquipment();
+			EquipmentDicomEntity eqp = series.getEquipment();
 			if(eqp != null){
 				LOG.info("Equipment: {}", eqp.toString());
 			}else{

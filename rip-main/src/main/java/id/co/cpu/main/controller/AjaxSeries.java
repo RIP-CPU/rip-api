@@ -1,13 +1,13 @@
 package id.co.cpu.main.controller;
 
-import id.co.cpu.master.entity.Series;
+import id.co.cpu.master.entity.SeriesDicomEntity;
 
 public class AjaxSeries {
 
 	private Boolean success;
-	private Series series;
+	private SeriesDicomEntity series;
 	
-	public AjaxSeries(Boolean success, Series series){
+	public AjaxSeries(Boolean success, SeriesDicomEntity series){
 		this.success = success;
 		this.series = series;
 	}
@@ -20,11 +20,11 @@ public class AjaxSeries {
 		this.success = success;
 	}
 
-	public Series getSeries() {
+	public SeriesDicomEntity getSeries() {
 		return series;
 	}
 
-	public void setSeries(Series series) {
+	public void setSeries(SeriesDicomEntity series) {
 		this.series = series;
 	}
 }

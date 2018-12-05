@@ -3,19 +3,19 @@ package id.co.cpu.master.dao;
 
 import java.util.List;
 
-import id.co.cpu.master.entity.Series;
+import id.co.cpu.master.entity.SeriesDicomEntity;
 
 
 
 public interface SeriesDao  {
 
-	void save(Series series);
-	Series update(Series series);
-	List<Series> findAll(int firstResult, int maxResults);
+	void save(SeriesDicomEntity series);
+	SeriesDicomEntity update(SeriesDicomEntity series);
+	List<SeriesDicomEntity> findAll(int firstResult, int maxResults);
 	Long count();
-	Series findById(String id);
-	List<Series> findByStudyId(String studyId);
-	Series findBySeriesInstanceUID(String seriesInstanceUID);
-	Series findBySeriesInstanceUID(String seriesInstanceUID, Integer seriesNumber);
-	List<Series> findAllByPatientId(String patientId);
+	SeriesDicomEntity findById(String id);
+	List<SeriesDicomEntity> findByStudyId(String studyId);
+	SeriesDicomEntity findBySeriesInstanceUID(String seriesInstanceUID);
+	SeriesDicomEntity findBySeriesInstanceUID(String seriesInstanceUID, Integer seriesNumber);
+	List<SeriesDicomEntity> findAllByPatientId(String patientId);
 }

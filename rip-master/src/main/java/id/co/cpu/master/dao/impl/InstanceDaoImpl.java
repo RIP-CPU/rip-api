@@ -9,24 +9,24 @@ import org.springframework.stereotype.Repository;
 
 import id.co.cpu.master.dao.AbstractJpaDao;
 import id.co.cpu.master.dao.InstanceDao;
-import id.co.cpu.master.entity.Instance;
+import id.co.cpu.master.entity.InstanceDicomEntity;
 
 @Repository
-public class InstanceDaoImpl extends AbstractJpaDao<Instance> implements InstanceDao {
+public class InstanceDaoImpl extends AbstractJpaDao<InstanceDicomEntity> implements InstanceDao {
 	
-	@PersistenceContext(unitName = "dbdicom")
+	@PersistenceContext(unitName = "rip")
 	private EntityManager entityManager;
 	
 	public InstanceDaoImpl(){
 		super();
-		setClazz(Instance.class);
+		setClazz(InstanceDicomEntity.class);
 	}
 		
 	@Override
-	public List<Instance> findBySeriesId(String seriesId){
+	public List<InstanceDicomEntity> findBySeriesId(String seriesId){
 		
 		try{
-			return entityManager.createQuery("select i from Instance i  where i.series.id = :seriesId", Instance.class)
+			return entityManager.createQuery("select i from InstanceDicomEntity i  where i.series.id = :seriesId", InstanceDicomEntity.class)
 			.setParameter("seriesId", seriesId)			
 			.getResultList();
 		}catch(Exception e){			
@@ -35,10 +35,10 @@ public class InstanceDaoImpl extends AbstractJpaDao<Instance> implements Instanc
 	}
 	
 	@Override 
-	public Instance findBySopInstanceUID(String sopInstanceUID){
+	public InstanceDicomEntity findBySopInstanceUID(String sopInstanceUID){
 		
 		try{
-			return entityManager.createQuery("select i from Instance i  where i.sopInstanceUID = :sopInstanceUID", Instance.class)
+			return entityManager.createQuery("select i from InstanceDicomEntity i  where i.sopInstanceUID = :sopInstanceUID", InstanceDicomEntity.class)
 			.setParameter("sopInstanceUID", sopInstanceUID)
 			.getSingleResult();
 		}catch(Exception e){			
@@ -47,14 +47,14 @@ public class InstanceDaoImpl extends AbstractJpaDao<Instance> implements Instanc
 	}
 	
 	@Override 
-	public List<Instance> findAllByPatientId(String patientId){
+	public List<InstanceDicomEntity> findAllByPatientId(String patientId){
 		
 		try{
 			
-			return entityManager.createQuery("select i from Instance i LEFT OUTER JOIN i.series s " +
+			return entityManager.createQuery("select i from InstanceDicomEntity i LEFT OUTER JOIN i.series s " +
 					"LEFT OUTER JOIN i.series.study st " +
 					"LEFT OUTER JOIN i.series.study.patient p " +
-					"where p.id = :patientId", Instance.class)
+					"where p.id = :patientId", InstanceDicomEntity.class)
 					.setParameter("patientId", patientId)	
 					.getResultList();
 			

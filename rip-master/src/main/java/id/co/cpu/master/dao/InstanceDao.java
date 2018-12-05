@@ -2,16 +2,16 @@ package id.co.cpu.master.dao;
 
 import java.util.List;
 
-import id.co.cpu.master.entity.Instance;
+import id.co.cpu.master.entity.InstanceDicomEntity;
 
 public interface InstanceDao {
 
-	void save(Instance instance);
-	Instance update(Instance instance);
-	List<Instance> findAll(int firstResult, int maxResults);
+	void save(InstanceDicomEntity instance);
+	InstanceDicomEntity update(InstanceDicomEntity instance);
+	List<InstanceDicomEntity> findAll(int firstResult, int maxResults);
 	Long count();
-	Instance findById(String id);
-	List<Instance> findBySeriesId(String seriesId);
-	Instance findBySopInstanceUID(String sopInstanceUID);
-	List<Instance> findAllByPatientId(String patientId);
+	InstanceDicomEntity findById(String id);
+	List<InstanceDicomEntity> findBySeriesId(String seriesId);
+	InstanceDicomEntity findBySopInstanceUID(String sopInstanceUID);
+	List<InstanceDicomEntity> findAllByPatientId(String patientId);
 }

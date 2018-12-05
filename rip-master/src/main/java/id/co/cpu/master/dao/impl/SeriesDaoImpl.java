@@ -9,24 +9,24 @@ import org.springframework.stereotype.Repository;
 
 import id.co.cpu.master.dao.AbstractJpaDao;
 import id.co.cpu.master.dao.SeriesDao;
-import id.co.cpu.master.entity.Series;
+import id.co.cpu.master.entity.SeriesDicomEntity;
 
 @Repository
-public class SeriesDaoImpl extends AbstractJpaDao<Series>   implements SeriesDao {	
+public class SeriesDaoImpl extends AbstractJpaDao<SeriesDicomEntity>   implements SeriesDao {	
 	
-	@PersistenceContext(unitName = "dbdicom")
+	@PersistenceContext(unitName = "rip")
 	private EntityManager entityManager;
 	
 	public SeriesDaoImpl(){
 		super();
-		setClazz(Series.class);
+		setClazz(SeriesDicomEntity.class);
 	}
 		
 	@Override
-	public List<Series> findByStudyId(String studyId){
+	public List<SeriesDicomEntity> findByStudyId(String studyId){
 		
 		try{
-			return entityManager.createQuery("select sr from Series sr  where sr.study.id = :studyId", Series.class)
+			return entityManager.createQuery("select sr from SeriesDicomEntity sr  where sr.study.id = :studyId", SeriesDicomEntity.class)
 			.setParameter("studyId", studyId)			
 			.getResultList();
 		}catch(Exception e){			
@@ -35,10 +35,10 @@ public class SeriesDaoImpl extends AbstractJpaDao<Series>   implements SeriesDao
 	}	
 
 	@Override 
-	public synchronized Series findBySeriesInstanceUID(String seriesInstanceUID){
+	public synchronized SeriesDicomEntity findBySeriesInstanceUID(String seriesInstanceUID){
 		
 		try{
-			return entityManager.createQuery("select sr from Series sr  where sr.seriesInstanceUID = :seriesInstanceUID", Series.class)
+			return entityManager.createQuery("select sr from SeriesDicomEntity sr  where sr.seriesInstanceUID = :seriesInstanceUID", SeriesDicomEntity.class)
 			.setParameter("seriesInstanceUID", seriesInstanceUID)			
 			.getSingleResult();
 		}catch(Exception e){			
@@ -47,10 +47,10 @@ public class SeriesDaoImpl extends AbstractJpaDao<Series>   implements SeriesDao
 	}
 	
 	@Override 
-	public Series findBySeriesInstanceUID(String seriesInstanceUID, Integer seriesNumber){
+	public SeriesDicomEntity findBySeriesInstanceUID(String seriesInstanceUID, Integer seriesNumber){
 		
 		try{
-			return entityManager.createQuery("select sr from Series sr  where sr.seriesNumber = :seriesNumber AND sr.seriesInstanceUID = :seriesInstanceUID", Series.class)
+			return entityManager.createQuery("select sr from SeriesDicomEntity sr  where sr.seriesNumber = :seriesNumber AND sr.seriesInstanceUID = :seriesInstanceUID", SeriesDicomEntity.class)
 			.setParameter("seriesInstanceUID", seriesInstanceUID)
 			.setParameter("seriesNumber", seriesNumber)
 			.getSingleResult();
@@ -60,13 +60,13 @@ public class SeriesDaoImpl extends AbstractJpaDao<Series>   implements SeriesDao
 	}
 	
 	@Override 
-	public List<Series> findAllByPatientId(String patientId){
+	public List<SeriesDicomEntity> findAllByPatientId(String patientId){
 		
 		try{
 			
-			return entityManager.createQuery("select sr from Series sr LEFT OUTER JOIN sr.study st " +
+			return entityManager.createQuery("select sr from SeriesDicomEntity sr LEFT OUTER JOIN sr.study st " +
 					"LEFT OUTER JOIN sr.study.patient p " +
-					"where p.id = :patientId", Series.class)
+					"where p.id = :patientId", SeriesDicomEntity.class)
 					.setParameter("patientId", patientId)	
 					.getResultList();
 			

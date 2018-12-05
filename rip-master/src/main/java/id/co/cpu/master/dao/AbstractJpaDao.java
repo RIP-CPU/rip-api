@@ -18,7 +18,7 @@ public abstract class AbstractJpaDao< T extends Serializable > {
 	   private Class< T > clazz;
 	   private static final Logger LOG = LoggerFactory.getLogger(AbstractJpaDao.class);
 	 
-	   @PersistenceContext(unitName = "dbdicom")
+	   @PersistenceContext(unitName = "rip")
 	   EntityManager entityManager;
 	 
 	   public final void setClazz( Class< T > clazzToSet ){

@@ -35,10 +35,10 @@ import id.co.cpu.master.dao.InstanceDao;
 import id.co.cpu.master.dao.PatientDao;
 import id.co.cpu.master.dao.SeriesDao;
 import id.co.cpu.master.dao.StudyDao;
-import id.co.cpu.master.entity.Instance;
-import id.co.cpu.master.entity.Patient;
-import id.co.cpu.master.entity.Series;
-import id.co.cpu.master.entity.Study;
+import id.co.cpu.master.entity.InstanceDicomEntity;
+import id.co.cpu.master.entity.PatientDicomEntity;
+import id.co.cpu.master.entity.SeriesDicomEntity;
+import id.co.cpu.master.entity.StudyDicomEntity;
 import id.co.cpu.pacs.component.ActiveDicoms;
 import id.co.cpu.pacs.utils.ImageScale;
 
@@ -92,7 +92,7 @@ public class HomeController {
 		
 				
 		int firstResult = (page==null)?0:(page-1) * size;		
-		List<Patient> patients = patientDao.findAll(firstResult, size);
+		List<PatientDicomEntity> patients = patientDao.findAll(firstResult, size);
 		model.addAttribute("patients", patients);
 		float nrOfPages = (float) patientDao.count()/size;
 		int maxPages = (int)( ((nrOfPages>(int)nrOfPages) || nrOfPages==0.0)?nrOfPages+1:nrOfPages);
@@ -106,9 +106,9 @@ public class HomeController {
 	    model.addAttribute("maxPages", maxPages);	    
 	    
 	    //get related study, series and instance objects
-	    List<Study> studies = (!pkTBLPatientID.isEmpty())?studyDao.findByPatientId(pkTBLPatientID): studyDao.findByPatientId(patients.get(0).getId());
-	   	List<Series> serieses = (!pkTBLStudyID.isEmpty())?seriesDao.findByStudyId(pkTBLStudyID): seriesDao.findByStudyId(studies.get(0).getId());
-	    List<Instance> instances = (!pkTBLSeriesID.isEmpty())?instanceDao.findBySeriesId(pkTBLSeriesID): instanceDao.findBySeriesId(serieses.get(0).getId());
+	    List<StudyDicomEntity> studies = (!pkTBLPatientID.isEmpty())?studyDao.findByPatientId(pkTBLPatientID): studyDao.findByPatientId(patients.get(0).getId());
+	   	List<SeriesDicomEntity> serieses = (!pkTBLStudyID.isEmpty())?seriesDao.findByStudyId(pkTBLStudyID): seriesDao.findByStudyId(studies.get(0).getId());
+	    List<InstanceDicomEntity> instances = (!pkTBLSeriesID.isEmpty())?instanceDao.findBySeriesId(pkTBLSeriesID): instanceDao.findBySeriesId(serieses.get(0).getId());
 	    
 	    //add to our model
 	    model.addAttribute("studies", studies);
@@ -125,7 +125,7 @@ public class HomeController {
 	public ResponseEntity<byte[]> getImage(@PathVariable String pkTBLInstanceID, HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
 		java.io.File tempImage = null;   
-	   	Instance instance = instanceDao.findById(pkTBLInstanceID);
+	   	InstanceDicomEntity instance = instanceDao.findById(pkTBLInstanceID);
 	   	
 	   	if(instance != null){
 	   		File dicomFile = new File(pacsDcmStoragePath + "/" + instance.getMediaStorageSopInstanceUID()+".dcm");
@@ -166,7 +166,7 @@ public class HomeController {
 		File file = null;
     	int width = 0;
     	int height = 0;
-    	Instance instance = null;
+    	InstanceDicomEntity instance = null;
     	Dimension newImageSize = null;
 		
 		try
@@ -276,25 +276,25 @@ public class HomeController {
 	
 	@RequestMapping(value="/study", method = RequestMethod.GET)
 	public @ResponseBody AjaxStudy study(@RequestParam(defaultValue="0", value="pkTBLStudyID", required=false) String pkTBLStudyID){		
-		Study study = studyDao.findById(pkTBLStudyID);			
+		StudyDicomEntity study = studyDao.findById(pkTBLStudyID);			
 		return new AjaxStudy(true, study);
 	}
 	
 	@RequestMapping(value="/series", method = RequestMethod.GET)
 	public @ResponseBody AjaxSeries series(@RequestParam(defaultValue="0", value="pkTBLSeriesID", required=false) String pkTBLSeriesID){		
-		Series series = seriesDao.findById(pkTBLSeriesID); 	
+		SeriesDicomEntity series = seriesDao.findById(pkTBLSeriesID); 	
 		return new AjaxSeries(true, series);
 	}
 	
 	@RequestMapping(value="/instance", method = RequestMethod.GET)
 	public @ResponseBody AjaxInstance instance(@RequestParam(defaultValue="0", value="pkTBLInstanceID", required=false) String pkTBLInstanceID){		
-		Instance instance = instanceDao.findById(pkTBLInstanceID); 	
+		InstanceDicomEntity instance = instanceDao.findById(pkTBLInstanceID); 	
 		return new AjaxInstance(true, instance);
 	}
 	
 	@RequestMapping(value="/patient", method = RequestMethod.GET)
 	public @ResponseBody AjaxPatient patient(@RequestParam(defaultValue="0", value="pkTBLPatientID", required=false) String pkTBLPatientID){		
-		Patient patient = patientDao.findById(pkTBLPatientID); 	
+		PatientDicomEntity patient = patientDao.findById(pkTBLPatientID); 	
 		return new AjaxPatient(true, patient);
 	}
 }

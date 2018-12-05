@@ -25,8 +25,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 @Entity
-@Table(name="mst_patient")
-public class Patient extends BaseAuditEntity {
+@Table(name="dcm_patient")
+public class PatientDicomEntity extends BaseAuditEntity {
 
 	private static final long serialVersionUID = 657390142518153080L;
 
@@ -53,7 +53,7 @@ public class Patient extends BaseAuditEntity {
 	private String patientAge;
 
 	@OneToMany(mappedBy = "patient")
-	private Collection<Study> study;
+	private Collection<StudyDicomEntity> study;
 
 	@Override
 	public String toString() {

@@ -44,7 +44,7 @@ public class ConnectionTest extends TestCase{
 	 
 		try {
 			connection = DriverManager
-			.getConnection("jdbc:mysql://54.149.87.48:3306/dbdicom","dbdcmusr", "b9jHmY8LSH3yTcd9");
+			.getConnection("jdbc:mysql://localhost:3306/rip","root", "");
 	 
 		} catch (SQLException e) {
 			LOG.error("Connection Failed! Check output console: {}",e.getMessage());			

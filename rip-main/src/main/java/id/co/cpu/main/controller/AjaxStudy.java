@@ -1,13 +1,13 @@
 package id.co.cpu.main.controller;
 
-import id.co.cpu.master.entity.Study;
+import id.co.cpu.master.entity.StudyDicomEntity;
 
 public class AjaxStudy {
 
 	private Boolean success;
-	private Study study;
+	private StudyDicomEntity study;
 	
-	public AjaxStudy(Boolean success, Study study){
+	public AjaxStudy(Boolean success, StudyDicomEntity study){
 		this.success = success;
 		this.study = study;
 	}
@@ -20,11 +20,11 @@ public class AjaxStudy {
 		this.success = success;
 	}
 
-	public Study getStudy() {
+	public StudyDicomEntity getStudy() {
 		return study;
 	}
 
-	public void setStudy(Study study) {
+	public void setStudy(StudyDicomEntity study) {
 		this.study = study;
 	}	
 }

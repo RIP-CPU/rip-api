@@ -2,17 +2,17 @@ package id.co.cpu.master.utils;
 
 import java.util.Date;
 
-import id.co.cpu.master.entity.Equipment;
-import id.co.cpu.master.entity.Instance;
-import id.co.cpu.master.entity.Patient;
-import id.co.cpu.master.entity.Series;
-import id.co.cpu.master.entity.Study;
+import id.co.cpu.master.entity.EquipmentDicomEntity;
+import id.co.cpu.master.entity.InstanceDicomEntity;
+import id.co.cpu.master.entity.PatientDicomEntity;
+import id.co.cpu.master.entity.SeriesDicomEntity;
+import id.co.cpu.master.entity.StudyDicomEntity;
 
 public class DicomEntityBuilder {
 	
-	public static Patient newPatient(String patientAge, Date patientBirthday, String patientID, String patientName, String patientSex){
+	public static PatientDicomEntity newPatient(String patientAge, Date patientBirthday, String patientID, String patientName, String patientSex){
 		
-		Patient patient = new Patient();
+		PatientDicomEntity patient = new PatientDicomEntity();
 		patient.setPatientAge(patientAge);
 		patient.setPatientBirthday(patientBirthday);
 		patient.setPatientId(patientID);
@@ -22,11 +22,11 @@ public class DicomEntityBuilder {
 		return patient;
 	}
 	
-	public static Study newStudy(String accessionNumber, String additionalPatientHistory, String admittingDiagnosesDescription, 
+	public static StudyDicomEntity newStudy(String accessionNumber, String additionalPatientHistory, String admittingDiagnosesDescription, 
 			String referringPhysicianName, Date studyDateTime, String studyID, String studyDescription, String studyInstanceUID,	String studyPriorityID, 
 			String studyStatusID){
 		
-		Study study = new Study();
+		StudyDicomEntity study = new StudyDicomEntity();
 		study.setAccessionNumber(accessionNumber);
 		study.setAdditionalPatientHistory(additionalPatientHistory);
 		study.setAdmittingDiagnosesDescription(admittingDiagnosesDescription);		
@@ -41,10 +41,10 @@ public class DicomEntityBuilder {
 		return study;
 	}
 	
-	public static Series newSeries(String bodyPartExamined, String laterality, String operatorsName, String patientPosition, String protocolName, 
+	public static SeriesDicomEntity newSeries(String bodyPartExamined, String laterality, String operatorsName, String patientPosition, String protocolName, 
 			Date seriesDateTime, String seriesDescription, String seriesInstanceUID, Integer seriesNumber){
 		
-		Series series = new Series();
+		SeriesDicomEntity series = new SeriesDicomEntity();
 		series.setBodyPartExamined(bodyPartExamined);		
 		series.setLaterality(laterality);
 		series.setOperatorsName(operatorsName);
@@ -58,11 +58,11 @@ public class DicomEntityBuilder {
 		return series;
 	}
 	
-	public static Equipment newEquipment(String conversionType, String deviceSerialNumber, String institutionAddress, String institutionName, 
+	public static EquipmentDicomEntity newEquipment(String conversionType, String deviceSerialNumber, String institutionAddress, String institutionName, 
 			String institutionalDepartmentName, String manufacturer, String manufacturerModelName, String modality, String softwareVersion, 
 			String stationName){
 		
-		Equipment equipment = new Equipment();
+		EquipmentDicomEntity equipment = new EquipmentDicomEntity();
 		equipment.setConversionType(conversionType);
 		equipment.setDeviceSerialNumber(deviceSerialNumber);
 		equipment.setInstitutionAddress(institutionAddress);
@@ -77,12 +77,12 @@ public class DicomEntityBuilder {
 		return equipment;
 	}
 	
-	public static Instance newInstance(Date acquisitionDateTime, Date contentDateTime, Integer exposureTime, String imageOrientation, String imagePosition,
+	public static InstanceDicomEntity newInstance(Date acquisitionDateTime, Date contentDateTime, Integer exposureTime, String imageOrientation, String imagePosition,
 			String imageType, Integer instanceNumber, String kvp, String mediaStorageSopInstanceUID, String patientOrientation, Float pixelSpacing,
 			Float sliceLocation, Float sliceThickness, String sopClassUID, String sopInstanceUID, String transferSyntaxUID, String windowCenter, 
 			String windowWidth, Integer xrayTubeCurrent){
 		
-		Instance instance = new Instance();
+		InstanceDicomEntity instance = new InstanceDicomEntity();
 		instance.setAcquisitionDateTime(acquisitionDateTime);
 		instance.setContentDateTime(contentDateTime);
 		instance.setExposureTime(exposureTime);

@@ -17,8 +17,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import id.co.cpu.master.dao.StudyDao;
-import id.co.cpu.master.entity.Patient;
-import id.co.cpu.master.entity.Study;
+import id.co.cpu.master.entity.PatientDicomEntity;
+import id.co.cpu.master.entity.StudyDicomEntity;
 import junit.framework.TestCase;
 
 
@@ -37,10 +37,10 @@ public class StudyTest extends TestCase{
 	@Test	
 	public void testList(){		
 		
-		List<Study> studies = studyDao.findAll(1,10);
+		List<StudyDicomEntity> studies = studyDao.findAll(1,10);
 		
-		for(Study study : studies){
-			Patient patient = study.getPatient();
+		for(StudyDicomEntity study : studies){
+			PatientDicomEntity patient = study.getPatient();
 			LOG.info("Patient: {}", patient.toString());
 			LOG.info("Study: {}", study.toString());
 			LOG.info("-----------------------------------------------------------------------------------------------------------------");
@@ -52,12 +52,12 @@ public class StudyTest extends TestCase{
 	@Rollback(false)
 	public void testInsert(){
 		
-		Study study = new Study();
+		StudyDicomEntity study = new StudyDicomEntity();
 		study.setReferringPhysicianName("john doe");
 		study.setStudyID("Zra12344");
 		study.setStudyDateTime(Calendar.getInstance().getTime());
 
-		Patient patient = new Patient();
+		PatientDicomEntity patient = new PatientDicomEntity();
 		patient.setPatientId("RA299111");
 		patient.setPatientName("Albert Doe");
 		patient.setPatientAge("26M");
@@ -80,7 +80,7 @@ public class StudyTest extends TestCase{
 	@Ignore
 	public void testFindByID(){
 		//test a null study object that does not exist
-		Study study = studyDao.findById("");		
+		StudyDicomEntity study = studyDao.findById("");		
 		LOG.info(study.toString());
 		assertNotNull(study);
 	}	
@@ -88,7 +88,7 @@ public class StudyTest extends TestCase{
 	@Ignore
 	@Test
 	public void testFindByStudyInstanceUID(){		
-		Study study = studyDao.findByStudyInstanceUID("2.16.840.1.114151.4.887.42082.8558.2202495");
+		StudyDicomEntity study = studyDao.findByStudyInstanceUID("2.16.840.1.114151.4.887.42082.8558.2202495");
 		assertNotNull(study);
 		LOG.info(study.toString());
 	}
@@ -96,9 +96,9 @@ public class StudyTest extends TestCase{
 	@Test
 	@Ignore
 	public void testFindByPatientID(){
-		List<Study> studies = studyDao.findByPatientId("");
-		for(Study study : studies){
-			Patient patient = study.getPatient();
+		List<StudyDicomEntity> studies = studyDao.findByPatientId("");
+		for(StudyDicomEntity study : studies){
+			PatientDicomEntity patient = study.getPatient();
 			LOG.info("Patient: {}", patient.toString());
 			LOG.info("Study: {}", study.toString());
 			LOG.info("-----------------------------------------------------------------------------------------------------------------");

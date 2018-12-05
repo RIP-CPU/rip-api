@@ -2,14 +2,14 @@ package id.co.cpu.master.dao;
 
 import java.util.List;
 
-import id.co.cpu.master.entity.Patient;
+import id.co.cpu.master.entity.PatientDicomEntity;
 
 public interface PatientDao {
 
-	void save(Patient patient);
-	Patient update(Patient patient);
-	List<Patient> findAll(int firstResult, int maxResults);
+	void save(PatientDicomEntity patient);
+	PatientDicomEntity update(PatientDicomEntity patient);
+	List<PatientDicomEntity> findAll(int firstResult, int maxResults);
 	Long count();
-	Patient findById(String id);
-	Patient findByPatientId(String patientId);
+	PatientDicomEntity findById(String id);
+	PatientDicomEntity findByPatientId(String patientId);
 }

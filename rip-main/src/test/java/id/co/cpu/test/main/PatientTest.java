@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import id.co.cpu.master.dao.PatientDao;
-import id.co.cpu.master.entity.Patient;
-import id.co.cpu.master.entity.Study;
+import id.co.cpu.master.entity.PatientDicomEntity;
+import id.co.cpu.master.entity.StudyDicomEntity;
 import junit.framework.TestCase;
 
 @Ignore
@@ -39,11 +39,11 @@ public class PatientTest extends TestCase{
 	@Test	
 	public void testList(){
 		
-		List<Patient> patients = patientDao.findAll(1,10);
+		List<PatientDicomEntity> patients = patientDao.findAll(1,10);
 		
 		LOG.info("-----------------------------------------------------------------------------------------------------------------");
 		
-		for(Patient p : patients){			
+		for(PatientDicomEntity p : patients){			
 			LOG.info(p.toString());			
 		}
 		
@@ -56,24 +56,24 @@ public class PatientTest extends TestCase{
 	@Rollback(false)
 	public void testPatientObject(){
 		
-		Patient p = new Patient();
+		PatientDicomEntity p = new PatientDicomEntity();
 		p.setPatientId("TA147216");
 		p.setPatientName("Adam^Clay");
 		p.setPatientAge("49Y");
 		p.setPatientSex("M");
 		p.setPatientBirthday(Calendar.getInstance().getTime());
 		
-		Study study = new Study();
+		StudyDicomEntity study = new StudyDicomEntity();
 		study.setReferringPhysicianName("Holy Brown");
 		study.setStudyID("A114297");
 		study.setStudyDateTime(Calendar.getInstance().getTime());
 		
-		List<Study> studies = new ArrayList<Study>();
+		List<StudyDicomEntity> studies = new ArrayList<StudyDicomEntity>();
 		studies.add(study);		
 		p.setStudy(studies);//this won't save because Study is only a collection mapped by Study not Patient object!		
 		patientDao.save(p);
 		LOG.info(p.toString());		
-		study = ((List<Study>) p.getStudy()).get(0);
+		study = ((List<StudyDicomEntity>) p.getStudy()).get(0);
 		assertEquals((Long) null, study.getId());
 		
 		testList();
@@ -82,7 +82,7 @@ public class PatientTest extends TestCase{
 	@Test
 	public void testfindByPatientID(){
 		
-		Patient patient = patientDao.findByPatientId("WM002275878");
+		PatientDicomEntity patient = patientDao.findByPatientId("WM002275878");
 		assertNotNull(patient);
 		LOG.info(patient.toString());
 	}
