@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/rip
+    username: postgres
+    password: P@ssw0rd
+    type: com.mchange.v2.c3p0.ComboPooledDataSource
+    tomcat:
+      validation-query: SELECT 1
+      initial-size: 10
+      max-active: 100
+      max-idle: 20
+      max-wait: 3000
+      test-while-idle: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
+        temp.use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        strategy: org.hibernate.cfg.DefaultNamingStrategy
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+  mvc:
+    locale: en_US
+
+# Server
+server:
+  port: 8085
+endpoints:
+  shutdown:
+    enabled: false
+
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-value: CfZKBe7IZHxBCgH9Dz49

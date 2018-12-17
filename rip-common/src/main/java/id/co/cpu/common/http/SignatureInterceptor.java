@@ -11,32 +11,27 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class CorsFilterRequest implements Filter {
+public class SignatureInterceptor implements Filter {
 
-    public CorsFilterRequest() {}
+    public SignatureInterceptor() {}
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Allow-Headers",  "x-requested-with, x-forwarded-for, x-signature, x-rip-timestamp, x-key, Authorization, Content-Type, enctype, responseType, Content-Disposition");
-        response.setHeader("Access-Control-Expose-Headers", "x-requested-with, x-forwarded-for, x-signature, x-rip-timestamp, x-key, Authorization, Content-Type, enctype, responseType, Content-Disposition");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            chain.doFilter(req, res);
-        }
+        if (!"OPTIONS".equalsIgnoreCase(request.getMethod()) &&
+        		StringUtils.containsIgnoreCase(request.getHeader("Authorization"), "bearer")) {
+        		chain.doFilter(req, res);
+        }else
+        	chain.doFilter(req, res);
     }
 
     @Override
