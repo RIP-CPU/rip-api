@@ -109,6 +109,11 @@
 		</dependency>
 		<dependency>
 			<groupId>id.co.cpu</groupId>
+			<artifactId>rip-pacs</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>id.co.cpu</groupId>
 			<artifactId>rip-master</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -120,6 +125,11 @@
 		<dependency>
 			<groupId>id.co.cpu</groupId>
 			<artifactId>rip-general</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>id.co.cpu</groupId>
+			<artifactId>rip-notification</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -245,6 +255,7 @@
 					<include>bootstrap.yml</include>
 					<include>logback.xml</include>
 					<include>c3p0.properties</include>
+					<include>*.ftl</include>
 				</includes>
 			</resource>
 		</resources>

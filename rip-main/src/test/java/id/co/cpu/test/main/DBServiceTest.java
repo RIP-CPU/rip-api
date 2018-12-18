@@ -16,10 +16,10 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import id.co.cpu.master.dao.EquipmentDao;
-import id.co.cpu.master.dao.InstanceDao;
-import id.co.cpu.master.service.DBService;
+import id.co.cpu.pacs.dao.EquipmentDao;
+import id.co.cpu.pacs.dao.InstanceDao;
 import id.co.cpu.pacs.server.DicomReader;
+import id.co.cpu.pacs.service.DBService;
 import junit.framework.TestCase;
 
 @Ignore

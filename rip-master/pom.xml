@@ -107,11 +107,6 @@
 		</dependency>
 		<dependency>
 			<groupId>id.co.cpu</groupId>
-			<artifactId>rip-pacs</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>id.co.cpu</groupId>
 			<artifactId>rip-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>

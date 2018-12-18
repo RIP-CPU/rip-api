@@ -1,6 +1,6 @@
 package id.co.cpu.main.controller;
 
-import id.co.cpu.master.entity.StudyDicomEntity;
+import id.co.cpu.pacs.entity.StudyDicomEntity;
 
 public class AjaxStudy {
 

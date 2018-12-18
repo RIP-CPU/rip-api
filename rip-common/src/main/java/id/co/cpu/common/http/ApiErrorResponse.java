@@ -24,8 +24,8 @@ public class ApiErrorResponse {
 		if(locale == null)
 			locale = Locale.forLanguageTag("id-ID");
 		Map<String, Object> response = new TreeMap<>();
-		response.put("errorCode", errorCode);
-		response.put("errorMessage", messageSource.getMessage(errorCode.name(), null, locale));
+		response.put("error", errorCode);
+		response.put("error_description", messageSource.getMessage(errorCode.name(), null, locale));
 		return jsonUtils.objToJson(response);
 	}
 	
@@ -33,8 +33,8 @@ public class ApiErrorResponse {
 		if(locale == null)
 			locale = Locale.forLanguageTag("id-ID");
 		Map<String, Object> response = new TreeMap<>();
-		response.put("errorCode", errorCode);
-		response.put("errorMessage", messageSource.getMessage(errorCode.name(), params, locale));
+		response.put("error", errorCode);
+		response.put("error_description", messageSource.getMessage(errorCode.name(), params, locale));
 		return jsonUtils.objToJson(response);
 	}
 	

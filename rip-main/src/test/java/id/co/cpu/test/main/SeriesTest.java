@@ -16,12 +16,12 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import id.co.cpu.master.dao.EquipmentDao;
-import id.co.cpu.master.dao.SeriesDao;
-import id.co.cpu.master.entity.EquipmentDicomEntity;
-import id.co.cpu.master.entity.PatientDicomEntity;
-import id.co.cpu.master.entity.SeriesDicomEntity;
-import id.co.cpu.master.entity.StudyDicomEntity;
+import id.co.cpu.pacs.dao.EquipmentDao;
+import id.co.cpu.pacs.dao.SeriesDao;
+import id.co.cpu.pacs.entity.EquipmentDicomEntity;
+import id.co.cpu.pacs.entity.PatientDicomEntity;
+import id.co.cpu.pacs.entity.SeriesDicomEntity;
+import id.co.cpu.pacs.entity.StudyDicomEntity;
 import junit.framework.TestCase;
 
 

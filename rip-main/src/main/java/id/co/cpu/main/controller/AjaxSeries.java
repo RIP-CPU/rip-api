@@ -1,6 +1,6 @@
 package id.co.cpu.main.controller;
 
-import id.co.cpu.master.entity.SeriesDicomEntity;
+import id.co.cpu.pacs.entity.SeriesDicomEntity;
 
 public class AjaxSeries {
 

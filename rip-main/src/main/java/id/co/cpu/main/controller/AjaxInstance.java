@@ -1,6 +1,6 @@
 package id.co.cpu.main.controller;
 
-import id.co.cpu.master.entity.InstanceDicomEntity;
+import id.co.cpu.pacs.entity.InstanceDicomEntity;
 
 public class AjaxInstance {
 

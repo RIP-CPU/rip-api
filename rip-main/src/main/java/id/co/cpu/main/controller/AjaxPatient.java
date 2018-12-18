@@ -1,6 +1,6 @@
 package id.co.cpu.main.controller;
 
-import id.co.cpu.master.entity.PatientDicomEntity;
+import id.co.cpu.pacs.entity.PatientDicomEntity;
 
 public class AjaxPatient {
 

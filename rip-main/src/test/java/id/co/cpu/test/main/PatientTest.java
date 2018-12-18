@@ -17,9 +17,9 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import id.co.cpu.master.dao.PatientDao;
-import id.co.cpu.master.entity.PatientDicomEntity;
-import id.co.cpu.master.entity.StudyDicomEntity;
+import id.co.cpu.pacs.dao.PatientDao;
+import id.co.cpu.pacs.entity.PatientDicomEntity;
+import id.co.cpu.pacs.entity.StudyDicomEntity;
 import junit.framework.TestCase;
 
 @Ignore

@@ -33,7 +33,7 @@ import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 
 import id.co.cpu.main.Application;
-import id.co.cpu.master.handler.IncomingFileHandler;
+import id.co.cpu.pacs.handler.IncomingFileHandler;
 import id.co.cpu.pacs.server.DicomServer;
 
 @Configuration

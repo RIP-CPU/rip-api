@@ -31,15 +31,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import id.co.cpu.master.dao.InstanceDao;
-import id.co.cpu.master.dao.PatientDao;
-import id.co.cpu.master.dao.SeriesDao;
-import id.co.cpu.master.dao.StudyDao;
-import id.co.cpu.master.entity.InstanceDicomEntity;
-import id.co.cpu.master.entity.PatientDicomEntity;
-import id.co.cpu.master.entity.SeriesDicomEntity;
-import id.co.cpu.master.entity.StudyDicomEntity;
 import id.co.cpu.pacs.component.ActiveDicoms;
+import id.co.cpu.pacs.dao.InstanceDao;
+import id.co.cpu.pacs.dao.PatientDao;
+import id.co.cpu.pacs.dao.SeriesDao;
+import id.co.cpu.pacs.dao.StudyDao;
+import id.co.cpu.pacs.entity.InstanceDicomEntity;
+import id.co.cpu.pacs.entity.PatientDicomEntity;
+import id.co.cpu.pacs.entity.SeriesDicomEntity;
+import id.co.cpu.pacs.entity.StudyDicomEntity;
 import id.co.cpu.pacs.utils.ImageScale;
 
 @Controller
