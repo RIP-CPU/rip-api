@@ -28,7 +28,7 @@ public class MailSenderCtrl extends BaseControllerException {
     @Autowired
     private TemplateMailService templateService;
 
-    @RequestMapping(value = "/vw/post/mail/to/v.1", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/trx/post/mail/to/v.1", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendMail(@RequestBody MailNotificationDto mail) throws Exception {
     	if(mail.getFileTemplate() == null)        
     		service.sendMessageWithText(mail.getFrom(), mail.getTo(), mail.getSubject(), mail.getContent());
@@ -40,7 +40,7 @@ public class MailSenderCtrl extends BaseControllerException {
 		return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/vw/post/mail/broadcast/v.1", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/trx/post/mail/broadcast/v.1", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> broadcast(@RequestBody List<MailNotificationDto> mails) throws Exception {
     	mails.forEach(mail->{
         	if(mail.getFileTemplate() == null)        

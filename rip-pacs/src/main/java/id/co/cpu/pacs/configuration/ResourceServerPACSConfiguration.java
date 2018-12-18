@@ -1,52 +1,61 @@
 package id.co.cpu.pacs.configuration;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 
-import com.google.common.eventbus.AsyncEventBus;
-import com.google.common.eventbus.EventBus;
+import id.co.cpu.common.utils.ResourceCode;
 
-import id.co.cpu.pacs.component.ActiveDicoms;
-import id.co.cpu.pacs.handler.IncomingFileHandler;
-import id.co.cpu.pacs.server.DicomServer;
+@Configuration("resourceServerPACS")
+@EnableResourceServer
+public class ResourceServerPACSConfiguration extends ResourceServerConfigurerAdapter {
 
-@Configuration
-public class ResourceServerPACSConfiguration {
-
+    @Autowired
+    private TokenStore tokenStore;
     
-    
-    /************************** Handler for incoming files works with asynchronous event bus initiated by the DicomServer ****************************/    
-    @Bean // only one incoming file handler. Even we have multiple DicomServer instances, they all forward files to the same handler...
-    public IncomingFileHandler incomingFileHandler(){
-        return new IncomingFileHandler();
+    private String resourceId = ResourceCode.PACS.getResourceId();
+
+    @Override
+    public void configure(ResourceServerSecurityConfigurer resources) {
+        // @formatter:off
+        resources.resourceId(resourceId).tokenStore(tokenStore);
+        // @formatter:on
     }
 
-    @Bean //Guava asynch event bus that initiates 100 fixed thread pool
-    public EventBus asyncEventBus(){       
-    	EventBus eventBus =  new AsyncEventBus(java.util.concurrent.Executors.newFixedThreadPool(100));
-        return eventBus;
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+        .csrf().disable()
+        .authorizeRequests()
+        .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/get/**")
+    		.access("#oauth2.hasScope('read')")
+        .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/param/**")
+    		.access("#oauth2.hasScope('read')")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/vw/post/**")
+        	.access("#oauth2.hasScope('read')")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/vw/param/**")
+        	.access("#oauth2.hasScope('read')")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/trx/add/**")
+        	.access("#oauth2.hasScope('write')")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/trx/post/**")
+        	.access("#oauth2.hasScope('write')")
+        .antMatchers(HttpMethod.PUT,"/api/"		+resourceId+ "/trx/put/**")
+        	.access("#oauth2.hasScope('write')")
+        .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/auth/**")
+        	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/vw/auth/**")
+        	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/trx/auth/**")
+        	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
+        .antMatchers(HttpMethod.DELETE,"/api/"	+resourceId+ "/trx/auth/**")
+        	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
+        .anyRequest().authenticated();
     }
-
-    @Bean //dicom server takes storage output directory, ae title and ports. Server listens same number of ports with same ae title 
-    public Map<String, DicomServer> dicomServers(@Value("${pacs.storage.dcm}") String storageDir, @Value("${pacs.aetitle}") String aeTitle, @Value("#{'${pacs.ports}'.split(',')}") List<Integer> ports){
-        Map<String, DicomServer> dicomServers = new HashMap<>();
-        for (int port:ports) {
-            dicomServers.put("DICOM_SERVER_AT_" + port, DicomServer.init(null, port, aeTitle, storageDir, asyncEventBus()));
-        }
-        return dicomServers;
-    }
-    /************************** End of Handler for incoming files works with asynchronous event bus initiated by the DicomServer ****************************/
-    
-    @Bean
-    @Qualifier(value = "activeDicoms")
-    public ActiveDicoms activeDicoms(){    
-    	return new ActiveDicoms();    	
-    }
-
 }
