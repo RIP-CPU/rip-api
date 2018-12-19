@@ -51,11 +51,11 @@ public class RoleEntity extends BaseAuditEntity implements GrantedAuthority {
 	private String description;
 
 	@ManyToMany(mappedBy = "roles", targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-	@Fetch(FetchMode.JOIN)
+	@Fetch(FetchMode.SELECT)
 	private Set<UserEntity> users = new HashSet<UserEntity>();
 	
-	@OneToMany(mappedBy = "role", targetEntity = FunctionEntity.class, fetch = FetchType.EAGER)
-	@Fetch(FetchMode.JOIN)
+	@OneToMany(mappedBy = "role", targetEntity = FunctionEntity.class, fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
 	private Set<FunctionEntity> functions = new HashSet<FunctionEntity>();
 
 }

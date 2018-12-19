@@ -43,13 +43,13 @@ public class FunctionEntity extends BaseAuditEntity {
 	@Column(name = "access")
 	private String access;
 
-	@ManyToOne(targetEntity = MenuEntity.class, fetch = FetchType.EAGER)
-	@Fetch(FetchMode.JOIN)
+	@ManyToOne(targetEntity = MenuEntity.class, fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "menu_uuid", nullable = false, insertable = false, updatable = false)
 	private MenuEntity menu;
 
 	@ManyToOne(targetEntity = RoleEntity.class, fetch = FetchType.LAZY)
-	@Fetch(FetchMode.JOIN)
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "role_uuid", nullable = false, insertable = false, updatable = false)
 	private RoleEntity role;
 

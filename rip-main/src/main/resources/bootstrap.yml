@@ -1,4 +1,12 @@
 spring:
+  application:
+    name: ${application.name}
+  messages:
+    basename: i18n/messages
+    cache-seconds: -1
+    encoding: UTF-8
+  aop:
+    proxy-target-class: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/rip
@@ -18,9 +26,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
         temp.use_jdbc_metadata_defaults: false
+        show_sql: true
+    show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: POSTGRESQL
-    show-sql: true
     hibernate:
       ddl-auto: none
       naming:

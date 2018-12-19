@@ -65,19 +65,16 @@ public class MenuEntity extends BaseAuditEntity {
 	@Column(name = "is_leaf")
 	private Boolean leaf;
 
-	@Column(name = "description")
-	private String description;
-
 	@Column(name = "parent_uuid", nullable = true)
 	private String parentId;
 
 	@ManyToOne(targetEntity = MenuEntity.class, fetch = FetchType.LAZY)
-	@Fetch(FetchMode.JOIN)
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "parent_uuid", nullable = true, insertable = false, updatable = false)
 	private MenuEntity parentMenu;
 
 	@OneToMany(mappedBy = "parentMenu", fetch = FetchType.LAZY)
-	@Fetch(FetchMode.JOIN)
+	@Fetch(FetchMode.SELECT)
 	@OrderBy("orderingStr ASC")
 	private Set<MenuEntity> childsMenu;
 

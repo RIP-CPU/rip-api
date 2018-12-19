@@ -105,8 +105,11 @@ public class UserEntity extends BaseAuditEntity implements UserDetails {
 	@Column(name = "locale", nullable = false)
 	private String locale = "en-US";
 
+	@Column(name = "authority_default")
+	private String authorityDefault;
+
 	@ManyToMany(fetch = FetchType.EAGER)
-	@Fetch(FetchMode.SELECT)
+	@Fetch(FetchMode.JOIN)
 	@JoinTable(name = "sec_r_user_role",
 		joinColumns = {
 			@JoinColumn(name = "user_uuid", referencedColumnName = "user_uuid")}, 

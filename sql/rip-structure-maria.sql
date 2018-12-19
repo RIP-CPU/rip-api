@@ -890,6 +890,7 @@ CREATE TABLE `sec_user` (
   `verification_code` varchar(100) DEFAULT NULL,
   `raw` text,
   `locale` varchar(10) NOT NULL DEFAULT 'en-US',
+  `authority_default` varchar(100),
   `version` int(11) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
