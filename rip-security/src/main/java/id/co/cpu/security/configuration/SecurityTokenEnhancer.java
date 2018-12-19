@@ -1,10 +1,10 @@
 package id.co.cpu.security.configuration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +25,7 @@ public class SecurityTokenEnhancer implements TokenEnhancer {
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {			
         switch (authentication.getOAuth2Request().getGrantType()) {
 			case "password":
-		        Map<String, Object> additionalInfo = new HashMap<>();
+		        Map<String, Object> additionalInfo = new TreeMap<String, Object>();
 		        UserEntity user = (UserEntity) authentication.getPrincipal();                
 		        HttpServletRequest request = 
 		        		  ((ServletRequestAttributes) RequestContextHolder.
@@ -40,7 +40,8 @@ public class SecurityTokenEnhancer implements TokenEnhancer {
 		        }
 		        additionalInfo.put("authorities", authorities);
 		        additionalInfo.put("email", user.getEmail());
-		        additionalInfo.put("name", user.getName());  
+		        additionalInfo.put("name", user.getName());
+		        additionalInfo.put("locale", user.getLocale());
 		        additionalInfo.put("ip_address", ipAddress);
 		        additionalInfo.put("server_date", DateUtil.DATE_NOW);
 		        

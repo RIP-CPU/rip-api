@@ -5,11 +5,15 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -23,8 +27,8 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false, exclude={"users"})
-@ToString(exclude={"users"})
+@EqualsAndHashCode(callSuper=false, exclude={"users", "functions"})
+@ToString(exclude={"users", "functions"})
 @Entity
 @Table(name = "sec_role")
 public class RoleEntity extends BaseAuditEntity implements GrantedAuthority {
@@ -46,12 +50,12 @@ public class RoleEntity extends BaseAuditEntity implements GrantedAuthority {
 	@Column(name = "description")
 	private String description;
 
-	@ManyToMany(mappedBy = "roles")
+	@ManyToMany(mappedBy = "roles", targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+	@Fetch(FetchMode.JOIN)
 	private Set<UserEntity> users = new HashSet<UserEntity>();
-
-	@Override
-	public String getAuthority() {
-		return authority;
-	}
+	
+	@OneToMany(mappedBy = "role", targetEntity = FunctionEntity.class, fetch = FetchType.EAGER)
+	@Fetch(FetchMode.JOIN)
+	private Set<FunctionEntity> functions = new HashSet<FunctionEntity>();
 
 }

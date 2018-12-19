@@ -212,8 +212,8 @@ INSERT INTO mst_polyclinic_i18n (polyclinic_i18n_uuid, polyclinic_uuid, locale_c
 -- Dumping data for table sec_menu
 --
 
-INSERT INTO sec_menu (menu_uuid, title, url, "level", ordering, icon, is_leaf, "version", is_active, created_date, created_by, modified_date, modified_by, parent_uuid) VALUES
-('b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'Dashboard', '/app/dashboard', 0, 0, 'nb-home', true, 0, true, '2018-12-04 13:35:36', NULL, NULL, NULL, NULL);
+INSERT INTO sec_menu (menu_uuid, title, url, "level", ordering, ordering_str, icon, is_leaf, "version", is_active, created_date, created_by, modified_date, modified_by, parent_uuid) VALUES
+('b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'Dashboard', '/app/dashboard', 0, 0, '000', 'nb-home', true, 0, true, '2018-12-04 13:35:36', NULL, NULL, NULL, NULL);
 
 --
 -- Dumping data for table sec_menu_i18n
@@ -221,6 +221,17 @@ INSERT INTO sec_menu (menu_uuid, title, url, "level", ordering, icon, is_leaf, "
 
 INSERT INTO sec_menu_i18n (menu_i18n_uuid, menu_uuid, locale_code, title, "version", is_active, created_date, created_by, modified_date, modified_by) VALUES
 ('8edd8eaa-c665-4d81-ab41-49a61df686ba', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'id-ID', 'Beranda', 0, true, '2018-12-04 13:37:15', NULL, NULL, NULL);
+
+--
+-- Dumping data for table sec_function
+--
+
+INSERT INTO sec_function(function_uuid, menu_uuid, role_uuid, access, version, is_active, created_date, created_by, modified_date, modified_by) VALUES
+('f313c770-ae05-4664-b514-a471ed2ec577', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', '06be80df-5c41-42a7-9050-b328312d2f3a', 'read,trust', 0, true, '2018-12-19 10:06:50.069434', 'admin', null, null),
+('1f687a5e-e61c-4ce2-81fc-94ad9c1dbe8b', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', '1af2403b-a4f8-4492-94c1-5d6ab8b4a094', 'read,trust', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null),
+('a7b6713a-ef5f-4a93-a111-a4769197ab83', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'd46b4b13-4159-4f5c-923d-5d8dfe3f48de', 'read,trust', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null),
+('58a476f7-7986-4123-934e-9dae15e565eb', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'd4fd659f-7bd6-4b1c-9127-e2dcf04651b0', 'read,trust', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null),
+('22c3a77b-8f2d-4f04-a925-825a1e223a9e', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'd68a2ea7-f1cb-484c-a3d4-b669ef3ff3c8', 'read', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null)
 
 --
 -- Dumping data for table sec_role
