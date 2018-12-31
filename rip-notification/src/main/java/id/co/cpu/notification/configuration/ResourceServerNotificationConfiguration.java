@@ -12,8 +12,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import id.co.cpu.common.utils.ResourceCode;
 
-@Configuration("resourceServerNotification")
-@EnableResourceServer
+//@Configuration("resourceServerNotification")
+//@EnableResourceServer
 public class ResourceServerNotificationConfiguration extends ResourceServerConfigurerAdapter {
 
     @Autowired

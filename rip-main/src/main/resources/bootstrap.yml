@@ -38,12 +38,6 @@ spring:
   mvc:
     locale: en_US
 
-rip:
-  signature:
-    private-key: UiFwMTIz
-    public-key: dc20c81f-1441-4f83-af98-454053772409
-
-# Server
 server:
   port: 8085
 endpoints:

@@ -762,6 +762,8 @@ CREATE TABLE `sec_menu` (
   `ordering_str` varchar(100),
   `icon` varchar(100) DEFAULT NULL,
   `is_leaf` tinyint(1) NOT NULL DEFAULT '0',
+  `is_home` tinyint(1) NOT NULL DEFAULT '0',
+  `is_group` tinyint(1) NOT NULL DEFAULT '0',
   `version` int(11) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -902,10 +904,10 @@ CREATE TABLE `sec_user` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sys_locale`
+-- Table structure for table `mst_locale`
 --
 
-CREATE TABLE `sys_locale` (
+CREATE TABLE `mst_locale` (
   `locale_uuid` varchar(36) NOT NULL,
   `locale_code` varchar(10) NOT NULL,
   `locale_identifier` varchar(100) NOT NULL,
@@ -923,10 +925,10 @@ CREATE TABLE `sys_locale` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sys_parameter`
+-- Table structure for table `mst_parameter`
 --
 
-CREATE TABLE `sys_parameter` (
+CREATE TABLE `mst_parameter` (
   `parameter_uuid` varchar(36) NOT NULL,
   `parameter_code` varchar(50) NOT NULL,
   `parameter_value` text NOT NULL,
@@ -942,10 +944,10 @@ CREATE TABLE `sys_parameter` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sys_parameter_group`
+-- Table structure for table `mst_parameter_group`
 --
 
-CREATE TABLE `sys_parameter_group` (
+CREATE TABLE `mst_parameter_group` (
   `parameter_group_uuid` varchar(36) NOT NULL,
   `parameter_group_code` varchar(50) NOT NULL,
   `parameter_group_name` varchar(100) NOT NULL,
@@ -960,10 +962,10 @@ CREATE TABLE `sys_parameter_group` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sys_parameter_i18n`
+-- Table structure for table `mst_parameter_i18n`
 --
 
-CREATE TABLE `sys_parameter_i18n` (
+CREATE TABLE `mst_parameter_i18n` (
   `parameter_i18n_uuid` varchar(36) NOT NULL,
   `parameter_uuid` varchar(36) NOT NULL,
   `locale_uuid` varchar(36) NOT NULL,
@@ -1412,28 +1414,28 @@ ALTER TABLE `sec_user`
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- Indexes for table `sys_locale`
+-- Indexes for table `mst_locale`
 --
-ALTER TABLE `sys_locale`
+ALTER TABLE `mst_locale`
   ADD PRIMARY KEY (`locale_uuid`);
 
 --
--- Indexes for table `sys_parameter`
+-- Indexes for table `mst_parameter`
 --
-ALTER TABLE `sys_parameter`
+ALTER TABLE `mst_parameter`
   ADD PRIMARY KEY (`parameter_uuid`),
   ADD KEY `parameter_group_uuid` (`parameter_group_uuid`);
 
 --
--- Indexes for table `sys_parameter_group`
+-- Indexes for table `mst_parameter_group`
 --
-ALTER TABLE `sys_parameter_group`
+ALTER TABLE `mst_parameter_group`
   ADD PRIMARY KEY (`parameter_group_uuid`);
 
 --
--- Indexes for table `sys_parameter_i18n`
+-- Indexes for table `mst_parameter_i18n`
 --
-ALTER TABLE `sys_parameter_i18n`
+ALTER TABLE `mst_parameter_i18n`
   ADD PRIMARY KEY (`parameter_i18n_uuid`),
   ADD KEY `parameter_uuid` (`parameter_uuid`),
   ADD KEY `locale_uuid` (`locale_uuid`);
@@ -1654,17 +1656,17 @@ ALTER TABLE `sec_r_user_role`
   ADD CONSTRAINT `sec_r_user_role_ibfk_2` FOREIGN KEY (`role_uuid`) REFERENCES `sec_role` (`role_uuid`);
 
 --
--- Constraints for table `sys_parameter`
+-- Constraints for table `mst_parameter`
 --
-ALTER TABLE `sys_parameter`
-  ADD CONSTRAINT `sys_parameter_ibfk_1` FOREIGN KEY (`parameter_group_uuid`) REFERENCES `sys_parameter_group` (`parameter_group_uuid`);
+ALTER TABLE `mst_parameter`
+  ADD CONSTRAINT `mst_parameter_ibfk_1` FOREIGN KEY (`parameter_group_uuid`) REFERENCES `mst_parameter_group` (`parameter_group_uuid`);
 
 --
--- Constraints for table `sys_parameter_i18n`
+-- Constraints for table `mst_parameter_i18n`
 --
-ALTER TABLE `sys_parameter_i18n`
-  ADD CONSTRAINT `sys_parameter_i18n_ibfk_1` FOREIGN KEY (`parameter_uuid`) REFERENCES `sys_parameter` (`parameter_uuid`),
-  ADD CONSTRAINT `sys_parameter_i18n_ibfk_2` FOREIGN KEY (`locale_uuid`) REFERENCES `sys_locale` (`locale_uuid`);
+ALTER TABLE `mst_parameter_i18n`
+  ADD CONSTRAINT `mst_parameter_i18n_ibfk_1` FOREIGN KEY (`parameter_uuid`) REFERENCES `mst_parameter` (`parameter_uuid`),
+  ADD CONSTRAINT `mst_parameter_i18n_ibfk_2` FOREIGN KEY (`locale_uuid`) REFERENCES `mst_locale` (`locale_uuid`);
 
 --
 -- Constraints for table `wfl_document_status_i18n`

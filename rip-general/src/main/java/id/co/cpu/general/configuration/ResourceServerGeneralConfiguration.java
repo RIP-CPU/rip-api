@@ -12,8 +12,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import id.co.cpu.common.utils.ResourceCode;
 
-@Configuration("resourceServerGeneral")
-@EnableResourceServer
+//@Configuration("resourceServerGeneral")
+//@EnableResourceServer
 public class ResourceServerGeneralConfiguration extends ResourceServerConfigurerAdapter {
 
     @Autowired

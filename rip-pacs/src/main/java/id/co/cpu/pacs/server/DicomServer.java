@@ -38,7 +38,7 @@ import id.co.cpu.pacs.event.NewFileEvent;
 
 
 public class DicomServer {
-    private static final Logger LOG = LoggerFactory.getLogger(DicomServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DicomServer.class);
 
     private static final String DCM_EXT = ".dcm";
 
@@ -76,12 +76,12 @@ public class DicomServer {
             //File file = new File(storageDir, ipAddress + "_" + iuid + DCM_EXT);
             File file = new File(storageDir, iuid + DCM_EXT);
             try {
-                LOG.info("as: {}", as);
+                LOGGER.info("as: {}", as);
                 storeTo(as, as.createFileMetaInformation(iuid, cuid, tsuid),
                         data, file);
                 
                 if(!file.exists()){
-                	LOG.error("File {} does not exists! Connection Details--> ipAddress: {}  associationName: {}  sopclassuid: {}  sopinstanceuid: {} transfersyntax: {}", file.getAbsolutePath(), ipAddress, associationName, cuid, iuid, tsuid);
+                	LOGGER.error("File {} does not exists! Connection Details--> ipAddress: {}  associationName: {}  sopclassuid: {}  sopinstanceuid: {} transfersyntax: {}", file.getAbsolutePath(), ipAddress, associationName, cuid, iuid, tsuid);
                 	return;
                 }
                 
@@ -113,11 +113,11 @@ public class DicomServer {
 
             }catch(EOFException e){
             	//deleteFile(as, file); //broken file, just remove...     
-            	LOG.error("Dicom Store EOFException: " + e.getMessage());               
+            	LOGGER.error("Dicom Store EOFException: " + e.getMessage());               
             }
             catch (Exception e) {              
             	deleteFile(as, file); //broken file, just remove...     
-                LOG.error("Dicom Store Exception: " + e.getMessage());        
+                LOGGER.error("Dicom Store Exception: " + e.getMessage());        
             }
             
         }
@@ -134,7 +134,7 @@ public class DicomServer {
 
     private void storeTo(Association as, Attributes fmi,
                          PDVInputStream data, File file) throws IOException  {
-        LOG.info("{}: M-WRITE {}", as, file);
+        LOGGER.info("{}: M-WRITE {}", as, file);
         file.getParentFile().mkdirs();
         DicomOutputStream out = new DicomOutputStream(file);
         try {
@@ -157,9 +157,9 @@ public class DicomServer {
 
     private static void deleteFile(Association as, File file) {
         if (file.delete())
-            LOG.info("{}: M-DELETE {}", as, file);
+            LOGGER.info("{}: M-DELETE {}", as, file);
         else
-            LOG.warn("{}: M-DELETE {} failed!", as, file);
+            LOGGER.warn("{}: M-DELETE {} failed!", as, file);
     }
 
     private DicomServiceRegistry createServiceRegistry() {
@@ -188,7 +188,7 @@ public class DicomServer {
     }
 
     public static DicomServer init(String aeHost, int aePort, String aeTitle, String storageDirectory, EventBus eventBus) {
-        LOG.info("Bind to: " + aeTitle + "@" + aeHost + ":" + aePort + "; storage: " + storageDirectory);
+        LOGGER.info("Bind to: " + aeTitle + "@" + aeHost + ":" + aePort + "; storage: " + storageDirectory);
 
         DicomServer ds = null;
         try {
@@ -221,7 +221,7 @@ public class DicomServer {
             ds.device.bindConnections();
 
         }catch (Exception e) {
-            LOG.error("dicomserver: {}", e.getMessage());
+            LOGGER.error("dicomserver: {}", e.getMessage());
             e.printStackTrace();
         }
 
@@ -239,19 +239,19 @@ public class DicomServer {
 			
 			if(as != null)
 			{				
-				LOG.info("makeAAssociateAC: {}  Associate State: {}  Associate State Name: {}", as.toString(), st, st.name());
+				LOGGER.info("makeAAssociateAC: {}  Associate State: {}  Associate State Name: {}", as.toString(), st, st.name());
 				try {					
 					 //eventBus.post(new NewLogEvent(as.toString(),st.name(),as.getSocket().getInetAddress().getHostAddress(), null, null,null,null,null,null,null,null));
 				}catch (Exception e) {
-					LOG.error(e.getMessage());
+					LOGGER.error(e.getMessage());
 				}
 			}
 			
 			if(rq != null)
-				LOG.info("Max OpsInvoked: {}  Max OpsPerformed: {}  Max PDU Length: {}  Number of Pres. Contexts: {}",rq.getMaxOpsInvoked(), rq.getMaxOpsPerformed(), rq.getMaxPDULength(), rq.getNumberOfPresentationContexts());
+				LOGGER.info("Max OpsInvoked: {}  Max OpsPerformed: {}  Max PDU Length: {}  Number of Pres. Contexts: {}",rq.getMaxOpsInvoked(), rq.getMaxOpsPerformed(), rq.getMaxPDULength(), rq.getNumberOfPresentationContexts());
 			
 			if(arg2 != null)
-				LOG.info("UserIdentityAC Length:{}",arg2.length());
+				LOGGER.info("UserIdentityAC Length:{}",arg2.length());
 			
 			return super.makeAAssociateAC(as, rq, arg2);
 		}
@@ -261,7 +261,7 @@ public class DicomServer {
 				throws IOException {
 			
 			if(as != null)
-				LOG.info("AAssociateAC negotiate:{}",as.toString());
+				LOGGER.info("AAssociateAC negotiate:{}",as.toString());
 			
 			return super.negotiate(as, rq);
 		}
@@ -272,17 +272,17 @@ public class DicomServer {
 			State st = as.getState();
 			
 			if(as != null && st == State.Sta13){
-				LOG.info("Assocation Released and Closed: {} Name: {}", as.getState(), as.toString());			
+				LOGGER.info("Assocation Released and Closed: {} Name: {}", as.getState(), as.toString());			
 					
 				try {					
 					//eventBus.post(new NewLogEvent(as.toString(),st.name(),as.getSocket().getInetAddress().getHostAddress(), null, null, null, null,null,null,null,null));
 				}  catch (Exception e) {					
-					LOG.error(e.getMessage());					
+					LOGGER.error(e.getMessage());					
 				} 
 			}
 			else
 			{
-				LOG.info("Association Closed");
+				LOGGER.info("Association Closed");
 			}
 			
 			super.onClose(as);

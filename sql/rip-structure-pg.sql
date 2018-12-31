@@ -511,6 +511,8 @@ CREATE TABLE sec_menu (
 	ordering_str varchar(100),
 	icon varchar(100),
 	is_leaf boolean DEFAULT false NOT NULL,
+	is_home boolean DEFAULT false NOT NULL,
+	is_group boolean DEFAULT false NOT NULL,
 	"version" int DEFAULT 0 NOT NULL,
 	is_active boolean DEFAULT true NOT NULL,
 	created_date timestamp DEFAULT CURRENT_TIMESTAMP,
@@ -595,7 +597,7 @@ CREATE TABLE sec_user (
 	modified_by varchar(25),
 	PRIMARY KEY (user_uuid)
 );
-CREATE TABLE sys_locale (
+CREATE TABLE mst_locale (
 	locale_uuid varchar(36) NOT NULL,
 	locale_code varchar(10) NOT NULL,
 	locale_identifier varchar(100) NOT NULL,
@@ -610,7 +612,7 @@ CREATE TABLE sys_locale (
 	modified_by varchar(25),
 	PRIMARY KEY (locale_uuid)
 );
-CREATE TABLE sys_parameter (
+CREATE TABLE mst_parameter (
 	parameter_uuid varchar(36) NOT NULL,
 	parameter_code varchar(50) NOT NULL,
 	parameter_value text NOT NULL,
@@ -623,7 +625,7 @@ CREATE TABLE sys_parameter (
 	parameter_group_uuid varchar(36) NOT NULL,
 	PRIMARY KEY (parameter_uuid)
 );
-CREATE TABLE sys_parameter_group (
+CREATE TABLE mst_parameter_group (
 	parameter_group_uuid varchar(36) NOT NULL,
 	parameter_group_code varchar(50) NOT NULL,
 	parameter_group_name varchar(100) NOT NULL,
@@ -635,7 +637,7 @@ CREATE TABLE sys_parameter_group (
 	modified_by varchar(25),
 	PRIMARY KEY (parameter_group_uuid)
 );
-CREATE TABLE sys_parameter_i18n (
+CREATE TABLE mst_parameter_i18n (
 	parameter_i18n_uuid varchar(36) NOT NULL,
 	parameter_uuid varchar(36) NOT NULL,
 	locale_uuid varchar(36) NOT NULL,
@@ -908,18 +910,18 @@ ALTER TABLE sec_r_user_role
 	REFERENCES sec_user (user_uuid);
 
 
-ALTER TABLE sys_parameter
+ALTER TABLE mst_parameter
 	ADD FOREIGN KEY (parameter_group_uuid) 
-	REFERENCES sys_parameter_group (parameter_group_uuid);
+	REFERENCES mst_parameter_group (parameter_group_uuid);
 
 
-ALTER TABLE sys_parameter_i18n
+ALTER TABLE mst_parameter_i18n
 	ADD FOREIGN KEY (parameter_uuid) 
-	REFERENCES sys_parameter (parameter_uuid);
+	REFERENCES mst_parameter (parameter_uuid);
 
-ALTER TABLE sys_parameter_i18n
+ALTER TABLE mst_parameter_i18n
 	ADD FOREIGN KEY (locale_uuid) 
-	REFERENCES sys_locale (locale_uuid);
+	REFERENCES mst_locale (locale_uuid);
 
 
 ALTER TABLE wfl_document_status_i18n

@@ -34,7 +34,7 @@ public class ResourceServerSecurityConfiguration extends ResourceServerConfigure
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
         .csrf().disable()
         .authorizeRequests()
-        .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/get/**")
+        /*.antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/get/**")
     		.access("#oauth2.hasScope('read')")
         .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/param/**")
     		.access("#oauth2.hasScope('read')")
@@ -55,7 +55,7 @@ public class ResourceServerSecurityConfiguration extends ResourceServerConfigure
         .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/trx/auth/**")
         	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
         .antMatchers(HttpMethod.DELETE,"/api/"	+resourceId+ "/trx/auth/**")
-        	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
-        .anyRequest().authenticated();
+        	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")*/
+        .antMatchers("/api/**").authenticated();
     }
 }

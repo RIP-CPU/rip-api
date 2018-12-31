@@ -12,8 +12,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import id.co.cpu.common.utils.ResourceCode;
 
-@Configuration("resourceServerProfile")
-@EnableResourceServer
+//@Configuration("resourceServerProfile")
+//@EnableResourceServer
 public class ResourceServerProfileConfiguration extends ResourceServerConfigurerAdapter {
 
     @Autowired
@@ -53,7 +53,6 @@ public class ResourceServerProfileConfiguration extends ResourceServerConfigurer
         .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/trx/auth/**")
         	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
         .antMatchers(HttpMethod.DELETE,"/api/"	+resourceId+ "/trx/auth/**")
-        	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
-        .anyRequest().authenticated();
+        	.access("#oauth2.hasScope('trust') and not(hasRole('END'))");
     }
 }

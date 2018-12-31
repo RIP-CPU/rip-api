@@ -23,7 +23,7 @@ import id.co.cpu.security.entity.UserEntity;
 @Service("userService")
 public class UserImplService implements UserDetailsService {
 
-	protected final Log log = LogFactory.getLog(getClass());
+	protected final Log LOGGER = LogFactory.getLog(getClass());
 
 	@Autowired
 	private UserRepo userRepo;
@@ -33,13 +33,9 @@ public class UserImplService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-		log.debug("Find User " + username + " from database");
-		UserEntity user = userRepo.findByUsername(username.toLowerCase());
-
-		if (user == null) {
-			throw new UsernameNotFoundException("User '" + username + "' not found.");
-		}
-		return (UserDetails) user;
+		UserEntity user = userRepo.loadByUsername(username.toLowerCase());
+		if (user == null) throw new UsernameNotFoundException("User '" + username + "' not found.");
+		return user;
 	}
 
 	public UserEntity doResetPassword(UserEntity user) {
@@ -60,7 +56,7 @@ public class UserImplService implements UserDetailsService {
 	}
 
 	public UserEntity findByUsername(String username) throws UsernameNotFoundException {
-		log.debug("Find User " + username + " from database");
+		LOGGER.debug("Find User " + username + " from database");
 		return userRepo.findByUsername(username.toLowerCase());
 	}
 
@@ -219,7 +215,7 @@ public class UserImplService implements UserDetailsService {
 		try {
 			userRepo.delete(user);
 		} catch (Exception e) {
-			log.error("ERROR DELETING USER WITH USERNAME : " + user.getUsername() + ", CAUSE : " + e.getMessage());
+			LOGGER.error("ERROR DELETING USER WITH USERNAME : " + user.getUsername() + ", CAUSE : " + e.getMessage());
 		}
 	}
 
@@ -235,7 +231,7 @@ public class UserImplService implements UserDetailsService {
 
 	@SuppressWarnings("unused")
 	public void addMobileUser(String username, String imei, String state, String officeCode) {
-		log.debug("Find User " + username + " from database");
+		LOGGER.debug("Find User " + username + " from database");
 		UserEntity user = userRepo.findByUsername(username.toLowerCase());
 		if (user == null) {
 			UserEntity toAdd = new UserEntity();

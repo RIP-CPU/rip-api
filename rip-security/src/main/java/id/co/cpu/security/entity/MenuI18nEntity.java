@@ -21,11 +21,11 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false, exclude={"menu", "role"})
-@ToString(exclude={"menu", "role"})
+@EqualsAndHashCode(callSuper=false, exclude={"menu"})
+@ToString(exclude={"menu"})
 @Entity
-@Table(name = "sec_function")
-public class FunctionEntity extends BaseAuditEntity {
+@Table(name = "sec_menu_i18n")
+public class MenuI18nEntity extends BaseAuditEntity {
 
 	/**
 	 * 
@@ -35,18 +35,17 @@ public class FunctionEntity extends BaseAuditEntity {
 	@Id
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@GeneratedValue(generator = "uuid")
-	@Column(name = "function_uuid", nullable = false, unique = true)
+	@Column(name = "menu_i18n_uuid", nullable = false, unique = true)
 	private String id;
 
-	@Column(name = "access")
-	private String access;
+	@Column(name = "locale_code", nullable = false)
+	private String locale;
+
+	@Column(name = "title", nullable = false)
+	private String title;
 
 	@ManyToOne(targetEntity = MenuEntity.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_uuid", nullable = false, insertable = false, updatable = false)
 	private MenuEntity menu;
-
-	@ManyToOne(targetEntity = RoleEntity.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "role_uuid", nullable = false, insertable = false, updatable = false)
-	private RoleEntity role;
 
 }

@@ -50,6 +50,9 @@ public interface UserRepo extends JpaRepository<UserEntity, String>, JpaSpecific
 	 * @param username
 	 * @return single User object
 	 */
+	@Query("SELECT u FROM UserEntity u JOIN FETCH u.roles r WHERE LOWER(u.username) = :username OR LOWER(u.email) = :username")
+	UserEntity loadByUsername(@Param("username") String username);
+	
 	UserEntity findByUsername(String username);
 
 	/**

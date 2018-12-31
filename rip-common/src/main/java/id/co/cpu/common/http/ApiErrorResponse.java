@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -20,9 +21,12 @@ public class ApiErrorResponse {
 	@Autowired
 	private JsonUtils jsonUtils;
 	
+	@Value("${rip.locale}")
+	private String locale;
+	
 	public String errorResponse(ErrorCode errorCode, Locale locale) {
 		if(locale == null)
-			locale = Locale.forLanguageTag("id-ID");
+			locale = Locale.forLanguageTag(this.locale);
 		Map<String, Object> response = new TreeMap<>();
 		response.put("error", errorCode);
 		response.put("error_description", messageSource.getMessage(errorCode.name(), null, locale));
@@ -31,7 +35,7 @@ public class ApiErrorResponse {
 	
 	public String errorResponse(ErrorCode errorCode, Locale locale, Object[] params) {
 		if(locale == null)
-			locale = Locale.forLanguageTag("id-ID");
+			locale = Locale.forLanguageTag(this.locale);
 		Map<String, Object> response = new TreeMap<>();
 		response.put("error", errorCode);
 		response.put("error_description", messageSource.getMessage(errorCode.name(), params, locale));

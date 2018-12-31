@@ -15,8 +15,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -109,12 +107,11 @@ public class UserEntity extends BaseAuditEntity implements UserDetails {
 	private String authorityDefault;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@Fetch(FetchMode.JOIN)
 	@JoinTable(name = "sec_r_user_role",
-		joinColumns = {
-			@JoinColumn(name = "user_uuid", referencedColumnName = "user_uuid")}, 
-		inverseJoinColumns = 
-			@JoinColumn(name = "role_uuid", referencedColumnName = "role_uuid"))
+		joinColumns = { 
+				@JoinColumn(name = "user_uuid", referencedColumnName = "user_uuid")}, 
+		inverseJoinColumns =
+				@JoinColumn(name = "role_uuid", referencedColumnName = "role_uuid"))
 	private Set<RoleEntity> roles = new HashSet<RoleEntity>();
 
 	@Override
