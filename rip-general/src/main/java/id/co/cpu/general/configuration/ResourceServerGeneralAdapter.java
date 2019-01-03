@@ -1,25 +1,24 @@
-package id.co.cpu.security.configuration;
+package id.co.cpu.general.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import id.co.cpu.common.utils.ResourceCode;
 
-//@Configuration("resourceServerProfile")
-//@EnableResourceServer
-public class ResourceServerProfileConfiguration extends ResourceServerConfigurerAdapter {
+public class ResourceServerGeneralAdapter extends ResourceServerConfigurerAdapter {
 
-    @Autowired
     private TokenStore tokenStore;
     
-    private String resourceId = ResourceCode.PROFILE.getResourceId();
+    private String resourceId = ResourceCode.GENERAL.getResourceId();
+    
+    public ResourceServerGeneralAdapter() {}
+    public ResourceServerGeneralAdapter(TokenStore tokenStore) {
+		this.tokenStore = tokenStore;
+	}
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
@@ -30,9 +29,12 @@ public class ResourceServerProfileConfiguration extends ResourceServerConfigurer
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
         http
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
         .csrf().disable()
+        .requestMatchers()
+    		.antMatchers("/api/"				+resourceId+ "/**").and()
         .authorizeRequests()
         .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/get/**")
     		.access("#oauth2.hasScope('read')")
@@ -44,6 +46,8 @@ public class ResourceServerProfileConfiguration extends ResourceServerConfigurer
         	.access("#oauth2.hasScope('read')")
         .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/trx/add/**")
         	.access("#oauth2.hasScope('write')")
+        .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/trx/post/**")
+        	.access("#oauth2.hasScope('write')")
         .antMatchers(HttpMethod.PUT,"/api/"		+resourceId+ "/trx/put/**")
         	.access("#oauth2.hasScope('write')")
         .antMatchers(HttpMethod.GET,"/api/" 	+resourceId+ "/vw/auth/**")
@@ -54,5 +58,6 @@ public class ResourceServerProfileConfiguration extends ResourceServerConfigurer
         	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
         .antMatchers(HttpMethod.DELETE,"/api/"	+resourceId+ "/trx/auth/**")
         	.access("#oauth2.hasScope('trust') and not(hasRole('END'))");
+        // @formatter:on
     }
 }

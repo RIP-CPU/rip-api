@@ -40,12 +40,23 @@ spring:
 
 server:
   port: 8085
+  address: localhost
 endpoints:
   shutdown:
     enabled: false
+  restart:
+    enabled: false
+  health:
+    sensitive: false
 
 security:
   oauth2:
     resource:
+      filter-order: 3
       jwt:
         key-value: CfZKBe7IZHxBCgH9Dz49
+      prefer-token-info: true
+      user-info-uri: http://${server.address}:${server.port}/oauth/user
+      token-info-uri: http://${server.address}:${server.port}/check_token
+    client:
+      access-token-uri: http://${server.address}:${server.port}/oauth/token

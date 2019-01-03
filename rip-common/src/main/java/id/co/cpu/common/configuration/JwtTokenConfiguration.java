@@ -15,7 +15,7 @@ import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 @Configuration
-public class JwtHazelcastTokenConfiguration {
+public class JwtTokenConfiguration {
 	
     @Value("${security.oauth2.resource.jwt.key-value}")
     private String jwtKey;

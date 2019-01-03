@@ -28,6 +28,11 @@ import id.co.cpu.common.exceptions.SystemErrorException;
 import id.co.cpu.common.security.SignatureEncrypt;
 import id.co.cpu.common.utils.DateUtil;
 
+/**
+ * @author S201403171
+ * @see https://jsfiddle.net/ridlafadilah/r76a89gq/
+ */
+
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SignatureInterceptor implements Filter {
@@ -60,32 +65,35 @@ public class SignatureInterceptor implements Filter {
         if (!"OPTIONS".equalsIgnoreCase(request.getMethod()) &&
     		StringUtils.containsIgnoreCase(request.getHeader("Authorization"), "bearer")) {
         	try {
+        		if(request.getHeader("X-RIP-Key") == null
+        				&& request.getHeader("X-RIP-Timestamp") == null
+        				&& request.getHeader("X-RIP-Signature") == null)
+    				throw new SystemErrorException("Unauthorized");
             	if(!request.getHeader("X-RIP-Key").equals(publicKey))
-    				throw new SystemErrorException();
+    				throw new SystemErrorException("Invalid X-RIP-Key");
             	try {
-            		datenow = DateUtil.formatDate(new Date(new Long(request.getHeader("X-RIP-Timestamp"))), DateUtil.DEFAULT_FORMAT_DATE);
+            		datenow = DateUtil.formatDate(new Date(new Long(request.getHeader("X-RIP-Timestamp")) * 1000), DateUtil.DEFAULT_FORMAT_DATE);
             		if(!datenow.equals(DateUtil.DATE_NOW))
-            			throw new SystemErrorException();
+        				throw new SystemErrorException("Invalid X-RIP-Timestamp");
     			} catch (Exception e) {
-    				throw new SystemErrorException(e);
+    				throw new SystemErrorException("Invalid X-RIP-Timestamp");
     			}
         		message = 	request.getHeader("X-RIP-Key") + ":" + 
 							request.getHeader("X-RIP-Timestamp") + ":" +
 							datenow  + ":" +
 							request.getRequestURI()  + ":" +
 							request.getHeader("Authorization").replaceAll("(?i)bearer ", "");
-        		System.err.println(message);
         		if(!SignatureEncrypt.getInstance().hash(this.privateKey, message)
         				.equals(request.getHeader("X-RIP-Signature")))
-    				throw new SystemErrorException();
+    				throw new SystemErrorException("Invalid X-RIP-Signature");
+        		chain.doFilter(req, res);
 			} catch (SystemErrorException e) {
-				response.getWriter().write(unauthorized("invalid_signature","Unauthorized"));
+				response.getWriter().write(unauthorized("invalid_signature",e.getMessage()));
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			} catch (Exception e) {
-				response.getWriter().write(unauthorized("invalid_signature","Unauthorized"));
+				response.getWriter().write(unauthorized("invalid_signature",e.getMessage()));
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			}
-    		chain.doFilter(req, res);
         }else
         	chain.doFilter(req, res);
     }
