@@ -37,7 +37,7 @@ public class FunctionImplService {
 	}
 	
 	public List<MenuDto> loadMenuByRole(String role, String locale) throws Exception {
-		if(locale.equals(this.locale))
+		if(locale.equals(this.locale) || locale == null)
 			return loadMenuByRole(role);
 		List<FunctionEntity> functions = functionRepo.loadAllMenuByRoleI18n(role, locale);
 		List<MenuDto> menuDtos = new ArrayList<MenuDto>();
