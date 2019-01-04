@@ -40,8 +40,7 @@ public class SecurityTokenEnhancer implements TokenEnhancer {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				}
-		        
+				}		        
 		        break;
 			default:
 				break;
