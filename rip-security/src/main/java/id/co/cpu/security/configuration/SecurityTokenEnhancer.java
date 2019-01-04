@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 import id.co.cpu.common.utils.DateUtil;
 import id.co.cpu.security.entity.UserEntity;
-import id.co.cpu.security.service.FunctionImplService;
+import id.co.cpu.security.service.MenuImplService;
 
 public class SecurityTokenEnhancer implements TokenEnhancer {
 	
@@ -21,8 +21,8 @@ public class SecurityTokenEnhancer implements TokenEnhancer {
 	private String clientIdWeb;
 	
 	@Autowired
-	@Qualifier("functionService")
-	private FunctionImplService functionService;
+	@Qualifier("menuService")
+	private MenuImplService menuService;
 
 	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {			
@@ -33,7 +33,7 @@ public class SecurityTokenEnhancer implements TokenEnhancer {
 				if(authentication.getOAuth2Request().getClientId().equals(clientIdWeb) &&
 						user.getRaw() == null) {
 					try {
-						additionalInfo.put("menus", functionService.loadMenuByRole(user.getAuthorityDefault(), user.getLocale()));
+						additionalInfo.put("menus", menuService.loadMenuByRole(user.getAuthorityDefault(), user.getLocale()));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

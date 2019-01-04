@@ -24,6 +24,7 @@ public class MenuDto implements Serializable {
 	private String title;
     private String icon;
     private String link;
+    private String access;
     private Boolean home = false;
     private Boolean group = false;
     private List<MenuDto> children = new ArrayList<MenuDto>();

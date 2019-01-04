@@ -212,15 +212,23 @@ INSERT INTO mst_polyclinic_i18n (polyclinic_i18n_uuid, polyclinic_uuid, locale_c
 -- Dumping data for table sec_menu
 --
 
-INSERT INTO sec_menu (menu_uuid, title, url, "level", ordering, ordering_str, icon, is_leaf, is_home, "version", is_active, created_date, created_by, modified_date, modified_by, parent_uuid) VALUES
-('b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'Dashboard', '/app/dashboard', 0, 0, '000', 'nb-home', false, true, 0, true, '2018-12-04 13:35:36', NULL, NULL, NULL, NULL);
+INSERT INTO sec_menu (menu_uuid, title, url, "level", ordering, ordering_str, icon, is_leaf, is_home, is_group, "version", is_active, created_date, created_by, modified_date, modified_by, parent_uuid) VALUES
+('b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'Dashboard', '/app/dashboard', 0, 0, '000', 'nb-home', false, true, false, 0, true, '2018-12-04 13:35:36', NULL, NULL, NULL, NULL),
+('77687148-0cda-4a4a-96f1-900cd986c326', 'Module PACS', '#', 0, 1, '001', NULL, false, false, true, 0, true, '2018-12-04 13:35:36', NULL, NULL, NULL, NULL),
+('5f4872f1-627e-4789-adf7-dc6db3884267', 'DICOM Viewer', '#', 0, 2, '002', 'nb-keypad', false, false, false, 0, true, '2018-12-04 13:35:36', NULL, NULL, NULL, NULL),
+('079f7d96-8ef9-40d5-ab1a-0f6641e3e8cf', 'Archive', '/app/pacs/archive', 1, 0, '002.000', NULL, false, false, false, 0, true, '2018-12-04 13:35:36', NULL, NULL, NULL, '5f4872f1-627e-4789-adf7-dc6db3884267'),
+('0019a3e6-86ed-46d4-b6b2-e9525385c65f', 'Upload', '/app/pacs/upload', 1, 1, '002.001', NULL, false, false, false, 0, true, '2018-12-04 13:35:36', NULL, NULL, NULL, '5f4872f1-627e-4789-adf7-dc6db3884267');
 
 --
 -- Dumping data for table sec_menu_i18n
 --
 
 INSERT INTO sec_menu_i18n (menu_i18n_uuid, menu_uuid, locale_code, title, "version", is_active, created_date, created_by, modified_date, modified_by) VALUES
-('8edd8eaa-c665-4d81-ab41-49a61df686ba', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'id-ID', 'Beranda', 0, true, '2018-12-04 13:37:15', NULL, NULL, NULL);
+('8edd8eaa-c665-4d81-ab41-49a61df686ba', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'id-ID', 'Beranda', 0, true, '2018-12-04 13:37:15', NULL, NULL, NULL),
+('e0498589-37f3-4bd2-8116-9f2713abe051', '77687148-0cda-4a4a-96f1-900cd986c326', 'id-ID', 'Modul PACS', 0, true, '2018-12-04 13:37:15', NULL, NULL, NULL),
+('f143dd3b-ec59-401f-9796-c7c9d253db04', '5f4872f1-627e-4789-adf7-dc6db3884267', 'id-ID', 'Tampilan DICOM', 0, true, '2018-12-04 13:37:15', NULL, NULL, NULL),
+('a817dc35-1d8d-4d60-b52a-d823bd5f6b5b', '079f7d96-8ef9-40d5-ab1a-0f6641e3e8cf', 'id-ID', 'Arsip', 0, true, '2018-12-04 13:37:15', NULL, NULL, NULL),
+('77bf369b-fcf1-4eff-9241-d82e0dfc96a7', '0019a3e6-86ed-46d4-b6b2-e9525385c65f', 'id-ID', 'Unggah', 0, true, '2018-12-04 13:37:15', NULL, NULL, NULL);
 
 --
 -- Dumping data for table sec_function
@@ -231,7 +239,11 @@ INSERT INTO sec_function(function_uuid, menu_uuid, role_uuid, access, version, i
 ('1f687a5e-e61c-4ce2-81fc-94ad9c1dbe8b', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', '1af2403b-a4f8-4492-94c1-5d6ab8b4a094', 'read,trust', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null),
 ('a7b6713a-ef5f-4a93-a111-a4769197ab83', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'd46b4b13-4159-4f5c-923d-5d8dfe3f48de', 'read,trust', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null),
 ('58a476f7-7986-4123-934e-9dae15e565eb', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'd4fd659f-7bd6-4b1c-9127-e2dcf04651b0', 'read,trust', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null),
-('22c3a77b-8f2d-4f04-a925-825a1e223a9e', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'd68a2ea7-f1cb-484c-a3d4-b669ef3ff3c8', 'read', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null)
+('22c3a77b-8f2d-4f04-a925-825a1e223a9e', 'b9029fd3-44cd-479c-965d-a8da1bfb20eb', 'd68a2ea7-f1cb-484c-a3d4-b669ef3ff3c8', 'read', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null),
+('e4870251-ee37-4685-a432-c5e863cbec61', '77687148-0cda-4a4a-96f1-900cd986c326', '06be80df-5c41-42a7-9050-b328312d2f3a', 'read', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null),
+('628447be-d7fc-4d0b-bf42-7aa8febaf791', '5f4872f1-627e-4789-adf7-dc6db3884267', '06be80df-5c41-42a7-9050-b328312d2f3a', 'read', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null),
+('1646f5de-f72a-4c1a-8250-6152fdc2b5d5', '079f7d96-8ef9-40d5-ab1a-0f6641e3e8cf', '06be80df-5c41-42a7-9050-b328312d2f3a', 'read,write,trust', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null),
+('d6da29e7-d474-4e3a-bd1b-d4c167262b38', '0019a3e6-86ed-46d4-b6b2-e9525385c65f', '06be80df-5c41-42a7-9050-b328312d2f3a', 'read,write,trust', 0, true, '2018-12-19 10:09:14.249008', 'admin', null, null);
 
 --
 -- Dumping data for table sec_role

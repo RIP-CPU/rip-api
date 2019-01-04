@@ -15,20 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 import id.co.cpu.common.exceptions.BaseControllerException;
 import id.co.cpu.feign.dto.security.MenuDto;
 import id.co.cpu.security.entity.UserEntity;
-import id.co.cpu.security.service.FunctionImplService;
+import id.co.cpu.security.service.MenuImplService;
 
 @RestController
 @RequestMapping("/api/security")
 public class MenuController extends BaseControllerException {
 
 	@Autowired
-	private FunctionImplService functionService;
+	private MenuImplService menuService;
 	
 	@RequestMapping(value = "/vw/get/menu/v.1", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<MenuDto>> getMenuI18n(Authentication authentication,
 			@RequestHeader(name = "Accept-Language", required = false) String locale) throws Exception {
 		UserEntity user = (UserEntity) authentication.getPrincipal();
-		return new ResponseEntity<List<MenuDto>>(functionService.loadMenuByRole(user.getAuthorityDefault(), locale), HttpStatus.OK);
+		return new ResponseEntity<List<MenuDto>>(menuService.loadMenuByRole(user.getAuthorityDefault(), locale), HttpStatus.OK);
 	}
 	
 }

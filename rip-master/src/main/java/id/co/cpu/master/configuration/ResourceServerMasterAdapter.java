@@ -57,7 +57,8 @@ public class ResourceServerMasterAdapter extends ResourceServerConfigurerAdapter
         .antMatchers(HttpMethod.POST,"/api/"	+resourceId+ "/trx/auth/**")
         	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
         .antMatchers(HttpMethod.DELETE,"/api/"	+resourceId+ "/trx/auth/**")
-        	.access("#oauth2.hasScope('trust') and not(hasRole('END'))");
+        	.access("#oauth2.hasScope('trust') and not(hasRole('END'))")
+        .anyRequest().denyAll();
         // @formatter:on
     }
 }
