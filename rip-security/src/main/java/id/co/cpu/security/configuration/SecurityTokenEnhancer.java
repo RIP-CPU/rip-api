@@ -51,7 +51,7 @@ public class SecurityTokenEnhancer implements TokenEnhancer {
         additionalInfo.put("name", user.getName());
         additionalInfo.put("locale", user.getLocale());
         additionalInfo.put("server_date", DateUtil.DATE_NOW);
-        additionalInfo.put("xrip_key", publicKey);
+        additionalInfo.put("xrkey", publicKey);
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
         return accessToken;
 	}
