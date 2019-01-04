@@ -23,13 +23,16 @@ public class SecurityTokenEnhancer implements TokenEnhancer {
 	@Autowired
 	@Qualifier("menuService")
 	private MenuImplService menuService;
+	
+	@Value("${rip.signature.public-key}")
+	private String publicKey;
 
 	@Override
-	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {			
+	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+        UserEntity user = (UserEntity) authentication.getPrincipal();
+        Map<String, Object> additionalInfo = new TreeMap<String, Object>();		
         switch (authentication.getOAuth2Request().getGrantType()) {
 			case "password":
-		        UserEntity user = (UserEntity) authentication.getPrincipal();
-		        Map<String, Object> additionalInfo = new TreeMap<String, Object>();
 				if(authentication.getOAuth2Request().getClientId().equals(clientIdWeb) &&
 						user.getRaw() == null) {
 					try {
@@ -38,17 +41,18 @@ public class SecurityTokenEnhancer implements TokenEnhancer {
 						e.printStackTrace();
 					}
 				}
-		        additionalInfo.put("authority", user.getAuthorityDefault());
-		        additionalInfo.put("email", user.getEmail());
-		        additionalInfo.put("name", user.getName());
-		        additionalInfo.put("locale", user.getLocale());
-		        additionalInfo.put("server_date", DateUtil.DATE_NOW);
 		        
-		        ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
 		        break;
 			default:
 				break;
         }
+        additionalInfo.put("authority", user.getAuthorityDefault());
+        additionalInfo.put("email", user.getEmail());
+        additionalInfo.put("name", user.getName());
+        additionalInfo.put("locale", user.getLocale());
+        additionalInfo.put("server_date", DateUtil.DATE_NOW);
+        additionalInfo.put("x_key", publicKey);
+        ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
         return accessToken;
 	}
 
