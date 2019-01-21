@@ -304,7 +304,7 @@ INSERT INTO sec_r_user_role (user_uuid, role_uuid) VALUES
 
 INSERT INTO oauth_client_details (client_id, resource_ids, client_secret, scope, authorized_grant_types, web_server_redirect_uri, authorities, access_token_validity, refresh_token_validity, additional_information, autoapprove) VALUES
 ('rip-3rd', 'profile,master', 'secretrip3rd01', 'read,write,check_token', 'authorization_code,refresh_token', 'http://rip.cpu.co.id:69/oauth/secure', 'ROLE_END', 3600, 1800, NULL, '0'),
-('rip-core', 'profile,security,master,notification,general,pacs,report', 'secretrip01', 'read,write,trust,check_token', 'password,refresh_token', '', 'ROLE_ADMIN,ROLE_RADIOGRAPHER,ROLE_DOCTOR,ROLE_END', 7200, 3600, NULL, '1'),
+('rip-core', 'profile,security,master,notification,general,file,pacs,report', 'secretrip01', 'read,write,trust,check_token', 'password,refresh_token', '', 'ROLE_ADMIN,ROLE_RADIOGRAPHER,ROLE_DOCTOR,ROLE_END', 7200, 3600, NULL, '1'),
 ('rip-mobile', 'profile,security,master', 'secretrip02', 'read,write,check_token', 'password,refresh_token', '', 'ROLE_END', 7200, 3600, NULL, '1');
 
 --

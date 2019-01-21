@@ -84,26 +84,6 @@
 		
 		<!-- FRAMEWORK -->
 		<dependency>
-			<groupId>org.dcm4che</groupId>
-			<artifactId>dcm4che-core</artifactId>
-			<version>${dcm4che.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.dcm4che</groupId>
-			<artifactId>dcm4che-net</artifactId>
-			<version>${dcm4che.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.dcm4che.tool</groupId>
-			<artifactId>dcm4che-tool-dcm2jpg</artifactId>
-			<version>${dcm4che.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.dcm4che.tool</groupId>
-			<artifactId>dcm4che-tool-storescu</artifactId>
-			<version>${dcm4che.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>id.co.cpu</groupId>
 			<artifactId>rip-pacs</artifactId>
 			<version>${project.version}</version>
@@ -116,6 +96,11 @@
 		<dependency>
 			<groupId>id.co.cpu</groupId>
 			<artifactId>rip-security</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>id.co.cpu</groupId>
+			<artifactId>rip-file</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

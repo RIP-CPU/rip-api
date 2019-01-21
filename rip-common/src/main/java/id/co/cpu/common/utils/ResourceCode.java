@@ -8,6 +8,7 @@ public enum ResourceCode {
 	NOTIFICATION("notification"),
 	PACS("pacs"),
 	GENERAL("general"),
+	FILE("file"),
 	REPORT("report");
 	
 	private final String resourceId;
