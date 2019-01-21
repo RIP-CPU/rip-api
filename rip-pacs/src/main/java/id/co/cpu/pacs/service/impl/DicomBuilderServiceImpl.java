@@ -1,10 +1,12 @@
 package id.co.cpu.pacs.service.impl;
 
+import java.io.File;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +23,14 @@ import id.co.cpu.pacs.entity.PatientDicomEntity;
 import id.co.cpu.pacs.entity.SeriesDicomEntity;
 import id.co.cpu.pacs.entity.StudyDicomEntity;
 import id.co.cpu.pacs.server.DicomReader;
-import id.co.cpu.pacs.service.DBService;
+import id.co.cpu.pacs.service.DicomBuilderService;
 import id.co.cpu.pacs.utils.DicomEntityBuilder;
 
 
 @Service
-public class DBServiceImpl implements DBService {
+public class DicomBuilderServiceImpl implements DicomBuilderService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DBServiceImpl.class);
+	protected final Log LOGGER = LogFactory.getLog(getClass());
 	
 	@Autowired
 	private DicomPatientRepo dicomPatientRepo;
@@ -56,7 +58,7 @@ public class DBServiceImpl implements DBService {
 	@Override
 	public PatientDicomEntity buildPatient(DicomReader reader){		
 		
-		LOG.info("In process; Patient Name: {}, Patient ID: {}", reader.getPatientName(), reader.getPatientID());
+		LOGGER.info(String.format("In process; Patient Name: %s, Patient ID: %s", reader.getPatientName(), reader.getPatientID()));
 		//check if patient exists
 		PatientDicomEntity patient = dicomPatientRepo.findByPatientId(reader.getPatientID());
 		if(patient == null){//let's create new patient
@@ -148,7 +150,7 @@ public class DBServiceImpl implements DBService {
 			instance = dicomInstanceRepo.findBySopInstanceUID(reader.getSOPInstanceUID());
 			
 		}else{
-				LOG.info("Instance already exists; SOP Instance UID {}, Instance Number {}", instance.getInstanceNumber(), instance.getInstanceNumber());
+				LOGGER.info(String.format("Instance already exists; SOP Instance UID %s, Instance Number %s", instance.getInstanceNumber(), instance.getInstanceNumber()));
 		}
 		
 		return instance;
@@ -157,11 +159,12 @@ public class DBServiceImpl implements DBService {
 	// apply dicom logic; patient -> Nxstudy -> Nxseries -> Nxinstance
 	@Transactional
 	@Override
-	public void buildEntities(DicomReader reader){
+	public void buildEntities(DicomReader reader, File file){
 		
 		try
-		{		
-			LOG.info("=================================================================================================================================");
+		{	
+			System.err.println(file.getName());
+			LOGGER.info("=================================================================================================================================");
 			printStats(reader.getPatientName() + " "+ reader.getPatientID() + " " + reader.getPatientAge() + " " + reader.getPatientSex() + " Started");
 			PatientDicomEntity patient = buildPatient(reader);			
 			activeDicoms.add(reader.getMediaStorageSopInstanceUID(), patient.toString());
@@ -190,7 +193,7 @@ public class DBServiceImpl implements DBService {
 						
 						//try{ entityManager.getTransaction().commit(); }	catch(Exception e){}
 						
-						LOG.info("Dicom Instance saved successfully! {}", instance.toString());
+						LOGGER.info(String.format("Dicom Instance saved successfully! %s", instance.toString()));
 					}
 				}
 			}	
@@ -200,11 +203,11 @@ public class DBServiceImpl implements DBService {
 			activeDicoms.remove(reader.getMediaStorageSopInstanceUID());
 			
 			printStats(reader.getPatientName() + " "+ reader.getPatientID() + " " + reader.getPatientAge() + " " + reader.getPatientSex() + " Ended");
-			LOG.info("=================================================================================================================================");
-			LOG.info("");
+			LOGGER.info("=================================================================================================================================");
+			LOGGER.info("");
 			
 		}catch(Exception e){
-			LOG.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 		}
 		
 	}	
@@ -212,7 +215,7 @@ public class DBServiceImpl implements DBService {
 	public void printStats(String status) {
 		//String str = Thread.currentThread().getName().split("@@")[0];
 		//Thread.currentThread().setName(String.valueOf(Thread.currentThread().getId()));		
-		LOG.info("{} {} {} [Active Threads: {}] ",Thread.currentThread().getId(), Thread.currentThread().getName(), status, Thread.activeCount());		
+		LOGGER.info(String.format("%d %s %s [Active Threads: %d] ",Thread.currentThread().getId(), Thread.currentThread().getName(), status, Thread.activeCount()));		
 		
 	}
 	

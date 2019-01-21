@@ -5,6 +5,8 @@ import java.io.File;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +19,19 @@ import com.google.common.eventbus.Subscribe;
 import id.co.cpu.pacs.component.ActiveDicoms;
 import id.co.cpu.pacs.event.NewFileEvent;
 import id.co.cpu.pacs.server.DicomReader;
-import id.co.cpu.pacs.service.DBService;
+import id.co.cpu.pacs.service.DicomBuilderService;
 
 
 
 public class IncomingFileHandler {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(IncomingFileHandler.class);
+
+	protected final Log LOGGER = LogFactory.getLog(getClass());
 		
 	@Autowired(required = true)
 	private EventBus eventBus;
 	
 	@Autowired
-	private DBService dbService;
+	private DicomBuilderService dbService;
 	
 	@Autowired
 	private ActiveDicoms activeDicoms;
@@ -46,12 +48,12 @@ public class IncomingFileHandler {
 			
 			//LOG.info("Active Dicoms:{} Received Patient Name:{} ID:{} Age:{} Sex:{} ", activeDicoms.toString(), reader.getPatientName(), reader.getPatientID(), reader.getPatientAge(), reader.getPatientSex());
 			synchronized(dbService){
-				dbService.buildEntities(reader);//lets build our dicom database entities
+				dbService.buildEntities(reader, file);//lets build our dicom database entities
 			}
 			
 			
 		}catch(Exception e){
-			LOG.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 		}
 	}
 	
@@ -67,8 +69,7 @@ public class IncomingFileHandler {
 	
 	public void printStats(String status) {
 		//String str = Thread.currentThread().getName().split("@@")[0];
-		//Thread.currentThread().setName(String.valueOf(Thread.currentThread().getId()));		
-		LOG.info("{} {} {} [Active Threads: {}] ",Thread.currentThread().getId(), Thread.currentThread().getName(), status, Thread.activeCount());		
-		
+		//Thread.currentThread().setName(String.valueOf(Thread.currentThread().getId()));
+		LOGGER.info(String.format("%d %s %s [Active Threads: %d] ",Thread.currentThread().getId(), Thread.currentThread().getName(), status, Thread.activeCount()));
 	}
 }
