@@ -573,6 +573,7 @@ CREATE TABLE rip_dicom_parameter (
   `corporate_id` varchar(50) NOT NULL,
   `corporate_name` varchar(255) NOT NULL,
   `ae_title` varchar(50) NOT NULL,
+  `dicom_host` varchar(150),
   `dicom_port` int(11) NOT NULL,
   `dicom_storage` text,
   `activated` tinyint(1) NOT NULL DEFAULT '0',

@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import id.co.cpu.pacs.component.ActiveDicoms;
-import id.co.cpu.pacs.dao.EquipmentDao;
-import id.co.cpu.pacs.dao.InstanceDao;
-import id.co.cpu.pacs.dao.PatientDao;
-import id.co.cpu.pacs.dao.SeriesDao;
-import id.co.cpu.pacs.dao.StudyDao;
+import id.co.cpu.pacs.dao.DicomEquipmentRepo;
+import id.co.cpu.pacs.dao.DicomInstanceRepo;
+import id.co.cpu.pacs.dao.DicomPatientRepo;
+import id.co.cpu.pacs.dao.DicomSeriesRepo;
+import id.co.cpu.pacs.dao.DicomStudyRepo;
 import id.co.cpu.pacs.entity.EquipmentDicomEntity;
 import id.co.cpu.pacs.entity.InstanceDicomEntity;
 import id.co.cpu.pacs.entity.PatientDicomEntity;
@@ -31,19 +31,19 @@ public class DBServiceImpl implements DBService {
 	private static final Logger LOG = LoggerFactory.getLogger(DBServiceImpl.class);
 	
 	@Autowired
-	InstanceDao instanceDao;
+	private DicomPatientRepo dicomPatientRepo;
 	
 	@Autowired
-	SeriesDao seriesDao;
+	private DicomStudyRepo dicomStudyRepo;
 	
 	@Autowired
-	StudyDao studyDao;
+	private DicomSeriesRepo dicomSeriesRepo;
 	
 	@Autowired
-	PatientDao patientDao;
+	private DicomEquipmentRepo dicomEquipmentRepo;	
 	
 	@Autowired
-	EquipmentDao equipmentDao;	
+	private DicomInstanceRepo dicomInstanceRepo;
 	
 	@PersistenceContext(unitName = "rip")
 	private EntityManager entityManager;
@@ -58,11 +58,11 @@ public class DBServiceImpl implements DBService {
 		
 		LOG.info("In process; Patient Name: {}, Patient ID: {}", reader.getPatientName(), reader.getPatientID());
 		//check if patient exists
-		PatientDicomEntity patient = patientDao.findByPatientId(reader.getPatientID());
+		PatientDicomEntity patient = dicomPatientRepo.findByPatientId(reader.getPatientID());
 		if(patient == null){//let's create new patient
 			patient = DicomEntityBuilder.newPatient(reader.getPatientAge(), reader.getPatientBirthDay(), reader.getPatientID(), reader.getPatientName(), reader.getPatientSex());				
-			patientDao.save(patient);
-			patient = patientDao.findByPatientId(reader.getPatientID());
+			dicomPatientRepo.save(patient);
+			patient = dicomPatientRepo.findByPatientId(reader.getPatientID());
 		}else{
 			//LOG.info("Patient already exists; Patient Name: {}, Patient ID: {} ", reader.getPatientName(), reader.getPatientID());
 		}
@@ -76,14 +76,14 @@ public class DBServiceImpl implements DBService {
 	public StudyDicomEntity buildStudy(DicomReader reader,PatientDicomEntity patient){
 		
 		//check if study exists
-		StudyDicomEntity study = studyDao.findByStudyInstanceUID(reader.getStudyInstanceUID());
+		StudyDicomEntity study = dicomStudyRepo.findByStudyInstanceUID(reader.getStudyInstanceUID());
 		if(study == null){//let's create new study
 			study = DicomEntityBuilder.newStudy(reader.getAccessionNumber(), reader.getAdditionalPatientHistory(), reader.getAdmittingDiagnosesDescription(),
 						reader.getReferringPhysicianName(), reader.getSeriesDateTime(), reader.getStudyID(), reader.getStudyDescription(), reader.getStudyInstanceUID(), reader.getStudyPriorityID(), 
 						reader.getStudyStatusID());
 			study.setPatient(patient);			
-			studyDao.save(study);	
-			study = studyDao.findByStudyInstanceUID(reader.getStudyInstanceUID());
+			dicomStudyRepo.save(study);	
+			study = dicomStudyRepo.findByStudyInstanceUID(reader.getStudyInstanceUID());
 		}else{
 			//LOG.info("Study already exists; Study Instance UID:  {}", study.getStudyInstanceUID());
 		}
@@ -96,13 +96,13 @@ public class DBServiceImpl implements DBService {
 	public SeriesDicomEntity buildSeries(DicomReader reader, StudyDicomEntity study){
 		
 		//check if series exists
-		SeriesDicomEntity series = seriesDao.findBySeriesInstanceUID(reader.getSeriesInstanceUID(), reader.getSeriesNumber());			
+		SeriesDicomEntity series = dicomSeriesRepo.findBySeriesInstanceUIDAndSeriesNumber(reader.getSeriesInstanceUID(), reader.getSeriesNumber());			
 		if(series == null){//let's create new series
 			series = DicomEntityBuilder.newSeries(reader.getBodyPartExamined(), reader.getLaterality(), reader.getOperatorsName(), reader.getPatientPosition(),
 						reader.getProtocolName(), reader.getSeriesDateTime(), reader.getSeriesDescription(), reader.getSeriesInstanceUID(), reader.getSeriesNumber());
 			series.setStudy(study);			
-			seriesDao.save(series);
-			series = seriesDao.findBySeriesInstanceUID(reader.getSeriesInstanceUID(), reader.getSeriesNumber());
+			dicomSeriesRepo.save(series);
+			series = dicomSeriesRepo.findBySeriesInstanceUIDAndSeriesNumber(reader.getSeriesInstanceUID(), reader.getSeriesNumber());
 		}else{
 			//LOG.info("Series already exists; Series Instance UID: {}", series.getSeriesInstanceUID());
 		}
@@ -115,14 +115,14 @@ public class DBServiceImpl implements DBService {
 	public EquipmentDicomEntity buildEquipment(DicomReader reader, SeriesDicomEntity series){
 		
 		//check if equipment exists
-		EquipmentDicomEntity equipment = equipmentDao.findBySeriesId(series.getId());
+		EquipmentDicomEntity equipment = dicomEquipmentRepo.findBySeries_Id(series.getId());
 		if(equipment == null){
 			equipment = DicomEntityBuilder.newEquipment(reader.getConversionType(), reader.getDeviceSerialNumber(), reader.getInstitutionAddress(),			
 					reader.getInstitutionName(), reader.getInstitutionalDepartmentName(), reader.getManufacturer(), reader.getManufacturerModelName(), 
 					reader.getModality(), reader.getSoftwareVersion(), reader.getStationName());
 			equipment.setSeries(series);//set the Series to Equipment because we now have the pkTBLSeriesID		
-			equipmentDao.save(equipment);
-			equipment = equipmentDao.findBySeriesId(series.getId());
+			dicomEquipmentRepo.save(equipment);
+			equipment = dicomEquipmentRepo.findBySeries_Id(series.getId());
 			
 		}else{
 			//LOG.info("Equipment already exists; Equipment Primary ID {}", equipment.getPkTBLEquipmentID());
@@ -136,7 +136,7 @@ public class DBServiceImpl implements DBService {
 	public InstanceDicomEntity buildInstance(DicomReader reader, SeriesDicomEntity series){
 		
 		//check first if instance exists
-		InstanceDicomEntity instance = instanceDao.findBySopInstanceUID(reader.getSOPInstanceUID());			
+		InstanceDicomEntity instance = dicomInstanceRepo.findBySopInstanceUID(reader.getSOPInstanceUID());			
 		if(instance == null){//let's create new instance along with dependent objects
 			instance = DicomEntityBuilder.newInstance(  reader.getAcquisitionDateTime(), reader.getContentDateTime(), reader.getExposureTime(),
 						reader.getImageOrientation(), reader.getImagePosition(), reader.getImageType(), reader.getInstanceNumber(), reader.getKvp(), 
@@ -144,8 +144,8 @@ public class DBServiceImpl implements DBService {
 						reader.getSliceThickness(), reader.getSopClassUID(), reader.getSOPInstanceUID(), reader.getTransferSyntaxUID(), 
 						reader.getWindowCenter(), reader.getWindowWidth(), reader.getXrayTubeCurrent());				
 			instance.setSeries(series);			
-			instanceDao.save(instance);
-			instance = instanceDao.findBySopInstanceUID(reader.getSOPInstanceUID());
+			dicomInstanceRepo.save(instance);
+			instance = dicomInstanceRepo.findBySopInstanceUID(reader.getSOPInstanceUID());
 			
 		}else{
 				LOG.info("Instance already exists; SOP Instance UID {}, Instance Number {}", instance.getInstanceNumber(), instance.getInstanceNumber());
@@ -177,16 +177,16 @@ public class DBServiceImpl implements DBService {
 						
 						//update entity modification dates according to the instance creation
 						series.setModifiedDate(instance.getCreatedDate());
-						seriesDao.save(series);
+						dicomSeriesRepo.save(series);
 						
 						equipment.setModifiedDate(instance.getCreatedDate());
-						equipmentDao.save(equipment);
+						dicomEquipmentRepo.save(equipment);
 						
 						study.setModifiedDate(instance.getCreatedDate());
-						studyDao.save(study);						
+						dicomStudyRepo.save(study);						
 						
 						patient.setModifiedDate(instance.getCreatedDate());
-						patientDao.save(patient);						
+						dicomPatientRepo.save(patient);						
 						
 						//try{ entityManager.getTransaction().commit(); }	catch(Exception e){}
 						

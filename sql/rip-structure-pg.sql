@@ -378,6 +378,7 @@ CREATE TABLE rip_dicom_parameter (
 	corporate_id varchar(50) NOT NULL,
 	corporate_name varchar(255) NOT NULL,
 	ae_title varchar(50) NOT NULL,
+	dicom_host varchar(150),
 	dicom_port int NOT NULL,
 	dicom_storage text,
 	activated boolean DEFAULT false NOT NULL,

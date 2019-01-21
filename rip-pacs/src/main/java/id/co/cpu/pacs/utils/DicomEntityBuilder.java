@@ -32,7 +32,7 @@ public class DicomEntityBuilder {
 		study.setAdmittingDiagnosesDescription(admittingDiagnosesDescription);		
 		study.setReferringPhysicianName(referringPhysicianName);
 		study.setStudyDateTime(studyDateTime);
-		study.setStudyID(studyID);
+		study.setStudyId(studyID);
 		study.setStudyDescription(studyDescription);
 		study.setStudyInstanceUID(studyInstanceUID);
 		study.setStudyPriorityID(studyPriorityID);

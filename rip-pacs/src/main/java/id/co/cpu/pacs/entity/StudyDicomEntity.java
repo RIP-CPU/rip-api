@@ -40,7 +40,7 @@ public class StudyDicomEntity extends BaseAuditEntity {
 	private String id;	
 
 	@Column(name="study_id", length=50)
-	private String studyID;
+	private String studyId;
 	
 	@Column(name="study_description", length=300)
 	private String studyDescription;
@@ -80,8 +80,8 @@ public class StudyDicomEntity extends BaseAuditEntity {
 	@Override
 	public String toString() {
 		return String.format(
-				"Study[id=%s, studyID=%s, studyDescription=%s, studyInstanceUID=%s, accessionNumber=%s, studyDateTime=%s, referringPhysicianName=%s, additionalPatientHistory=%s, admittingDiagnosesDescription=%s, studyStatusID=%s, studyPriorityID=%s, patientID=%s]",
-				id, studyID, studyDescription, studyInstanceUID, accessionNumber, studyDateTime,
+				"Study[id=%s, studyId=%s, studyDescription=%s, studyInstanceUID=%s, accessionNumber=%s, studyDateTime=%s, referringPhysicianName=%s, additionalPatientHistory=%s, admittingDiagnosesDescription=%s, studyStatusID=%s, studyPriorityID=%s, patientID=%s]",
+				id, studyId, studyDescription, studyInstanceUID, accessionNumber, studyDateTime,
 				referringPhysicianName, additionalPatientHistory, admittingDiagnosesDescription, studyStatusID,
 				studyPriorityID, patient.getPatientId());
 	}
