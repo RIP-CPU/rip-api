@@ -205,8 +205,20 @@ INSERT INTO mst_polyclinic_i18n (polyclinic_i18n_uuid, polyclinic_uuid, locale_c
 ('fc0f66f7-f032-4e5f-a1e2-132921c1ba95', 'ada5bb12-6d2e-4649-820d-224b4ab24c81', 'id-ID', 'Klinik Kesehatan Jiwa', 'Klinik Kesehatan Jiwa', 0, true, '2018-12-05 14:42:17', NULL, NULL, NULL);
 
 --
--- Dumping data for table mst_r_country_currency
+-- Dumping data for table rip_dicom_parameter
 --
+
+INSERT INTO rip_dicom_parameter(dicom_parameter_uuid, corporate_id, corporate_name, ae_title, dicom_port, dicom_storage, activated) VALUES
+	('65e75489-0d8a-4bfe-ba81-1544f5e3d1f3', 'CPU', 'PT. Cipta Pusaka Utama', 'AE-CPU', 104, './tmp/dicom/cpu', 1),
+	('08029046-b846-4cb2-acbe-6e5178730d07', 'DUMMY', 'Dummy Hospital', 'AE-DUMMY', 11112, './tmp/dicom/dummy', 1);
+
+--
+-- Dumping data for table sec_corporate
+--
+
+INSERT INTO sec_corporate(corporate_uuid, corporate_id, corporate_name, corporate_non_expired, email, address, telp_number) VALUES
+	('0ae4b095-d957-4ff1-a34d-7a440cc8d8ca', 'CPU', 'PT. Cipta Pusaka Utama', true, 'admin@cpu.co.id', 'Fortune Belleza Blok D1/E15 Graha Raya, Kota Tangerang Banten', '+21 2221 9967'),
+	('ae7efdc0-0302-4bc3-ab81-1f90b04d7393', 'DUMMY', 'Dummy Hospital', true, 'dummy_hospital@mailinator.com', 'Dummy', '+23456789');
 
 --
 -- Dumping data for table sec_menu
@@ -265,6 +277,16 @@ INSERT INTO sec_user (user_uuid, username, password, account_enabled, account_no
 ('1ac29215-75e8-4e19-b4f1-e076da7ca1ab', 'admin', '$2a$13$nnc2wLwVUw1.swkX353QTOFYoSZgQZPUUvbAd0mgXV7DMu5KorKw.', true, true, true, true, 'Administrator', 'admin@cpu.co.id', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'en-US', 0, true, '2018-12-02 20:50:29', NULL, NULL, NULL),
 ('38527ac6-edb6-4a4f-8e60-eede49c4c2a6', 'radiographer', '$2a$13$iyvREnHcryjZbnGwLkaJsug7cOBmk06QtbLN/L7k5ncJFPLildo1y', true, true, true, true, 'Radiographer', 'radiographer@cpu.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'en-US', 0, true, '2018-12-05 14:50:55', NULL, NULL, NULL),
 ('adfdd958-b9fe-4ebe-bf1e-1a19c0637071', 'patient', '$2a$13$iyvREnHcryjZbnGwLkaJsug7cOBmk06QtbLN/L7k5ncJFPLildo1y', true, true, true, true, 'Patient 01', 'patient01@cpu.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'en-US', 0, true, '2018-12-03 13:05:57', NULL, NULL, NULL);
+
+--
+-- Dumping data for table sec_r_user_corporate
+--
+
+INSERT INTO sec_r_user_corporate (user_uuid, corporate_uuid) VALUES
+('1ac29215-75e8-4e19-b4f1-e076da7ca1ab', '0ae4b095-d957-4ff1-a34d-7a440cc8d8ca'),
+('adfdd958-b9fe-4ebe-bf1e-1a19c0637071', 'ae7efdc0-0302-4bc3-ab81-1f90b04d7393'),
+('181545af-9410-47ca-8de2-4fd29d9da5d9', 'ae7efdc0-0302-4bc3-ab81-1f90b04d7393'),
+('38527ac6-edb6-4a4f-8e60-eede49c4c2a6', 'ae7efdc0-0302-4bc3-ab81-1f90b04d7393');
 
 --
 -- Dumping data for table sec_r_user_role

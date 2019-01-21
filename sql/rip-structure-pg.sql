@@ -179,25 +179,16 @@ CREATE TABLE mst_equipment (
 	modality_uuid varchar(36),
 	PRIMARY KEY (equipment_uuid)
 );
-CREATE TABLE mst_file_group (
-	file_group_uuid varchar(36) NOT NULL,
-	file_group_name varchar(150),
-	file_group_description text,
-	"version" int DEFAULT 0 NOT NULL,
-	is_active boolean DEFAULT true NOT NULL,
-	created_date timestamp,
-	created_by varchar(25),
-	modified_date timestamp,
-	modified_by varchar(25),
-	PRIMARY KEY (file_group_uuid)
-);
-CREATE TABLE mst_file_metadata (
+CREATE TABLE mst_file_metadata ( 
 	file_metadata_uuid varchar(36) NOT NULL,
-	file_checksum varchar(36),
-	file_extension varchar(255),
-	file_path text,
+	file_checksum varchar(36) NOT NULL,
+	file_full_name text NOT NULL,
+	file_short_name text,
+	file_extension varchar(100),
+	file_full_path text,
 	file_location text,
-	file_name text,
+	file_size int,
+	file_date timestamp,
 	file_type varchar(255),
 	file_download_count int,
 	"version" int DEFAULT 0 NOT NULL,
@@ -206,7 +197,6 @@ CREATE TABLE mst_file_metadata (
 	created_by varchar(25),
 	modified_date timestamp,
 	modified_by varchar(25),
-	file_group_uuid varchar(36) NOT NULL,
 	PRIMARY KEY (file_metadata_uuid)
 );
 CREATE TABLE mst_healthcare (
@@ -382,6 +372,74 @@ CREATE TABLE oauth_refresh_token (
 	"token" bytea,
 	authentication bytea
 );
+
+CREATE TABLE rip_dicom_parameter (
+	dicom_parameter_uuid varchar(36) NOT NULL,
+	corporate_id varchar(50) NOT NULL,
+	corporate_name varchar(255) NOT NULL,
+	ae_title varchar(50) NOT NULL,
+	dicom_port int NOT NULL,
+	dicom_storage text,
+	activated boolean DEFAULT false NOT NULL,
+	"version" int DEFAULT 0 NOT NULL,
+	is_active boolean DEFAULT true NOT NULL,
+	created_date timestamp DEFAULT CURRENT_TIMESTAMP,
+	created_by varchar(25),
+	modified_date timestamp,
+	modified_by varchar(25),
+	PRIMARY KEY (dicom_parameter_uuid)
+);
+CREATE TABLE rip_study_group (
+	study_group_uuid varchar(36) NOT NULL,
+	patient_id varchar(50),
+	patient_name varchar(150) NOT NULL,
+	patient_sex varchar(10) NOT NULL,
+	patient_birthday date NOT NULL,
+	patient_age varchar(10) DEFAULT NULL,
+	corporate_id varchar(50),
+	corporate_name varchar(255),
+	"version" int DEFAULT 0 NOT NULL,
+	is_active boolean DEFAULT true NOT NULL,
+	created_date timestamp DEFAULT CURRENT_TIMESTAMP,
+	created_by varchar(25),
+	modified_date timestamp,
+	modified_by varchar(25),
+	PRIMARY KEY (study_group_uuid)
+);
+CREATE TABLE rip_study_details (
+	study_details_uuid varchar(36) NOT NULL,
+	study_uuid varchar(36),
+	diagnose text,
+	notes text,
+	referring_physician_id varchar(50),
+	referring_physician_name varchar(100),
+	radiographer_id varchar(50),
+	radiographer_name varchar(100),
+	"version" int DEFAULT 0 NOT NULL,
+	is_active boolean DEFAULT true NOT NULL,
+	created_date timestamp DEFAULT CURRENT_TIMESTAMP,
+	created_by varchar(25),
+	modified_date timestamp,
+	modified_by varchar(25),
+	study_group_uuid varchar(36) NOT NULL,
+	PRIMARY KEY (study_details_uuid)
+);
+CREATE TABLE rip_dicom_history (
+	dicom_history_uuid varchar(36) NOT NULL,
+	file_checksum varchar(36) NOT NULL,
+	dicom_state text,
+	storescu boolean DEFAULT true NOT NULL,
+	upload boolean DEFAULT false NOT NULL,
+	"version" int DEFAULT 0 NOT NULL,
+	is_active boolean DEFAULT true NOT NULL,
+	created_date timestamp DEFAULT CURRENT_TIMESTAMP,
+	created_by varchar(25),
+	modified_date timestamp,
+	modified_by varchar(25),
+	study_details_uuid varchar(36) NOT NULL,
+	instance_uuid varchar(36) NOT NULL,
+	PRIMARY KEY (dicom_history_uuid)
+);
 CREATE TABLE rip_nurse (
 	nurse_uuid varchar(36) NOT NULL,
 	nurse_id varchar(50) NOT NULL,
@@ -468,26 +526,23 @@ CREATE TABLE rip_radiographer (
 	modified_by varchar(25),
 	PRIMARY KEY (radiographer_uuid)
 );
-CREATE TABLE rip_radiology_assessment (
-	radiology_assessment_uuid varchar(36) NOT NULL,
-	study_uuid varchar(36),
-	file_group_uuid varchar(36) NOT NULL,
-	patient_id varchar(100) NOT NULL,
-	patient_name varchar(100) NOT NULL,
-	referring_physician_id text,
-	referring_physician_fullname varchar(100),
-	radiographer_id varchar(50),
-	radiographer_fullname text,
-	radiology_diagnose text,
-	notes text,
-	checkup_date date,
+
+CREATE TABLE sec_corporate (
+	corporate_uuid varchar(36) NOT NULL,
+	corporate_id varchar(50) NOT NULL,
+	corporate_name varchar(255) NOT NULL,
+	corporate_non_expired boolean DEFAULT true NOT NULL,
+	email varchar(150),
+	address text,
+	telp_number varchar(20),
+	fax_number varchar(20),
 	"version" int DEFAULT 0 NOT NULL,
 	is_active boolean DEFAULT true NOT NULL,
 	created_date timestamp DEFAULT CURRENT_TIMESTAMP,
 	created_by varchar(25),
 	modified_date timestamp,
 	modified_by varchar(25),
-	PRIMARY KEY (radiology_assessment_uuid)
+	PRIMARY KEY (corporate_uuid)
 );
 CREATE TABLE sec_function (
 	function_uuid varchar(36) NOT NULL,
@@ -534,6 +589,11 @@ CREATE TABLE sec_menu_i18n (
 	modified_date timestamp,
 	modified_by varchar(25),
 	PRIMARY KEY (menu_i18n_uuid)
+);
+
+CREATE TABLE sec_r_user_corporate (
+	user_uuid varchar(36) NOT NULL,
+	corporate_uuid varchar(36) NOT NULL
 );
 CREATE TABLE sec_r_user_nurse (
 	user_uuid varchar(36) NOT NULL,
@@ -759,6 +819,9 @@ ALTER TABLE rip_patient ADD CONSTRAINT patient_id UNIQUE (patient_id);
 ALTER TABLE rip_physician ADD CONSTRAINT physician_id UNIQUE (physician_id);
 ALTER TABLE rip_radiographer ADD CONSTRAINT radiographer_id UNIQUE (radiographer_id);
 ALTER TABLE rip_nurse ADD CONSTRAINT nurse_id UNIQUE (nurse_id);
+ALTER TABLE sec_user ADD CONSTRAINT username UNIQUE (username);
+ALTER TABLE sec_user ADD CONSTRAINT email UNIQUE (email);
+ALTER TABLE sec_corporate ADD CONSTRAINT corporate_id UNIQUE (corporate_id);
 
 ALTER TABLE dcm_equipment
 	ADD FOREIGN KEY (series_uuid) 
@@ -793,11 +856,6 @@ ALTER TABLE mst_district
 ALTER TABLE mst_equipment
 	ADD FOREIGN KEY (modality_uuid) 
 	REFERENCES mst_modality (modality_uuid);
-
-
-ALTER TABLE mst_file_metadata
-	ADD FOREIGN KEY (file_group_uuid) 
-	REFERENCES mst_file_group (file_group_uuid);
 
 
 ALTER TABLE mst_healthcare
@@ -854,6 +912,18 @@ ALTER TABLE mst_zipcode
 	ADD FOREIGN KEY (subdistrict_id) 
 	REFERENCES mst_subdistrict ("id");
 
+ALTER TABLE rip_study_details
+	ADD FOREIGN KEY (study_group_uuid) 
+	REFERENCES rip_study_group (study_group_uuid);
+
+ALTER TABLE rip_dicom_history
+	ADD FOREIGN KEY (study_details_uuid) 
+	REFERENCES rip_study_details (study_details_uuid);
+
+ALTER TABLE rip_dicom_history
+	ADD FOREIGN KEY (instance_uuid) 
+	REFERENCES dcm_instance (instance_uuid);
+
 ALTER TABLE rip_patient
 	ADD FOREIGN KEY (parent_uuid) 
 	REFERENCES rip_patient (patient_uuid);
@@ -879,6 +949,16 @@ ALTER TABLE sec_menu
 ALTER TABLE sec_menu_i18n
 	ADD FOREIGN KEY (menu_uuid) 
 	REFERENCES sec_menu (menu_uuid);
+
+
+ALTER TABLE sec_r_user_corporate
+	ADD FOREIGN KEY (corporate_uuid) 
+	REFERENCES sec_corporate (corporate_uuid);
+
+
+ALTER TABLE sec_r_user_corporate
+	ADD FOREIGN KEY (user_uuid) 
+	REFERENCES sec_user (user_uuid);
 
 
 ALTER TABLE sec_r_user_nurse

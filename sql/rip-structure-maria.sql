@@ -266,43 +266,27 @@ CREATE TABLE `mst_equipment` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `mst_file_group`
---
-
-CREATE TABLE `mst_file_group` (
-  `file_group_uuid` varchar(36) NOT NULL,
-  `file_group_name` varchar(150) DEFAULT NULL,
-  `file_group_description` text,
-  `version` int(11) NOT NULL DEFAULT '0',
-  `is_active` tinyint(1) NOT NULL DEFAULT '1',
-  `created_date` datetime DEFAULT NULL,
-  `created_by` varchar(25) DEFAULT NULL,
-  `modified_date` datetime DEFAULT NULL,
-  `modified_by` varchar(25) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `mst_file_metadata`
 --
 
 CREATE TABLE `mst_file_metadata` (
   `file_metadata_uuid` varchar(36) NOT NULL,
   `file_checksum` varchar(36) DEFAULT NULL,
-  `file_extension` varchar(255) DEFAULT NULL,
-  `file_path` text,
+  `file_full_name` text,
+  `file_short_name` text,
+  `file_extension` varchar(100),
+  `file_full_path` text,
   `file_location` text,
-  `file_name` text,
-  `file_type` varchar(255) DEFAULT NULL,
-  `file_download_count` int(11) DEFAULT NULL,
+  `file_size` int(11),
+  `file_date` datetime,
+  `file_type` varchar(255),
+  `file_download_count` int(11),
   `version` int(11) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(25) DEFAULT NULL,
   `modified_date` datetime DEFAULT NULL,
-  `modified_by` varchar(25) DEFAULT NULL,
-  `file_group_uuid` varchar(36) NOT NULL
+  `modified_by` varchar(25) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -581,6 +565,97 @@ CREATE TABLE `oauth_refresh_token` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `rip_dicom_parameter`
+--
+
+CREATE TABLE rip_dicom_parameter (
+  `dicom_parameter_uuid` varchar(36) NOT NULL,
+  `corporate_id` varchar(50) NOT NULL,
+  `corporate_name` varchar(255) NOT NULL,
+  `ae_title` varchar(50) NOT NULL,
+  `dicom_port` int(11) NOT NULL,
+  `dicom_storage` text,
+  `activated` tinyint(1) NOT NULL DEFAULT '0',
+  `version` int(11) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_date` datetime DEFAULT NULL,
+  `created_by` varchar(25) DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
+  `modified_by` varchar(25) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rip_study_group`
+--
+
+CREATE TABLE rip_study_group (
+  `study_group_uuid` varchar(36) NOT NULL,
+  `patient_id` varchar(50),
+  `patient_name` varchar(150) NOT NULL,
+  `patient_sex` varchar(10) NOT NULL,
+  `patient_birthday` date NOT NULL,
+  `patient_age` varchar(10) DEFAULT NULL,
+  `corporate_id` varchar(50),
+  `corporate_name` varchar(255),
+  `version` int(11) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_date` datetime DEFAULT NULL,
+  `created_by` varchar(25) DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
+  `modified_by` varchar(25) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rip_study_details`
+--
+
+CREATE TABLE rip_study_details (
+  `study_details_uuid` varchar(36) NOT NULL,
+  `study_uuid` varchar(36),
+  `diagnose` text,
+  `notes` text,
+  `referring_physician_id` varchar(50),
+  `referring_physician_name` varchar(100),
+  `radiographer_id` varchar(50),
+  `radiographer_name` varchar(100),
+  `version` int(11) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_date` datetime DEFAULT NULL,
+  `created_by` varchar(25) DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
+  `modified_by` varchar(25) DEFAULT NULL,
+  `study_group_uuid` varchar(36) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rip_dicom_history`
+--
+
+CREATE TABLE rip_dicom_history (
+  `dicom_history_uuid` varchar(36) NOT NULL,
+  `file_checksum` varchar(36) NOT NULL,
+  `dicom_state` text,
+  `storescu` tinyint(1) NOT NULL DEFAULT '1',
+  `upload` tinyint(1) NOT NULL DEFAULT '0',
+  `version` int(11) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_date` datetime DEFAULT NULL,
+  `created_by` varchar(25) DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
+  `modified_by` varchar(25) DEFAULT NULL,
+  `study_details_uuid` varchar(36) NOT NULL,
+  `instance_uuid` varchar(36) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `rip_nurse`
 --
 
@@ -692,33 +767,6 @@ CREATE TABLE `rip_radiographer` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rip_radiology_assessment`
---
-
-CREATE TABLE `rip_radiology_assessment` (
-  `radiology_assessment_uuid` varchar(36) NOT NULL,
-  `study_uuid` varchar(36) DEFAULT NULL,
-  `file_group_uuid` varchar(36) NOT NULL,
-  `patient_id` varchar(100) NOT NULL,
-  `patient_name` varchar(100) NOT NULL,
-  `referring_physician_id` text,
-  `referring_physician_fullname` varchar(100) DEFAULT NULL,
-  `radiographer_id` varchar(50) DEFAULT NULL,
-  `radiographer_fullname` text,
-  `radiology_diagnose` text,
-  `notes` text,
-  `checkup_date` date DEFAULT NULL,
-  `version` int(11) NOT NULL DEFAULT '0',
-  `is_active` tinyint(1) NOT NULL DEFAULT '1',
-  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `created_by` varchar(25) DEFAULT NULL,
-  `modified_date` datetime DEFAULT NULL,
-  `modified_by` varchar(25) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `rip_r_radiographer_healthcare`
 --
 
@@ -726,6 +774,29 @@ CREATE TABLE `rip_r_radiographer_healthcare` (
   `radiographer_uuid` varchar(36) NOT NULL,
   `healthcare_code` varchar(200) NOT NULL,
   `healthcare_name` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sec_corporate`
+--
+
+CREATE TABLE `sec_corporate` (
+  `corporate_uuid` varchar(36) NOT NULL,
+  `corporate_id` varchar(50) NOT NULL,
+  `corporate_name` varchar(255) NOT NULL,
+  `corporate_non_expired` tinyint(1) NOT NULL DEFAULT '1',
+  `email` varchar(150),
+  `address` text,
+  `telp_number` varchar(20),
+  `fax_number` varchar(20),
+  `version` int(11) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(25) DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
+  `modified_by` varchar(25) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -808,6 +879,17 @@ CREATE TABLE `sec_role` (
   `created_by` varchar(25) DEFAULT NULL,
   `modified_date` datetime DEFAULT NULL,
   `modified_by` varchar(25) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sec_r_user_corporate`
+--
+
+CREATE TABLE `sec_r_user_corporate` (
+  `user_uuid` varchar(36) NOT NULL,
+  `corporate_uuid` varchar(36) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -1198,17 +1280,10 @@ ALTER TABLE `mst_equipment`
   ADD KEY `modality_uuid` (`modality_uuid`);
 
 --
--- Indexes for table `mst_file_group`
---
-ALTER TABLE `mst_file_group`
-  ADD PRIMARY KEY (`file_group_uuid`);
-
---
 -- Indexes for table `mst_file_metadata`
 --
 ALTER TABLE `mst_file_metadata`
-  ADD PRIMARY KEY (`file_metadata_uuid`),
-  ADD KEY `file_group_uuid` (`file_group_uuid`);
+  ADD PRIMARY KEY (`file_metadata_uuid`);
 
 --
 -- Indexes for table `mst_healthcare`
@@ -1300,6 +1375,33 @@ ALTER TABLE `oauth_client_token`
   ADD PRIMARY KEY (`authentication_id`);
 
 --
+-- Indexes for table `rip_dicom_parameter`
+--
+ALTER TABLE `rip_dicom_parameter`
+  ADD PRIMARY KEY (`dicom_parameter_uuid`);
+
+--
+-- Indexes for table `rip_study_group`
+--
+ALTER TABLE `rip_study_group`
+  ADD PRIMARY KEY (`study_group_uuid`);
+
+--
+-- Indexes for table `rip_study_details`
+--
+ALTER TABLE `rip_study_details`
+  ADD PRIMARY KEY (`study_details_uuid`),
+  ADD KEY `rip_study_group` (`study_group_uuid`);
+
+--
+-- Indexes for table `rip_dicom_history`
+--
+ALTER TABLE `rip_dicom_history`
+  ADD PRIMARY KEY (`dicom_history_uuid`),
+  ADD KEY `rip_study_group` (`study_group_uuid`),
+  ADD KEY `dcm_instance` (`instance_uuid`);
+
+--
 -- Indexes for table `rip_nurse`
 --
 ALTER TABLE `rip_nurse`
@@ -1346,6 +1448,11 @@ ALTER TABLE `rip_r_radiographer_healthcare`
   ADD KEY `radiographer_uuid` (`radiographer_uuid`);
 
 --
+-- Indexes for table `sec_corporate`
+--
+ALTER TABLE `sec_corporate`
+  ADD PRIMARY KEY (`corporate_uuid`);
+--
 -- Indexes for table `sec_function`
 --
 ALTER TABLE `sec_function`
@@ -1373,6 +1480,13 @@ ALTER TABLE `sec_menu_i18n`
 ALTER TABLE `sec_role`
   ADD PRIMARY KEY (`role_uuid`),
   ADD UNIQUE KEY `role_name` (`role_name`);
+
+--
+-- Indexes for table `sec_r_user_corporate`
+--
+ALTER TABLE `sec_r_user_corporate`
+  ADD KEY `user_uuid` (`user_uuid`),
+  ADD KEY `corporate_uuid` (`corporate_uuid`);
 
 --
 -- Indexes for table `sec_r_user_nurse`
@@ -1541,12 +1655,6 @@ ALTER TABLE `mst_equipment`
   ADD CONSTRAINT `mst_equipment_ibfk_1` FOREIGN KEY (`modality_uuid`) REFERENCES `mst_modality` (`modality_uuid`);
 
 --
--- Constraints for table `mst_file_metadata`
---
-ALTER TABLE `mst_file_metadata`
-  ADD CONSTRAINT `mst_file_metadata_ibfk_1` FOREIGN KEY (`file_group_uuid`) REFERENCES `mst_file_group` (`file_group_uuid`);
-
---
 -- Constraints for table `mst_healthcare`
 --
 ALTER TABLE `mst_healthcare`
@@ -1600,6 +1708,19 @@ ALTER TABLE `rip_patient`
   ADD CONSTRAINT `rip_patient_ibfk_1` FOREIGN KEY (`parent_uuid`) REFERENCES `rip_patient` (`patient_uuid`);
 
 --
+-- Constraints for table `rip_study_details`
+--
+ALTER TABLE `rip_study_details`
+  ADD CONSTRAINT `rip_study_details_ibfk_1` FOREIGN KEY (`study_group_uuid`) REFERENCES `rip_study_group` (`study_group_uuid`);
+
+--
+-- Constraints for table `rip_dicom_history`
+--
+ALTER TABLE `rip_dicom_history`
+  ADD CONSTRAINT `rip_dicom_history_ibfk_1` FOREIGN KEY (`study_group_uuid`) REFERENCES `rip_study_group` (`study_group_uuid`),
+  ADD CONSTRAINT `rip_dicom_history_ibfk_2` FOREIGN KEY (`instance_uuid`) REFERENCES `dcm_instance` (`instance_uuid`);
+
+--
 -- Constraints for table `rip_r_radiographer_healthcare`
 --
 ALTER TABLE `rip_r_radiographer_healthcare`
@@ -1623,6 +1744,13 @@ ALTER TABLE `sec_menu`
 --
 ALTER TABLE `sec_menu_i18n`
   ADD CONSTRAINT `sec_menu_i18n_ibfk_1` FOREIGN KEY (`menu_uuid`) REFERENCES `sec_menu` (`menu_uuid`);
+
+--
+-- Constraints for table `sec_r_user_corporate`
+--
+ALTER TABLE `sec_r_user_corporate`
+  ADD CONSTRAINT `sec_r_user_corporate_ibfk_1` FOREIGN KEY (`user_uuid`) REFERENCES `sec_user` (`user_uuid`),
+  ADD CONSTRAINT `sec_r_user_corporate_ibfk_2` FOREIGN KEY (`corporate_uuid`) REFERENCES `sec_corporate` (`corporate_uuid`);
 
 --
 -- Constraints for table `sec_r_user_nurse`
