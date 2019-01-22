@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 import id.co.cpu.common.entity.BaseAuditEntity;
+import id.co.cpu.common.utils.SchemaDatabase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,7 +25,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=false, exclude={"menu"})
 @ToString(exclude={"menu"})
 @Entity
-@Table(name = "sec_menu_i18n")
+@Table(name = "sec_menu_i18n", schema = SchemaDatabase.SECURITY)
 public class MenuI18nEntity extends BaseAuditEntity {
 
 	/**

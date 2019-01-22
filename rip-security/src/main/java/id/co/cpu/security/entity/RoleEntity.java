@@ -18,6 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 
 import id.co.cpu.common.entity.BaseAuditEntity;
+import id.co.cpu.common.utils.SchemaDatabase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,7 +31,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=false, exclude={"users", "functions"})
 @ToString(exclude={"users", "functions"})
 @Entity
-@Table(name = "sec_role")
+@Table(name = "sec_role", schema = SchemaDatabase.SECURITY)
 public class RoleEntity extends BaseAuditEntity implements GrantedAuthority {
 
 	/**

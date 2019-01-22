@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 import id.co.cpu.common.entity.BaseAuditEntity;
+import id.co.cpu.common.utils.SchemaDatabase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 @Entity
-@Table(name="mst_file_metadata")
+@Table(name="mst_file_metadata", schema = SchemaDatabase.MASTER)
 public class FileMetadataEntity extends BaseAuditEntity {
 
 	private static final long serialVersionUID = 657390142518153080L;

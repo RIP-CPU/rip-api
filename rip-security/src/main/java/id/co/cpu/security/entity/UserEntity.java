@@ -20,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import id.co.cpu.common.entity.BaseAuditEntity;
+import id.co.cpu.common.utils.SchemaDatabase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,7 +33,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=false, exclude={"roles"})
 @ToString(exclude={"roles"})
 @Entity
-@Table(name = "sec_user")
+@Table(name = "sec_user", schema = SchemaDatabase.SECURITY)
 public class UserEntity extends BaseAuditEntity implements UserDetails {
 
 	/**

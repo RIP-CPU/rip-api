@@ -22,6 +22,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import id.co.cpu.common.entity.BaseAuditEntity;
+import id.co.cpu.common.utils.SchemaDatabase;
 import id.co.cpu.feign.dto.security.MenuDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,7 +36,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=false, exclude={"childsMenu", "parentMenu", "menuI18n"})
 @ToString(exclude={"childsMenu", "parentMenu", "menuI18n"})
 @Entity
-@Table(name = "sec_menu")
+@Table(name = "sec_menu", schema = SchemaDatabase.SECURITY)
 public class MenuEntity extends BaseAuditEntity {
 
 	/**

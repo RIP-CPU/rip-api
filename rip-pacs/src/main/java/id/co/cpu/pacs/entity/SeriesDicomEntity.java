@@ -19,6 +19,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
 
 import id.co.cpu.common.entity.BaseAuditEntity;
+import id.co.cpu.common.utils.SchemaDatabase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 @Entity
-@Table(name="dcm_series")
+@Table(name="dcm_series", schema = SchemaDatabase.PACS)
 public class SeriesDicomEntity extends BaseAuditEntity {
 
 	private static final long serialVersionUID = 6918147797908911998L;

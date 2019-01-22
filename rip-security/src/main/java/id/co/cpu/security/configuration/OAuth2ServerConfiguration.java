@@ -21,6 +21,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
+import id.co.cpu.security.service.JdbcOauth2ClientDetailsService;
 import id.co.cpu.security.service.UserImplService;
 
 @Configuration
@@ -78,6 +79,6 @@ public class OAuth2ServerConfiguration extends AuthorizationServerConfigurerAdap
     
     @Bean
     public JdbcClientDetailsService jdbcClientDetailService() {
-    	return new JdbcClientDetailsService(dataSource);
+    	return new JdbcOauth2ClientDetailsService(dataSource);
     }
 }

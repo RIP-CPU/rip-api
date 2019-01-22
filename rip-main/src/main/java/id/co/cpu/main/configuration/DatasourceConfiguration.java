@@ -36,7 +36,7 @@ public class DatasourceConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPersistenceUnitName("rip");        
+        em.setPersistenceUnitName("rip");
         em.setPackagesToScan(new String[]{"id.co.cpu.*.entity"});
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter(); 
         em.setJpaVendorAdapter(vendorAdapter);

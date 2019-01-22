@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 import id.co.cpu.common.entity.BaseAuditEntity;
+import id.co.cpu.common.utils.SchemaDatabase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,7 +25,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=false, exclude={"menu", "role"})
 @ToString(exclude={"menu", "role"})
 @Entity
-@Table(name = "sec_function")
+@Table(name = "sec_function", schema = SchemaDatabase.SECURITY)
 public class FunctionEntity extends BaseAuditEntity {
 
 	/**
