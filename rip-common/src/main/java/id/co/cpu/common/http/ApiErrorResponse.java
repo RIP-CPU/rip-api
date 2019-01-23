@@ -42,6 +42,18 @@ public class ApiErrorResponse {
 		return jsonUtils.objToJson(response);
 	}
 	
+	public String errorDescriptionResponse(ErrorCode errorCode, Locale locale) {
+		if(locale == null)
+			locale = Locale.forLanguageTag(this.locale);
+		return messageSource.getMessage(errorCode.name(), null, locale);
+	}
+	
+	public String errorDescriptionResponse(ErrorCode errorCode, Locale locale, Object[] params) {
+		if(locale == null)
+			locale = Locale.forLanguageTag(this.locale);
+		return messageSource.getMessage(errorCode.name(), params, locale);
+	}
+	
 	public String getErrorMessage(ErrorCode errorCode,Locale locale)
 	{
 		return messageSource.getMessage(errorCode.name(), null, locale);

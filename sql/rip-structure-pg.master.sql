@@ -269,6 +269,7 @@ CREATE TABLE master.mst_parameter_i18n (
 	modified_by varchar(25),
 	PRIMARY KEY (parameter_i18n_uuid)
 );
+ALTER TABLE master.mst_file_metadata ADD CONSTRAINT file_checksum UNIQUE (file_checksum);
 
 ALTER TABLE master.mst_city
 	ADD FOREIGN KEY (province_id) 

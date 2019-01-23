@@ -30,7 +30,7 @@ import id.co.cpu.common.utils.DateUtil;
 
 /**
  * @author S201403171
- * @see <a href="https://jsfiddle.net/ridlafadilah/r76a89gq/">Generate Signature Header</a>
+ * @see <a href="https://jsfiddle.net/ridlafadilah/9y8fx3e4/">Generate Signature Header</a>
  */
 
 @Component

@@ -1,5 +1,6 @@
 package id.co.cpu.file.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -34,25 +35,25 @@ public class FileMetadataEntity extends BaseAuditEntity {
 	private String id;	
 	
 	@Column(name="file_checksum")
-	private String fileChecksum;	
+	private String checksum;	
 	
 	@Column(name="file_full_name")
-	private String fileFullname;
+	private String fullname;
 	
 	@Column(name="file_short_name")
-	private String fileShortname;
+	private String shortname;
 	
 	@Column(name="file_extension")
-	private String fileExtension;
+	private String extension;
 	
 	@Column(name="file_full_path")
-	private String fileFullPath;
+	private String fullPath;
 	
 	@Column(name="file_location")
-	private String fileLocation;
+	private String location;
 	
 	@Column(name="file_size")
-	private Integer fileSize;
+	private BigDecimal size;
 	
 	@Column(name="file_date")
 	private Date fileDate;
@@ -61,6 +62,6 @@ public class FileMetadataEntity extends BaseAuditEntity {
 	private String fileType;
 	
 	@Column(name="file_download_count")
-	private Integer fileDownloadCount;
+	private Integer downloadCount;
 	
 }

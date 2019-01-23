@@ -1,6 +1,7 @@
 package id.co.cpu.feign.dto.file;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -20,15 +21,14 @@ public class FileMetadataDto implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -928821648193952510L;
-	private String fileChecksum;
-	private String fileFullname;
-	private String fileShortname;
-	private String fileExtension;
-	private String fileFullPath;
-	private String fileLocation;
-	private Integer fileSize;
+	private String checksum;
+	private String fullname;
+	private String shortname;
+	private String extension;
+	private String fullPath;
+	private String location;
+	private BigDecimal size;
 	private Date fileDate;
 	private String fileType;
-	private Integer fileDownloadCount;
 
 }

@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import id.co.cpu.common.http.ApiErrorResponse;
 import id.co.cpu.common.utils.ErrorCode;
@@ -23,22 +24,8 @@ public class BaseControllerException {
 	@Autowired
 	protected ApiErrorResponse errorResponse;
 
-	/**
-	 * Handles all Exceptions not addressed by more specific
-	 * <code>@ExceptionHandler</code> methods. Creates a response with the Exception
-	 * Attributes in the response body as JSON and a HTTP status code of 500,
-	 * internal server error.
-	 *
-	 * @param exception
-	 *            An Exception instance.
-	 * @param request
-	 *            The HttpServletRequest in which the Exception was raised.
-	 * @return A ResponseEntity containing the Exception Attributes in the body and
-	 *         a HTTP status code 500.
-	 */	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<BaseResponse> handleException(HttpServletRequest request, Exception exception) {
-		exception.printStackTrace();
 		logger.error(stackTrace(exception));
 		
 		Locale locale = null;
@@ -46,13 +33,29 @@ public class BaseControllerException {
 		if(acceptLanguage != null)
 			locale = new Locale(acceptLanguage);
 		Map<String, String> respStatusMessage = new HashMap<String, String>();
-		respStatusMessage.put(ErrorCode.ERR_SYS0500.name(), errorResponse.errorResponse(ErrorCode.ERR_SYS0500, locale));
+		respStatusMessage.put(ErrorCode.ERR_SYS0500.name(), errorResponse.errorDescriptionResponse(ErrorCode.ERR_SYS0500, locale));
 		BaseResponse baseResponse = new BaseResponse();
-		baseResponse.setRespStatusData("failure");
+		baseResponse.setRespStatusCode("failure");
 		baseResponse.setRespStatusMessage(respStatusMessage);
-		baseResponse.setError(respStatusMessage.get(ErrorCode.ERR_SYS0500.name()));
 		return new ResponseEntity<BaseResponse>(baseResponse,
 				ErrorCode.ERR_SYS0500.getStatus());
+	}
+	
+	@ExceptionHandler(MissingServletRequestPartException.class)
+	public ResponseEntity<BaseResponse> handleMissingServletRequestPartException(HttpServletRequest request, MissingServletRequestPartException exception) {
+		logger.error(stackTrace(exception));
+		
+		Locale locale = null;
+		String acceptLanguage = request.getHeader("Accept-Language");
+		if(acceptLanguage != null)
+			locale = new Locale(acceptLanguage);
+		Map<String, String> respStatusMessage = new HashMap<String, String>();
+		respStatusMessage.put(ErrorCode.ERR_SYS0404.name(), errorResponse.errorDescriptionResponse(ErrorCode.ERR_SYS0404, locale));
+		BaseResponse baseResponse = new BaseResponse();
+		baseResponse.setRespStatusCode("failure");
+		baseResponse.setRespStatusMessage(respStatusMessage);
+		return new ResponseEntity<BaseResponse>(baseResponse,
+				ErrorCode.ERR_SYS0404.getStatus());
 	}
 	
 	@ExceptionHandler(SystemErrorException.class)
@@ -68,11 +71,10 @@ public class BaseControllerException {
 			String err = errorResponse.errorResponse(exception.getErrorCode(), locale, exception.getParams());
 			respStatusMessage.put(exception.getErrorCode().name(), err);
 		} else
-			respStatusMessage.put(exception.getErrorCode().name(), errorResponse.errorResponse(exception.getErrorCode(), locale));
+			respStatusMessage.put(exception.getErrorCode().name(), errorResponse.errorDescriptionResponse(exception.getErrorCode(), locale));
 		BaseResponse baseResponse = new BaseResponse();
-		baseResponse.setRespStatusData("failure");
+		baseResponse.setRespStatusCode("failure");
 		baseResponse.setRespStatusMessage(respStatusMessage);
-		baseResponse.setError(respStatusMessage.get(exception.getErrorCode().name()));
 		return new ResponseEntity<BaseResponse>(baseResponse,
 				exception.getErrorCode().getStatus());
 	}
@@ -84,26 +86,16 @@ public class BaseControllerException {
 	}
 	
 	private class BaseResponse {
-		private String error;
-		private String respStatusData = "success";
+		private String respStatusCode = "success";
 		private Map<String, String> respStatusMessage;
 
 		@SuppressWarnings("unused")
-		public String getError() {
-			return error;
+		public String getRespStatusCode() {
+			return respStatusCode;
 		}
 
-		public void setError(String error) {
-			this.error = error;
-		}
-
-		@SuppressWarnings("unused")
-		public String getRespStatusData() {
-			return respStatusData;
-		}
-
-		public void setRespStatusData(String respStatusData) {
-			this.respStatusData = respStatusData;
+		public void setRespStatusCode(String respStatusCode) {
+			this.respStatusCode = respStatusCode;
 		}
 
 		@SuppressWarnings("unused")

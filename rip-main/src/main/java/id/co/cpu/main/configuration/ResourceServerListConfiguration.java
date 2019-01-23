@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
+import id.co.cpu.file.configuration.ResourceServerFileAdapter;
 import id.co.cpu.general.configuration.ResourceServerGeneralAdapter;
 import id.co.cpu.master.configuration.ResourceServerMasterAdapter;
 import id.co.cpu.notification.configuration.ResourceServerNotificationAdapter;
@@ -92,6 +93,18 @@ public class ResourceServerListConfiguration {
 		};
 		resource.setConfigurers(Arrays.<ResourceServerConfigurer> asList(new ResourceServerPACSAdapter(tokenStore)));
 		resource.setOrder(-18);
+		return resource;
+	}
+
+	@Bean
+	protected ResourceServerConfiguration fileResources() {
+		ResourceServerConfiguration resource = new ResourceServerConfiguration() {
+			public void setConfigurers(List<ResourceServerConfigurer> configurers) {
+				super.setConfigurers(configurers);
+			}
+		};
+		resource.setConfigurers(Arrays.<ResourceServerConfigurer> asList(new ResourceServerFileAdapter(tokenStore)));
+		resource.setOrder(-19);
 		return resource;
 	}
 	

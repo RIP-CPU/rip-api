@@ -1,5 +1,6 @@
 package id.co.cpu.file.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,21 +14,30 @@ import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.file.Files;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.activation.MimetypesFileTypeMap;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import id.co.cpu.common.exceptions.SystemErrorException;
+import id.co.cpu.common.utils.ErrorCode;
 import id.co.cpu.common.utils.FileSizeUnit;
+import id.co.cpu.feign.dto.file.FileMetadataDto;
 
 @Component
 public class FileUtils {
+	
+	private ZipInputStream zis;
 
-	public void writeFile(String filePath, byte[] fileContent) throws IOException {
+	public void write(String filePath, byte[] fileContent) throws Exception {
 		RandomAccessFile stream = new RandomAccessFile(filePath, "rw");
 		FileChannel channel = stream.getChannel();
 		FileLock lock = null;
@@ -44,6 +54,30 @@ public class FileUtils {
 		}
 		stream.close();
 		channel.close();
+	}
+
+	public String writeFile(String filePath, byte[] fileContent) throws Exception {
+		String checksum = fileChecksum("MD5", fileContent);
+		filePath = getFilePathString(checksum, filePath, false);
+		write(filePath, fileContent);
+		return filePath;
+	}
+
+	public FileMetadataDto writeFile(String filePath, MultipartFile multipart) throws Exception {
+		String checksum = fileChecksum("MD5", multipart.getBytes()); 
+		String fileFullPath = getFilePathString(checksum, filePath, false);
+		write(fileFullPath, multipart.getBytes());
+		FileMetadataDto fileMetadata = new FileMetadataDto();
+		fileMetadata.setChecksum(checksum);
+		fileMetadata.setFullPath(fileFullPath);
+		fileMetadata.setLocation(filePath);
+		fileMetadata.setFullname(multipart.getOriginalFilename());
+		fileMetadata.setShortname(getFilenameWithoutExtension(multipart.getOriginalFilename()));
+		fileMetadata.setExtension(fileExtension(multipart.getOriginalFilename()));
+		fileMetadata.setSize(getSize(multipart, FileSizeUnit.bytes));
+		fileMetadata.setFileDate(new Date());
+		fileMetadata.setFileType(multipart.getOriginalFilename() == null ? "application/octet-stream" : new MimetypesFileTypeMap().getContentType(multipart.getOriginalFilename()));
+		return fileMetadata;
 	}
 
 	public void zip(List<File> files, String zipLocation) throws IOException {
@@ -71,10 +105,10 @@ public class FileUtils {
 		fos.close();
 	}
 	
-	public void unzip(String fullPathZipFile, String unzipLocation) throws IOException {
+	public List<File> unzip(ZipInputStream zis, String unzipLocation) throws IOException {
 		byte[] buffer = new byte[1024];
-		ZipInputStream zis = new ZipInputStream(new FileInputStream(fullPathZipFile));
 		ZipEntry zipEntry = zis.getNextEntry();
+		List<File> files = new ArrayList<File>();
 		while (zipEntry != null) {
 			String fileName = zipEntry.getName();
 			File newFile = new File(unzipLocation + fileName);
@@ -84,10 +118,51 @@ public class FileUtils {
 				fos.write(buffer, 0, len);
 			}
 			fos.close();
+			files.add(newFile);
 			zipEntry = zis.getNextEntry();
 		}
 		zis.closeEntry();
 		zis.close();
+		return files;
+	}
+	
+	public List<FileMetadataDto> extract(String filePath, MultipartFile multipart) throws Exception {
+		String zipFullPath = filePath+"/"+multipart.getOriginalFilename();
+		write(zipFullPath, multipart.getBytes());
+		zis = new ZipInputStream(new FileInputStream(zipFullPath));
+		ZipEntry zipEntry = null;
+		List<FileMetadataDto> fileMetadatas = new ArrayList<FileMetadataDto>();
+		ByteArrayOutputStream out = null;
+		while ((zipEntry = zis.getNextEntry()) != null) {
+			if(zipEntry.isDirectory())
+				throw new SystemErrorException(ErrorCode.ERR_SYS0502);
+			out = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+            int len = 0;
+            while ((len = zis.read(buffer)) > 0) {
+                out.write(buffer, 0, len);
+            }
+            out.close();
+			String fileName = zipEntry.getName();
+			String checksum = fileChecksum("MD5", out.toByteArray());
+			String fileFullPath = getFilePathString(checksum, filePath, false);
+			write(fileFullPath, out.toByteArray());
+			FileMetadataDto fileMetadata = new FileMetadataDto();
+			fileMetadata.setChecksum(checksum);
+			fileMetadata.setFullPath(fileFullPath);
+			fileMetadata.setLocation(filePath);
+			fileMetadata.setFullname(fileName);
+			fileMetadata.setShortname(getFilenameWithoutExtension(fileName));
+			fileMetadata.setExtension(fileExtension(fileName));
+			fileMetadata.setSize(getSize(zipEntry.getSize(), FileSizeUnit.bytes));
+			fileMetadata.setFileDate(new Date());
+			fileMetadata.setFileType(fileName == null ? "application/octet-stream" : new MimetypesFileTypeMap().getContentType(fileName));
+			fileMetadatas.add(fileMetadata);
+		}
+		zis.closeEntry();
+		zis.close();
+		new File(zipFullPath).delete();
+		return fileMetadatas;
 	}
 
 	public static String fileChecksum(String hashAlgorithm, byte[] bytes) throws Exception {
@@ -100,13 +175,27 @@ public class FileUtils {
 		}
 		return sb.toString();
 	}
-	
+
+	public static String getFilenameWithoutExtension(String fileName) {
+		if(fileName.lastIndexOf(".") < 0)
+			return null;
+		String fn = fileName.substring(0, fileName.lastIndexOf("."));
+		return fn;
+	}
+
 	public static String fileType(File file) throws IOException {
 		return Files.probeContentType(file.toPath());
 	}
-	
+
 	public static String fileExtension(File file) throws IOException {
 		return FilenameUtils.getExtension(file.getName());
+	}
+	
+	public static String fileExtension(String fileName) {
+		if(fileName.lastIndexOf(".") < 0)
+			return null;
+		String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+		return fileExtension;
 	}
 
 	public BigDecimal getSize(MultipartFile file, FileSizeUnit sizeUnit) {
@@ -173,6 +262,49 @@ public class FileUtils {
 			size = BigDecimal.valueOf(yottabytes);
 		}
 		return size;
+	}
+
+	public BigDecimal getSize(long bytes, FileSizeUnit sizeUnit) {
+		double kilobytes = (bytes / 1024);
+		double megabytes = (kilobytes / 1024);
+		double gigabytes = (megabytes / 1024);
+		double terabytes = (gigabytes / 1024);
+		double petabytes = (terabytes / 1024);
+		double exabytes = (petabytes / 1024);
+		double zettabytes = (exabytes / 1024);
+		double yottabytes = (zettabytes / 1024);
+		BigDecimal size = BigDecimal.ZERO;
+		if (sizeUnit.equals(FileSizeUnit.bytes)) {
+			size = BigDecimal.valueOf(bytes);
+		} else if (sizeUnit.equals(FileSizeUnit.kilobytes)) {
+			size = BigDecimal.valueOf(kilobytes);
+		} else if (sizeUnit.equals(FileSizeUnit.megabytes)) {
+			size = BigDecimal.valueOf(megabytes);
+		} else if (sizeUnit.equals(FileSizeUnit.gigabytes)) {
+			size = BigDecimal.valueOf(gigabytes);
+		} else if (sizeUnit.equals(FileSizeUnit.terabytes)) {
+			size = BigDecimal.valueOf(terabytes);
+		} else if (sizeUnit.equals(FileSizeUnit.petabytes)) {
+			size = BigDecimal.valueOf(petabytes);
+		} else if (sizeUnit.equals(FileSizeUnit.exabytes)) {
+			size = BigDecimal.valueOf(exabytes);
+		} else if (sizeUnit.equals(FileSizeUnit.zettabytes)) {
+			size = BigDecimal.valueOf(zettabytes);
+		} else if (sizeUnit.equals(FileSizeUnit.yottabytes)) {
+			size = BigDecimal.valueOf(yottabytes);
+		}
+		return size;
+	}
+	
+	public String getFilePathString(String filename, String fileLocation, boolean appendCurrentTimeMillis) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(fileLocation);
+		sb.append(File.separator);
+		if (appendCurrentTimeMillis) {
+			sb.append(System.currentTimeMillis());
+		}
+		sb.append(filename);
+		return sb.toString();
 	}
 
 }
