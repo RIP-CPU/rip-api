@@ -57,6 +57,7 @@ public class FileUtils {
 	}
 
 	public String writeFile(String filePath, byte[] fileContent) throws Exception {
+		checkDir(filePath);
 		String checksum = fileChecksum("MD5", fileContent);
 		filePath = getFilePathString(checksum, filePath, false);
 		write(filePath, fileContent);
@@ -64,6 +65,7 @@ public class FileUtils {
 	}
 
 	public FileMetadataDto writeFile(String filePath, MultipartFile multipart) throws Exception {
+		checkDir(filePath);
 		String checksum = fileChecksum("MD5", multipart.getBytes()); 
 		String fileFullPath = getFilePathString(checksum, filePath, false);
 		write(fileFullPath, multipart.getBytes());
@@ -127,6 +129,7 @@ public class FileUtils {
 	}
 	
 	public List<FileMetadataDto> extract(String filePath, MultipartFile multipart) throws Exception {
+		checkDir(filePath);
 		String zipFullPath = filePath+"/"+multipart.getOriginalFilename();
 		write(zipFullPath, multipart.getBytes());
 		zis = new ZipInputStream(new FileInputStream(zipFullPath));
@@ -174,6 +177,15 @@ public class FileUtils {
 			sb.append(Integer.toString((mdBytes[i] & 0xff) + 0x100, 16).substring(1));
 		}
 		return sb.toString();
+	}
+	
+	private boolean checkDir(String path) {
+		File existsPath = new File(path);
+		if(existsPath.exists())
+			return existsPath.mkdir();
+		else
+			existsPath = null;
+		return false;
 	}
 
 	public static String getFilenameWithoutExtension(String fileName) {

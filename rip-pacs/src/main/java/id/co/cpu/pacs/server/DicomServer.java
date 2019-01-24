@@ -1,291 +1,122 @@
 package id.co.cpu.pacs.server;
 
-import java.io.EOFException;
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.Tag;
-import org.dcm4che3.data.VR;
-import org.dcm4che3.io.DicomInputStream;
-import org.dcm4che3.io.DicomInputStream.IncludeBulkData;
-import org.dcm4che3.io.DicomOutputStream;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dcm4che3.net.ApplicationEntity;
 import org.dcm4che3.net.Association;
 import org.dcm4che3.net.AssociationHandler;
 import org.dcm4che3.net.Connection;
 import org.dcm4che3.net.Device;
-import org.dcm4che3.net.PDVInputStream;
 import org.dcm4che3.net.State;
 import org.dcm4che3.net.TransferCapability;
 import org.dcm4che3.net.pdu.AAssociateAC;
 import org.dcm4che3.net.pdu.AAssociateRQ;
-import org.dcm4che3.net.pdu.PresentationContext;
 import org.dcm4che3.net.pdu.UserIdentityAC;
 import org.dcm4che3.net.service.BasicCEchoSCP;
-import org.dcm4che3.net.service.BasicCStoreSCP;
 import org.dcm4che3.net.service.DicomServiceRegistry;
-import org.dcm4che3.util.SafeClose;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.EventBus;
 
-import id.co.cpu.pacs.event.NewFileEvent;
-
 
 public class DicomServer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DicomServer.class);
 
-    private static final String DCM_EXT = ".dcm";
+	protected final static Log LOGGER = LogFactory.getLog(DicomServer.class);
 
     private final Device device = new Device("storescp");
     private final ApplicationEntity ae = new ApplicationEntity("*");
     private final Connection conn = new Connection();
-    private File storageDir;
-   
-    private int status;
+    private EventBus eventBus;
 
-    public EventBus eventBus;
-
-    private final class CStoreSCPImpl extends BasicCStoreSCP {
-
-        CStoreSCPImpl() {
-            super("*");
-        }
-
-        @Override
-        protected void store(Association as, PresentationContext pc,
-                             Attributes rq, PDVInputStream data, Attributes rsp)
-                throws IOException {
-            rsp.setInt(Tag.Status, VR.US, status);
-            if (storageDir == null)
-                return;
-
-            String ipAddress  = as.getSocket().getInetAddress().getHostAddress(); //ip address
-            String associationName = as.toString();
-            String cuid = rq.getString(Tag.AffectedSOPClassUID);
-            String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
-            String tsuid = pc.getTransferSyntax();
-            
-
-
-            //File file = new File(storageDir, ipAddress + "_" + iuid + DCM_EXT);
-            File file = new File(storageDir, iuid + DCM_EXT);
-            try {
-                LOGGER.info("as: {}", as);
-                storeTo(as, as.createFileMetaInformation(iuid, cuid, tsuid),
-                        data, file);
-                
-                if(!file.exists()){
-                	LOGGER.error("File {} does not exists! Connection Details--> ipAddress: {}  associationName: {}  sopclassuid: {}  sopinstanceuid: {} transfersyntax: {}", file.getAbsolutePath(), ipAddress, associationName, cuid, iuid, tsuid);
-                	return;
-                }
-                
-                eventBus.post(new NewFileEvent(file));
-                
-                //let's parse the files
-                /*Attributes attrs = parse(file);
-                if(attrs != null){                	
-                	String studyiuid = attrs.getString(Tag.StudyInstanceUID);
-	         		String patientID = attrs.getString(Tag.PatientID);
-	         		patientID = (patientID == null || patientID.length() == 0) ? "<UNKNOWN>" : patientID;
-	         		Long projectID = -1L;
-	         		String patientName = attrs.getString(Tag.PatientName);
-	         		String institutionName = attrs.getString(Tag.InstitutionName);
-	         		String uniqueID = file.getName();
-	         		Date studyDate =  attrs.getDate(Tag.StudyDate);
-	         		Date studyTime =  attrs.getDate(Tag.StudyTime);         		
-	         		
-	         		String studyDateTime = (studyDate != null && studyTime != null)?new SimpleDateFormat("MM-dd-yyyy").format(studyDate)+" "+new SimpleDateFormat("HH-mm-ss").format(studyTime):"01-01-1901 01-01-01";
-	         	
-	         		
-	         		
-                	//eventBus.post(new NewLogEvent(as.toString(), "IMAGE_RECEIVED", ipAddress, studyDateTime, projectID, patientID, patientName, null, studyiuid, institutionName, uniqueID));
-                	//eventBus.post(new NewFileEvent(file, ipAddress, studyiuid, iuid, cuid, associationName));
-                	
-                }else{
-                	LOG.error("File Name {} could not be parsed!",file.getName());
-                }*/
-
-            }catch(EOFException e){
-            	//deleteFile(as, file); //broken file, just remove...     
-            	LOGGER.error("Dicom Store EOFException: " + e.getMessage());               
-            }
-            catch (Exception e) {              
-            	deleteFile(as, file); //broken file, just remove...     
-                LOGGER.error("Dicom Store Exception: " + e.getMessage());        
-            }
-            
-        }
-    };
-
-    public DicomServer() throws IOException {
-        device.setDimseRQHandler(createServiceRegistry());
-        device.addConnection(conn);
-        device.addApplicationEntity(ae);
-        device.setAssociationHandler(associationHandler);
-        ae.setAssociationAcceptor(true);
-        ae.addConnection(conn);
-    }
-
-    private void storeTo(Association as, Attributes fmi,
-                         PDVInputStream data, File file) throws IOException  {
-        LOGGER.info("{}: M-WRITE {}", as, file);
-        file.getParentFile().mkdirs();
-        DicomOutputStream out = new DicomOutputStream(file);
-        try {
-            out.writeFileMetaInformation(fmi);
-            data.copyTo(out);
-        } finally {
-            SafeClose.close(out);
-        }
-    }
-
-    private static Attributes parse(File file) throws IOException {
-        DicomInputStream in = new DicomInputStream(file);
-        try {
-            in.setIncludeBulkData(IncludeBulkData.NO);
-            return in.readDataset(-1, Tag.PixelData);
-        } finally {
-            SafeClose.close(in);
-        }
-    }
-
-    private static void deleteFile(Association as, File file) {
-        if (file.delete())
-            LOGGER.info("{}: M-DELETE {}", as, file);
-        else
-            LOGGER.warn("{}: M-DELETE {} failed!", as, file);
+    public DicomServer(EventBus eventBus) throws IOException {
+    	this.eventBus = eventBus;
+    	this.device.setDimseRQHandler(createServiceRegistry());
+    	this.device.addConnection(this.conn);
+    	this.device.addApplicationEntity(this.ae);
+    	this.device.setAssociationHandler(this.associationHandler);
+    	this.ae.setAssociationAcceptor(true);
+    	this.ae.addConnection(this.conn);
     }
 
     private DicomServiceRegistry createServiceRegistry() {
         DicomServiceRegistry serviceRegistry = new DicomServiceRegistry();
         serviceRegistry.addDicomService(new BasicCEchoSCP());
-        serviceRegistry.addDicomService(new CStoreSCPImpl());
+        serviceRegistry.addDicomService(new CStoreSCP(this.eventBus));
         return serviceRegistry;
-    }
-
-    public void setStorageDirectory(File storageDir) {
-        if (storageDir != null)
-            storageDir.mkdirs();
-        this.storageDir = storageDir;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public static void configureConn(Connection conn){
         conn.setReceivePDULength(Connection.DEF_MAX_PDU_LENGTH);
         conn.setSendPDULength(Connection.DEF_MAX_PDU_LENGTH);
-      
         conn.setMaxOpsInvoked(0);
         conn.setMaxOpsPerformed(0);
     }
 
-    public static DicomServer init(String aeHost, int aePort, String aeTitle, String storageDirectory, EventBus eventBus) {
-        LOGGER.info("Bind to: " + aeTitle + "@" + aeHost + ":" + aePort + "; storage: " + storageDirectory);
-
+    public static DicomServer init(String aeHost, int aePort, String aeTitle, String aePath, EventBus eventBus) {
+        LOGGER.info("Bind to: " + aeTitle + "@" + aeHost + ":" + aePort);
         DicomServer ds = null;
         try {
-            ds = new DicomServer();
-
-            ds.eventBus = eventBus;
+            ds = new DicomServer(eventBus);
             if(aeHost != null) {
                 ds.conn.setHostname(aeHost);
             }
             ds.conn.setPort(aePort);
             ds.ae.setAETitle(aeTitle);
-
-            //default conn parameters
+            ds.ae.setDescription(aePath);
             configureConn(ds.conn);
-
             //accept-unknown
             ds.ae.addTransferCapability(
                     new TransferCapability(null,
                             "*",
                             TransferCapability.Role.SCP,
                             "*"));
-
-            ds.setStorageDirectory(new File(storageDirectory));
-
             ExecutorService executorService = Executors.newCachedThreadPool();
-            ScheduledExecutorService scheduledExecutorService =
-                    Executors.newSingleThreadScheduledExecutor();
+            ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
             ds.device.setScheduledExecutor(scheduledExecutorService);
             ds.device.setExecutor(executorService);
             ds.device.bindConnections();
 
         }catch (Exception e) {
-            LOGGER.error("dicomserver: {}", e.getMessage());
+            LOGGER.error(String.format("dicomserver: %s", e.getMessage()));
             e.printStackTrace();
         }
-
         return ds;
     }
-    
-    
+
     private AssociationHandler associationHandler = new AssociationHandler(){
 		
 		@Override
-		protected AAssociateAC makeAAssociateAC(Association as,
-				AAssociateRQ rq, UserIdentityAC arg2) throws IOException {
-			
-			State st = as.getState();
-			
+		protected AAssociateAC makeAAssociateAC(Association as, AAssociateRQ rq, UserIdentityAC arg2) throws IOException {
+			State st = as.getState();			
 			if(as != null)
-			{				
-				LOGGER.info("makeAAssociateAC: {}  Associate State: {}  Associate State Name: {}", as.toString(), st, st.name());
-				try {					
-					 //eventBus.post(new NewLogEvent(as.toString(),st.name(),as.getSocket().getInetAddress().getHostAddress(), null, null,null,null,null,null,null,null));
-				}catch (Exception e) {
-					LOGGER.error(e.getMessage());
-				}
-			}
-			
+				LOGGER.info(String.format("makeAAssociateAC: %s  Associate State: %s  Associate State Name: %s", as.toString(), st, st.name()));
 			if(rq != null)
-				LOGGER.info("Max OpsInvoked: {}  Max OpsPerformed: {}  Max PDU Length: {}  Number of Pres. Contexts: {}",rq.getMaxOpsInvoked(), rq.getMaxOpsPerformed(), rq.getMaxPDULength(), rq.getNumberOfPresentationContexts());
-			
+				LOGGER.info(String.format("Max OpsInvoked: %d  Max OpsPerformed: %d  Max PDU Length: %d  Number of Pres. Contexts: %d",rq.getMaxOpsInvoked(), rq.getMaxOpsPerformed(), rq.getMaxPDULength(), rq.getNumberOfPresentationContexts()));			
 			if(arg2 != null)
-				LOGGER.info("UserIdentityAC Length:{}",arg2.length());
-			
+				LOGGER.info(String.format("UserIdentityAC Length:%d",arg2.length()));			
 			return super.makeAAssociateAC(as, rq, arg2);
 		}
 		
 		@Override
-		protected AAssociateAC negotiate(Association as, AAssociateRQ rq)
-				throws IOException {
-			
+		protected AAssociateAC negotiate(Association as, AAssociateRQ rq) throws IOException {			
 			if(as != null)
-				LOGGER.info("AAssociateAC negotiate:{}",as.toString());
-			
+				LOGGER.info(String.format("AAssociateAC negotiate: %s",as.toString()));			
 			return super.negotiate(as, rq);
 		}
 		
 		@Override
-		protected void onClose(Association as) {
-			
-			State st = as.getState();
-			
-			if(as != null && st == State.Sta13){
-				LOGGER.info("Assocation Released and Closed: {} Name: {}", as.getState(), as.toString());			
-					
-				try {					
-					//eventBus.post(new NewLogEvent(as.toString(),st.name(),as.getSocket().getInetAddress().getHostAddress(), null, null, null, null,null,null,null,null));
-				}  catch (Exception e) {					
-					LOGGER.error(e.getMessage());					
-				} 
-			}
+		protected void onClose(Association as) {			
+			State st = as.getState();			
+			if(as != null && st == State.Sta13)
+				LOGGER.info(String.format("Assocation Released and Closed: %s Name: %s", as.getState(), as.toString()));
 			else
-			{
 				LOGGER.info("Association Closed");
-			}
-			
 			super.onClose(as);
 		}
 	};
+
 }

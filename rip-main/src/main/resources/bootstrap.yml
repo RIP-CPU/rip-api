@@ -59,4 +59,14 @@ security:
       user-info-uri: http://${server.address}:${server.port}/oauth/user
       token-info-uri: http://${server.address}:${server.port}/check_token
     client:
+      client-id: rip-core
+      client-secret: secretrip01
       access-token-uri: http://${server.address}:${server.port}/oauth/token
+
+ribbon:
+  eureka:
+    enabled: false
+
+rip-file:
+  ribbon:
+    listOfServers: localhost:8085

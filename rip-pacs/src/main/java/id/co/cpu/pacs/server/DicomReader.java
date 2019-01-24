@@ -1,49 +1,42 @@
 package id.co.cpu.pacs.server;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.io.DicomInputStream.IncludeBulkData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import id.co.cpu.pacs.event.ImageStreamEvent;
 
 public class DicomReader {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DicomReader.class);
+	protected final Log LOGGER = LogFactory.getLog(getClass());
 	
-	DateFormat df = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-	
-	private Attributes attr = null; //file dataset info
-    private Attributes fmi = null; //file metadata info
+	private Attributes attr = null;
+    private Attributes fmi = null;
 
     public DicomReader() {}
 
-
-    public DicomReader(File file) throws IOException {
-        DicomInputStream dis = null;
+    public DicomReader(ImageStreamEvent imageStream) throws IOException {
+    	DicomInputStream dis = null;
         try {
-            dis = new DicomInputStream(file);
+        	dis = new DicomInputStream(imageStream.getFile());
             dis.setIncludeBulkData(IncludeBulkData.URI);
             this.attr = dis.readDataset(-1, -1);
             this.fmi = dis.readFileMetaInformation() != null?dis.readFileMetaInformation():attr.createFileMetaInformation(UID.ImplicitVRLittleEndian);
-           
-            
         } catch (IOException e) {
-            LOG.error(e.getMessage());
-            throw e; // what's the point of keeping this file? throw
-
+            LOGGER.error(e.getMessage());
+            throw e;
         } finally {
             try {
                 if (dis != null) dis.close();
             } catch (IOException ignore) {
-                LOG.error(ignore.getMessage());
+                LOGGER.error(ignore.getMessage());
             }
         }
     }

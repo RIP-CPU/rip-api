@@ -1,7 +1,5 @@
 package id.co.cpu.pacs.service.impl;
 
-import java.io.File;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import id.co.cpu.feign.service.FileFeignService;
 import id.co.cpu.pacs.component.ActiveDicoms;
 import id.co.cpu.pacs.dao.DicomEquipmentRepo;
 import id.co.cpu.pacs.dao.DicomInstanceRepo;
@@ -22,6 +21,7 @@ import id.co.cpu.pacs.entity.InstanceDicomEntity;
 import id.co.cpu.pacs.entity.PatientDicomEntity;
 import id.co.cpu.pacs.entity.SeriesDicomEntity;
 import id.co.cpu.pacs.entity.StudyDicomEntity;
+import id.co.cpu.pacs.event.ImageStreamEvent;
 import id.co.cpu.pacs.server.DicomReader;
 import id.co.cpu.pacs.service.DicomBuilderService;
 import id.co.cpu.pacs.utils.DicomEntityBuilder;
@@ -53,93 +53,72 @@ public class DicomBuilderServiceImpl implements DicomBuilderService {
 	@Autowired
 	private ActiveDicoms activeDicoms;
 	
+	@Autowired
+	private FileFeignService fileFeignService;
 	
 	@Transactional
 	@Override
-	public PatientDicomEntity buildPatient(DicomReader reader){		
-		
+	public PatientDicomEntity buildPatient(DicomReader reader) {
 		LOGGER.info(String.format("In process; Patient Name: %s, Patient ID: %s", reader.getPatientName(), reader.getPatientID()));
-		//check if patient exists
 		PatientDicomEntity patient = dicomPatientRepo.findByPatientId(reader.getPatientID());
-		if(patient == null){//let's create new patient
+		if(patient == null) {
 			patient = DicomEntityBuilder.newPatient(reader.getPatientAge(), reader.getPatientBirthDay(), reader.getPatientID(), reader.getPatientName(), reader.getPatientSex());				
 			dicomPatientRepo.save(patient);
 			patient = dicomPatientRepo.findByPatientId(reader.getPatientID());
-		}else{
-			//LOG.info("Patient already exists; Patient Name: {}, Patient ID: {} ", reader.getPatientName(), reader.getPatientID());
-		}
-		
+		}	
 		return patient;
 	}
 	
 	
 	@Transactional
 	@Override
-	public StudyDicomEntity buildStudy(DicomReader reader,PatientDicomEntity patient){
-		
-		//check if study exists
+	public StudyDicomEntity buildStudy(DicomReader reader,PatientDicomEntity patient) {
 		StudyDicomEntity study = dicomStudyRepo.findByStudyInstanceUID(reader.getStudyInstanceUID());
-		if(study == null){//let's create new study
+		if(study == null) {
 			study = DicomEntityBuilder.newStudy(reader.getAccessionNumber(), reader.getAdditionalPatientHistory(), reader.getAdmittingDiagnosesDescription(),
 						reader.getReferringPhysicianName(), reader.getSeriesDateTime(), reader.getStudyID(), reader.getStudyDescription(), reader.getStudyInstanceUID(), reader.getStudyPriorityID(), 
 						reader.getStudyStatusID());
 			study.setPatient(patient);			
 			dicomStudyRepo.save(study);	
 			study = dicomStudyRepo.findByStudyInstanceUID(reader.getStudyInstanceUID());
-		}else{
-			//LOG.info("Study already exists; Study Instance UID:  {}", study.getStudyInstanceUID());
-		}
-		
+		}	
 		return study;
 	}
 	
 	@Transactional
 	@Override
-	public SeriesDicomEntity buildSeries(DicomReader reader, StudyDicomEntity study){
-		
-		//check if series exists
+	public SeriesDicomEntity buildSeries(DicomReader reader, StudyDicomEntity study) {
 		SeriesDicomEntity series = dicomSeriesRepo.findBySeriesInstanceUIDAndSeriesNumber(reader.getSeriesInstanceUID(), reader.getSeriesNumber());			
-		if(series == null){//let's create new series
+		if(series == null) {
 			series = DicomEntityBuilder.newSeries(reader.getBodyPartExamined(), reader.getLaterality(), reader.getOperatorsName(), reader.getPatientPosition(),
 						reader.getProtocolName(), reader.getSeriesDateTime(), reader.getSeriesDescription(), reader.getSeriesInstanceUID(), reader.getSeriesNumber());
 			series.setStudy(study);			
 			dicomSeriesRepo.save(series);
 			series = dicomSeriesRepo.findBySeriesInstanceUIDAndSeriesNumber(reader.getSeriesInstanceUID(), reader.getSeriesNumber());
-		}else{
-			//LOG.info("Series already exists; Series Instance UID: {}", series.getSeriesInstanceUID());
-		}
-		
+		}		
 		return series;
 	}
 	
 	@Transactional
 	@Override
-	public EquipmentDicomEntity buildEquipment(DicomReader reader, SeriesDicomEntity series){
-		
-		//check if equipment exists
+	public EquipmentDicomEntity buildEquipment(DicomReader reader, SeriesDicomEntity series) {
 		EquipmentDicomEntity equipment = dicomEquipmentRepo.findBySeries_Id(series.getId());
-		if(equipment == null){
+		if(equipment == null) {
 			equipment = DicomEntityBuilder.newEquipment(reader.getConversionType(), reader.getDeviceSerialNumber(), reader.getInstitutionAddress(),			
 					reader.getInstitutionName(), reader.getInstitutionalDepartmentName(), reader.getManufacturer(), reader.getManufacturerModelName(), 
 					reader.getModality(), reader.getSoftwareVersion(), reader.getStationName());
-			equipment.setSeries(series);//set the Series to Equipment because we now have the pkTBLSeriesID		
+			equipment.setSeries(series);		
 			dicomEquipmentRepo.save(equipment);
-			equipment = dicomEquipmentRepo.findBySeries_Id(series.getId());
-			
-		}else{
-			//LOG.info("Equipment already exists; Equipment Primary ID {}", equipment.getPkTBLEquipmentID());
-		}
-		
+			equipment = dicomEquipmentRepo.findBySeries_Id(series.getId());			
+		}		
 		return equipment;
 	}
 	
 	@Transactional
 	@Override
-	public InstanceDicomEntity buildInstance(DicomReader reader, SeriesDicomEntity series){
-		
-		//check first if instance exists
+	public InstanceDicomEntity buildInstance(DicomReader reader, SeriesDicomEntity series) {
 		InstanceDicomEntity instance = dicomInstanceRepo.findBySopInstanceUID(reader.getSOPInstanceUID());			
-		if(instance == null){//let's create new instance along with dependent objects
+		if(instance == null){
 			instance = DicomEntityBuilder.newInstance(  reader.getAcquisitionDateTime(), reader.getContentDateTime(), reader.getExposureTime(),
 						reader.getImageOrientation(), reader.getImagePosition(), reader.getImageType(), reader.getInstanceNumber(), reader.getKvp(), 
 						reader.getMediaStorageSopInstanceUID(), reader.getPatientOrientation(), reader.getPixelSpacing(), reader.getSliceLocation(),
@@ -147,38 +126,30 @@ public class DicomBuilderServiceImpl implements DicomBuilderService {
 						reader.getWindowCenter(), reader.getWindowWidth(), reader.getXrayTubeCurrent());				
 			instance.setSeries(series);			
 			dicomInstanceRepo.save(instance);
-			instance = dicomInstanceRepo.findBySopInstanceUID(reader.getSOPInstanceUID());
-			
-		}else{
-				LOGGER.info(String.format("Instance already exists; SOP Instance UID %s, Instance Number %s", instance.getInstanceNumber(), instance.getInstanceNumber()));
-		}
-		
+			instance = dicomInstanceRepo.findBySopInstanceUID(reader.getSOPInstanceUID());	
+		} else {
+			LOGGER.info(String.format("Instance already exists; SOP Instance UID %s, Instance Number %s", instance.getInstanceNumber(), instance.getInstanceNumber()));
+		}		
 		return instance;
 	}
 	
-	// apply dicom logic; patient -> Nxstudy -> Nxseries -> Nxinstance
 	@Transactional
 	@Override
-	public void buildEntities(DicomReader reader, File file){
-		
-		try
-		{	
-			System.err.println(file.getName());
-			LOGGER.info("=================================================================================================================================");
-			printStats(reader.getPatientName() + " "+ reader.getPatientID() + " " + reader.getPatientAge() + " " + reader.getPatientSex() + " Started");
+	public void buildEntities(DicomReader reader, ImageStreamEvent imageStream){
+		try {
+			System.err.println(imageStream.toString());
+        	this.fileFeignService.putFileDicomDcm(imageStream.getFile(), imageStream.getAePath());
 			PatientDicomEntity patient = buildPatient(reader);			
 			activeDicoms.add(reader.getMediaStorageSopInstanceUID(), patient.toString());
 			
-			if(patient != null)
-			{				
+			if(patient != null) {
 				StudyDicomEntity study = buildStudy(reader, patient);				
 				if(study != null){
 					SeriesDicomEntity series = buildSeries(reader, study);		
 					if(series != null){
-						EquipmentDicomEntity equipment = buildEquipment(reader, series);//one2one relationship with series						
+						EquipmentDicomEntity equipment = buildEquipment(reader, series);						
 						InstanceDicomEntity instance = buildInstance(reader, series);
 						
-						//update entity modification dates according to the instance creation
 						series.setModifiedDate(instance.getCreatedDate());
 						dicomSeriesRepo.save(series);
 						
@@ -191,32 +162,25 @@ public class DicomBuilderServiceImpl implements DicomBuilderService {
 						patient.setModifiedDate(instance.getCreatedDate());
 						dicomPatientRepo.save(patient);						
 						
-						//try{ entityManager.getTransaction().commit(); }	catch(Exception e){}
-						
 						LOGGER.info(String.format("Dicom Instance saved successfully! %s", instance.toString()));
 					}
 				}
-			}	
-			
-			
-			//LOG.info("Yes {} exists!", reader.getMediaStorageSopInstanceUID());
+			}
 			activeDicoms.remove(reader.getMediaStorageSopInstanceUID());
 			
 			printStats(reader.getPatientName() + " "+ reader.getPatientID() + " " + reader.getPatientAge() + " " + reader.getPatientSex() + " Ended");
-			LOGGER.info("=================================================================================================================================");
-			LOGGER.info("");
 			
-		}catch(Exception e){
+		} catch(Exception e) {
 			LOGGER.error(e.getMessage());
+		} finally {
+        	if(imageStream.getFile() != null)
+        		imageStream.getFile().delete();
 		}
 		
 	}	
 	
-	public void printStats(String status) {
-		//String str = Thread.currentThread().getName().split("@@")[0];
-		//Thread.currentThread().setName(String.valueOf(Thread.currentThread().getId()));		
-		LOGGER.info(String.format("%d %s %s [Active Threads: %d] ",Thread.currentThread().getId(), Thread.currentThread().getName(), status, Thread.activeCount()));		
-		
+	public void printStats(String status) {		
+		LOGGER.info(String.format("%d %s %s [Active Threads: %d] ",Thread.currentThread().getId(), Thread.currentThread().getName(), status, Thread.activeCount()));
 	}
 	
 }

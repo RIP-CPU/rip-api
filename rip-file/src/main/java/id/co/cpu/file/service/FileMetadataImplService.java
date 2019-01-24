@@ -40,7 +40,11 @@ public class FileMetadataImplService {
 		fileMetadata.setLocation(fileMetadataDto.getLocation());
 		fileMetadata.setShortname(fileMetadataDto.getShortname());
 		fileMetadata.setSize(fileMetadataDto.getSize());
-		fileMetadataRepo.save(fileMetadata);
+		try {
+			fileMetadataRepo.save(fileMetadata);
+		} catch (DataIntegrityViolationException e) {
+			LOGGER.warn(e.getLocalizedMessage());
+		}
 		return fileMetadataDto;
 	}
 	
