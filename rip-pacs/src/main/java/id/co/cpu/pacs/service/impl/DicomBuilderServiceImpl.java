@@ -1,15 +1,19 @@
 package id.co.cpu.pacs.service.impl;
 
+import java.io.File;
+import java.nio.file.Files;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import id.co.cpu.feign.service.FileFeignService;
+import id.co.cpu.feign.service.file.FileMetadataService;
 import id.co.cpu.pacs.component.ActiveDicoms;
 import id.co.cpu.pacs.dao.DicomEquipmentRepo;
 import id.co.cpu.pacs.dao.DicomInstanceRepo;
@@ -52,9 +56,10 @@ public class DicomBuilderServiceImpl implements DicomBuilderService {
 	
 	@Autowired
 	private ActiveDicoms activeDicoms;
-	
+
 	@Autowired
-	private FileFeignService fileFeignService;
+	@Qualifier("fileMetadataService")
+	private FileMetadataService fileMetadataService;
 	
 	@Transactional
 	@Override
@@ -138,7 +143,6 @@ public class DicomBuilderServiceImpl implements DicomBuilderService {
 	public void buildEntities(DicomReader reader, ImageStreamEvent imageStream){
 		try {
 			System.err.println(imageStream.toString());
-        	this.fileFeignService.putFileDicomDcm(imageStream.getFile(), imageStream.getAePath());
 			PatientDicomEntity patient = buildPatient(reader);			
 			activeDicoms.add(reader.getMediaStorageSopInstanceUID(), patient.toString());
 			
@@ -167,10 +171,14 @@ public class DicomBuilderServiceImpl implements DicomBuilderService {
 				}
 			}
 			activeDicoms.remove(reader.getMediaStorageSopInstanceUID());
+
+			File file = imageStream.getFile();
+			this.fileMetadataService.putFileDicomDcm(imageStream.getAePath(), file.getName(), Files.readAllBytes(file.toPath()));
 			
 			printStats(reader.getPatientName() + " "+ reader.getPatientID() + " " + reader.getPatientAge() + " " + reader.getPatientSex() + " Ended");
 			
 		} catch(Exception e) {
+			e.printStackTrace();
 			LOGGER.error(e.getMessage());
 		} finally {
         	if(imageStream.getFile() != null)

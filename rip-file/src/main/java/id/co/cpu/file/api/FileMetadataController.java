@@ -33,7 +33,7 @@ public class FileMetadataController extends BaseControllerException {
 			@RequestPart @Valid MultipartFile dicom,
 			@RequestParam @Valid String path,
 			@RequestHeader(name = "Accept-Language", required = false) String locale) throws Exception {
-		return new ResponseEntity<FileMetadataDto>(fileMetadataService.putFileDicomDcm(dicom, path), HttpStatus.OK);
+		return new ResponseEntity<FileMetadataDto>(fileMetadataService.putFileDicomDcm(path, dicom.getOriginalFilename(), dicom.getBytes()), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/trx/put/dicom-zip/v.1", method = RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

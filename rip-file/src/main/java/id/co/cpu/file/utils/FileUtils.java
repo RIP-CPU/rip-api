@@ -13,6 +13,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,15 +58,32 @@ public class FileUtils {
 	}
 
 	public String writeFile(String filePath, byte[] fileContent) throws Exception {
-		checkDir(filePath);
 		String checksum = fileChecksum("MD5", fileContent);
 		filePath = getFilePathString(checksum, filePath, false);
 		write(filePath, fileContent);
 		return filePath;
 	}
 
+	public FileMetadataDto writeFile(String filePath, String filename, byte[] fileContent) throws Exception {
+		String checksum = fileChecksum("MD5", fileContent); 
+		String fileFullPath = getFilePathString(checksum, filePath, false);
+		write(fileFullPath, fileContent);
+		FileChannel fileChannel = FileChannel.open(Paths.get(fileFullPath));
+		long fileSize = fileChannel.size();
+		FileMetadataDto fileMetadata = new FileMetadataDto();
+		fileMetadata.setChecksum(checksum);
+		fileMetadata.setFullPath(fileFullPath);
+		fileMetadata.setLocation(filePath);
+		fileMetadata.setFullname(filename);
+		fileMetadata.setShortname(getFilenameWithoutExtension(filename));
+		fileMetadata.setExtension(fileExtension(filename));
+		fileMetadata.setSize(getSize(fileSize, FileSizeUnit.bytes));
+		fileMetadata.setFileDate(new Date());
+		fileMetadata.setFileType(filename == null ? "application/octet-stream" : new MimetypesFileTypeMap().getContentType(filename));
+		return fileMetadata;
+	}
+
 	public FileMetadataDto writeFile(String filePath, MultipartFile multipart) throws Exception {
-		checkDir(filePath);
 		String checksum = fileChecksum("MD5", multipart.getBytes()); 
 		String fileFullPath = getFilePathString(checksum, filePath, false);
 		write(fileFullPath, multipart.getBytes());
@@ -129,7 +147,6 @@ public class FileUtils {
 	}
 	
 	public List<FileMetadataDto> extract(String filePath, MultipartFile multipart) throws Exception {
-		checkDir(filePath);
 		String zipFullPath = filePath+"/"+multipart.getOriginalFilename();
 		write(zipFullPath, multipart.getBytes());
 		zis = new ZipInputStream(new FileInputStream(zipFullPath));
@@ -145,11 +162,12 @@ public class FileUtils {
             while ((len = zis.read(buffer)) > 0) {
                 out.write(buffer, 0, len);
             }
-            out.close();
 			String fileName = zipEntry.getName();
 			String checksum = fileChecksum("MD5", out.toByteArray());
 			String fileFullPath = getFilePathString(checksum, filePath, false);
 			write(fileFullPath, out.toByteArray());
+			FileChannel fileChannel = FileChannel.open(Paths.get(fileFullPath));
+			long fileSize = fileChannel.size();
 			FileMetadataDto fileMetadata = new FileMetadataDto();
 			fileMetadata.setChecksum(checksum);
 			fileMetadata.setFullPath(fileFullPath);
@@ -157,10 +175,11 @@ public class FileUtils {
 			fileMetadata.setFullname(fileName);
 			fileMetadata.setShortname(getFilenameWithoutExtension(fileName));
 			fileMetadata.setExtension(fileExtension(fileName));
-			fileMetadata.setSize(getSize(zipEntry.getSize(), FileSizeUnit.bytes));
+			fileMetadata.setSize(getSize(fileSize, FileSizeUnit.bytes));
 			fileMetadata.setFileDate(new Date());
 			fileMetadata.setFileType(fileName == null ? "application/octet-stream" : new MimetypesFileTypeMap().getContentType(fileName));
 			fileMetadatas.add(fileMetadata);
+            out.close();
 		}
 		zis.closeEntry();
 		zis.close();
@@ -177,15 +196,6 @@ public class FileUtils {
 			sb.append(Integer.toString((mdBytes[i] & 0xff) + 0x100, 16).substring(1));
 		}
 		return sb.toString();
-	}
-	
-	private boolean checkDir(String path) {
-		File existsPath = new File(path);
-		if(existsPath.exists())
-			return existsPath.mkdir();
-		else
-			existsPath = null;
-		return false;
 	}
 
 	public static String getFilenameWithoutExtension(String fileName) {

@@ -12,12 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import id.co.cpu.feign.dto.file.FileMetadataDto;
+import id.co.cpu.feign.service.file.FileMetadataService;
 import id.co.cpu.file.dao.FileMetadataRepo;
 import id.co.cpu.file.entity.FileMetadataEntity;
 import id.co.cpu.file.utils.FileUtils;
 
 @Service("fileMetadataService")
-public class FileMetadataImplService {
+public class FileMetadataImplService implements FileMetadataService {
 
 	protected final Log LOGGER = LogFactory.getLog(getClass());
 
@@ -27,9 +28,10 @@ public class FileMetadataImplService {
 
 	@Autowired
 	private FileUtils fileUtils;
-	
-	public FileMetadataDto putFileDicomDcm(MultipartFile dicom, String path) throws Exception {
-		FileMetadataDto fileMetadataDto = fileUtils.writeFile(path, dicom);
+
+	@Override
+	public FileMetadataDto putFileDicomDcm(String filePath, String filename, byte[] fileContent) throws Exception {
+		FileMetadataDto fileMetadataDto = fileUtils.writeFile(filePath, filename, fileContent);
 		FileMetadataEntity fileMetadata = new FileMetadataEntity();
 		fileMetadata.setChecksum(fileMetadataDto.getChecksum());
 		fileMetadata.setExtension(fileMetadataDto.getExtension());
@@ -47,12 +49,13 @@ public class FileMetadataImplService {
 		}
 		return fileMetadataDto;
 	}
-	
+
+	@Override
 	public List<FileMetadataDto> putFileDicomZip(MultipartFile zip, String path) throws Exception {
 		List<FileMetadataDto> fileMetadataDtos = fileUtils.extract(path, zip);
-		FileMetadataEntity fileMetadata = new FileMetadataEntity();
 		List<FileMetadataEntity> fileMetadatas = new ArrayList<FileMetadataEntity>();
 		fileMetadataDtos.forEach(fileMetadataDto->{
+			FileMetadataEntity fileMetadata = new FileMetadataEntity();
 			fileMetadata.setChecksum(fileMetadataDto.getChecksum());
 			fileMetadata.setExtension(fileMetadataDto.getExtension());
 			fileMetadata.setFileDate(fileMetadataDto.getFileDate());
@@ -61,6 +64,7 @@ public class FileMetadataImplService {
 			fileMetadata.setFullPath(fileMetadataDto.getFullPath());
 			fileMetadata.setLocation(fileMetadataDto.getLocation());
 			fileMetadata.setShortname(fileMetadataDto.getShortname());
+			fileMetadata.setSize(fileMetadataDto.getSize());
 			fileMetadatas.add(fileMetadata);
 		});
 		try {
