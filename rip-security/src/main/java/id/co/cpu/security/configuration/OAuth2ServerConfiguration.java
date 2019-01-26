@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -24,6 +25,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import id.co.cpu.security.service.JdbcOauth2ClientDetailsService;
 import id.co.cpu.security.service.UserImplService;
 
+@SuppressWarnings("deprecation")
 @Configuration
 @EnableAuthorizationServer
 public class OAuth2ServerConfiguration extends AuthorizationServerConfigurerAdapter{
@@ -47,7 +49,7 @@ public class OAuth2ServerConfiguration extends AuthorizationServerConfigurerAdap
     @Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {		
 		super.configure(security);
-		security.checkTokenAccess("hasRole('check_token')");
+		security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()").passwordEncoder(NoOpPasswordEncoder.getInstance());
 	}
 
 	@Override

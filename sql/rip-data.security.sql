@@ -27,7 +27,8 @@ INSERT INTO security.sec_user (user_uuid, username, password, account_enabled, a
 INSERT INTO security.oauth_client_details (client_id, resource_ids, client_secret, scope, authorized_grant_types, web_server_redirect_uri, authorities, access_token_validity, refresh_token_validity, additional_information, autoapprove) VALUES
 ('rip-3rd', 'profile,master', 'secretrip3rd01', 'read,write,check_token', 'authorization_code,refresh_token', 'http://rip.cpu.co.id:69/oauth/secure', 'ROLE_END', 3600, 1800, NULL, '0'),
 ('rip-core', 'profile,security,master,notification,general,file,pacs,report', 'secretrip01', 'read,write,trust,check_token', 'password,refresh_token', '', 'ROLE_ADMIN,ROLE_RADIOGRAPHER,ROLE_PHYSICIAN,ROLE_END', 7200, 3600, NULL, '1'),
-('rip-mobile', 'profile,security,master', 'secretrip02', 'read,write,check_token', 'password,refresh_token', '', 'ROLE_END', 7200, 3600, NULL, '1');
+('rip-mobile', 'profile,security,master', 'secretrip02', 'read,write,check_token', 'password,refresh_token', '', 'ROLE_END', 7200, 3600, NULL, '1'),
+('rip-private', 'profile,security,master,notification,general,file,pacs,report', 'secretprivaterip01', 'read,write,trust,check_token', 'client_credentials', '', 'ROLE_PRIVATE', 30, 15, NULL, '1');
 
 --
 -- Dumping data for table sec_corporate

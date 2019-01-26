@@ -82,7 +82,6 @@ public class DicomServer {
 
         }catch (Exception e) {
             LOGGER.error(String.format("dicomserver: %s", e.getMessage()));
-            e.printStackTrace();
         }
         return ds;
     }

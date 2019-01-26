@@ -38,13 +38,22 @@
 		<poi.version>3.13</poi.version>
 		<quartz.version>2.2.1</quartz.version>
 		<scala-library.version>2.10.4</scala-library.version>
-		<spring-batch-integration.version>3.0.7.RELEASE</spring-batch-integration.version>
-		<spring-boot-maven.version>1.3.5.RELEASE</spring-boot-maven.version>
-		<spring-boot.version>1.5.7.RELEASE</spring-boot.version>
-		<spring-loaded.version>1.2.8.RELEASE</spring-loaded.version>
-		<spring-session.version>1.3.1.RELEASE</spring-session.version>
-		<spring-support.version>1.2.9</spring-support.version>
-		<spring.cloud.version>1.3.3.RELEASE</spring.cloud.version>
+		<spring-boot-maven.version>2.1.2.RELEASE</spring-boot-maven.version>
+		<spring-boot.version>2.1.2.RELEASE</spring-boot.version>
+		<spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
+		<spring.cloud.version>2.1.2.RELEASE</spring.cloud.version>
+		<spring.cloud.feign.version>1.4.6.RELEASE</spring.cloud.feign.version>
+		<spring.cloud.zipkin.version>2.1.2.RELEASE</spring.cloud.zipkin.version>
+		<spring.cloud.kafka.version>2.1.2.RELEASE</spring.cloud.kafka.version>
+		<spring.cloud.starter.config.version>2.1.0.RELEASE</spring.cloud.starter.config.version>
+		<spring.cloud.starter.eureka.version>1.4.6.RELEASE</spring.cloud.starter.eureka.version>
+		<spring.cloud.starter.zuul.version>1.4.6.RELEASE</spring.cloud.starter.zuul.version>
+		<spring-session.version>1.3.5.RELEASE</spring-session.version>
+		<spring-security-oauth2.version>2.3.4.RELEASE</spring-security-oauth2.version>
+		<spring-security-oauth2-resource-server.version>5.1.3.RELEASE</spring-security-oauth2-resource-server.version>
+		<spring-security-jwt.version>1.0.10.RELEASE</spring-security-jwt.version>
+		<spring-batch-integration.version>4.1.1.RELEASE</spring-batch-integration.version>
+		<spring-support.version>2.0.8</spring-support.version>
 		<thymeleaf-security.version>3.0.2.RELEASE</thymeleaf-security.version>
 		<thymeleaf.version>3.0.6.RELEASE</thymeleaf.version>
 		<thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
@@ -52,8 +61,6 @@
 		<netflix.common.util>0.3.0</netflix.common.util>
 		<svnkit.version>1.9.0</svnkit.version>
 		<postgresql.version>42.2.5</postgresql.version>
-		<spring.cloud.zipkin.version>1.2.5.RELEASE</spring.cloud.zipkin.version>
-		<spring.cloud.kafka.version>1.3.0.RELEASE</spring.cloud.kafka.version>
 		<zipkin.server.version>2.2.1</zipkin.server.version>
 		<zipkin.elasticsearch.version>2.2.1</zipkin.elasticsearch.version>
 		<hazelcast.version>3.9</hazelcast.version>
@@ -90,48 +97,71 @@
 	
 	<dependencyManagement>
 		<dependencies>
-		<dependency>
-			<groupId>org.modelmapper</groupId>
-			<artifactId>modelmapper</artifactId>
-			<version>${modelmapper.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.netflix.netflix-commons</groupId>
-			<artifactId>netflix-commons-util</artifactId>
-			<version>${netflix.common.util}</version>
-		</dependency>
-		
+			
+			<dependency>
+			    <groupId>org.springframework.cloud</groupId>
+			    <artifactId>spring-cloud-starter-parent</artifactId>
+			    <version>${spring-cloud.version}</version>
+			    <type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-feign</artifactId>
+				<version>${spring.cloud.feign.version}</version>
+				<exclusions>
+					<exclusion>								
+						<groupId>commons-lang</groupId>
+						<artifactId>commons-lang</artifactId>
+					</exclusion>				
+				</exclusions>
+			</dependency>
+					
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-starter-eureka-server</artifactId>
-				<version>${spring.cloud.version}</version>
+				<version>${spring.cloud.starter.eureka.version}</version>
 			</dependency>
-	    <dependency>
-	        <groupId>org.springframework.cloud</groupId>
-	        <artifactId>spring-cloud-starter-zuul</artifactId>
-			<version>${spring.cloud.version}</version>
-	    </dependency>
+			<dependency>		
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-eureka</artifactId>
+				<version>${spring.cloud.starter.eureka.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-starter-config</artifactId>
-				<version>${spring.cloud.version}</version>
+				<version>${spring.cloud.starter.config.version}</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-config-server</artifactId>
 				<version>${spring.cloud.version}</version>
-			</dependency>		
-	        <dependency>
-	            <groupId>org.springframework.cloud</groupId>
-	            <artifactId>spring-cloud-netflix</artifactId>
-	            <version>${spring.cloud.version}</version>
-	        </dependency>
+			</dependency>	
 	        <dependency>
 	            <groupId>org.springframework.cloud</groupId>
 	            <artifactId>spring-cloud-config</artifactId>
 	            <version>${spring.cloud.version}</version>
 	        </dependency>
+	        	
+	        <dependency>
+	            <groupId>org.springframework.cloud</groupId>
+	            <artifactId>spring-cloud-netflix</artifactId>
+	            <version>${spring.cloud.version}</version>
+	        </dependency>
+			
+		    <dependency>
+		        <groupId>org.springframework.cloud</groupId>
+		        <artifactId>spring-cloud-starter-zuul</artifactId>
+				<version>${spring.cloud.starter.zuul.version}</version>
+		    </dependency>
+			
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-hystrix</artifactId>
+				<version>${spring.cloud.version}</version>
+			</dependency>
 		
 			<!-- SPRING-BOOT ... -->
 			<dependency>
@@ -141,13 +171,60 @@
 				<version>${spring-boot.version}</version>
 				<scope>import</scope>
 			</dependency>
-
+	
 			<dependency>
 				<groupId>org.springframework.session</groupId>
 				<artifactId>spring-session</artifactId>
 				<version>${spring-session.version}</version>
-			</dependency>				
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security.oauth</groupId>
+				<artifactId>spring-security-oauth2</artifactId>
+				<version>${spring-security-oauth2.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.springframework.security</groupId>
+			    <artifactId>spring-security-oauth2-resource-server</artifactId>
+			    <version>${spring-security-oauth2-resource-server.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security.oauth.boot</groupId>
+				<artifactId>spring-security-oauth2-autoconfigure</artifactId>
+				<version>${spring-boot.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-jwt</artifactId>
+				<version>${spring-security-jwt.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-support</artifactId>
+				<version>${spring-support.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework.batch</groupId>
+				<artifactId>spring-batch-integration</artifactId>
+				<version>${spring-batch-integration.version}</version>
+			</dependency>
+	
+			<!-- Others -->
 
+			<dependency>
+				<groupId>org.modelmapper</groupId>
+				<artifactId>modelmapper</artifactId>
+				<version>${modelmapper.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.netflix.netflix-commons</groupId>
+				<artifactId>netflix-commons-util</artifactId>
+				<version>${netflix.common.util}</version>
+			</dependency>
+	
 			<!-- THYMELEAF -->
 			<dependency>
 				<groupId>org.thymeleaf.extras</groupId>
@@ -165,6 +242,7 @@
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
 				<version>${commons-lang.version}</version>
+				<scope>compile</scope>
 			</dependency>
 			<!-- APACHE CXF -->
 			<dependency>
@@ -270,11 +348,6 @@
 				<version>${quartz.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-support</artifactId>
-				<version>${spring-support.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
 				<version>${poi.version}</version>
@@ -285,11 +358,6 @@
 				<version>${commons-httpclient.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.batch</groupId>
-				<artifactId>spring-batch-integration</artifactId>
-				<version>${spring-batch-integration.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>commons-validator</groupId>
 				<artifactId>commons-validator</artifactId>
 				<version>${commons-validator.version}</version>
@@ -298,21 +366,6 @@
 				<groupId>net.sf.jasperreports</groupId>
 				<artifactId>jasperreports</artifactId>
 				<version>${jasperreports.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-eureka</artifactId>
-				<version>${spring.cloud.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-feign</artifactId>
-				<version>${spring.cloud.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-hystrix</artifactId>
-				<version>${spring.cloud.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
@@ -329,10 +382,10 @@
 				<artifactId>jersey-server</artifactId>
 				<version>${jersey.version}</version>
 			</dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-            <version>${hibernate.version}</version>
+	       <dependency>
+	           <groupId>org.hibernate</groupId>
+	           <artifactId>hibernate-c3p0</artifactId>
+	           <version>${hibernate.version}</version>
 		</dependency>
 		
 			<dependency>
@@ -350,103 +403,104 @@
 			    <artifactId>thymeleaf-layout-dialect</artifactId>
 			    <version>${thymeleaf-layout-dialect.version}</version>
 			</dependency>
+				
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javax.servlet-api.version}</version>
+			</dependency>
 			
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${javax.servlet-api.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.tmatesoft.svnkit</groupId>
-			<artifactId>svnkit</artifactId>
-			<version>${svnkit.version}</version>
-		</dependency>
-		
-		
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
-		</dependency>
-		
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
-            <version>${spring.cloud.zipkin.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-stream-kafka</artifactId>
-            <version>${spring.cloud.kafka.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-test-support</artifactId>
-            <version>${spring.cloud.zipkin.version}</version>
-        </dependency>
-        
-		<dependency>
-		    <groupId>io.zipkin.java</groupId>
-		    <artifactId>zipkin-server</artifactId>
-		    <version>${zipkin.server.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>io.zipkin.java</groupId>
-		    <artifactId>zipkin-autoconfigure-ui</artifactId>
-		    <version>${zipkin.server.version}</version>
-		</dependency>
-		
-	    <dependency>
-	        <groupId>org.springframework.cloud</groupId>
-	        <artifactId>spring-cloud-starter-sleuth</artifactId>
-	        <version>${spring.cloud.zipkin.version}</version>
-	    </dependency>
-		
-		<dependency>
-		    <groupId>io.zipkin.java</groupId>
-		    <artifactId>zipkin-storage-elasticsearch-http</artifactId>
-		    <version>${zipkin.elasticsearch.version}</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>io.zipkin.java</groupId>
-		    <artifactId>zipkin-autoconfigure-storage-elasticsearch-http</artifactId>
-		    <version>${zipkin.elasticsearch.version}</version>
-		</dependency>
-		
-        <dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
-            <version>${logstash-encoder.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-access</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.tmatesoft.svnkit</groupId>
+				<artifactId>svnkit</artifactId>
+				<version>${svnkit.version}</version>
+			</dependency>
+			
+			
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.version}</version>
+			</dependency>
+			
+	        <dependency>
+	            <groupId>org.springframework.cloud</groupId>
+	            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+	            <version>${spring.cloud.zipkin.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.springframework.cloud</groupId>
+	            <artifactId>spring-cloud-starter-stream-kafka</artifactId>
+	            <version>${spring.cloud.kafka.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.springframework.cloud</groupId>
+	            <artifactId>spring-cloud-stream-test-support</artifactId>
+	            <version>${spring.cloud.zipkin.version}</version>
+	        </dependency>
+	        
+			<dependency>
+			    <groupId>io.zipkin.java</groupId>
+			    <artifactId>zipkin-server</artifactId>
+			    <version>${zipkin.server.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>io.zipkin.java</groupId>
+			    <artifactId>zipkin-autoconfigure-ui</artifactId>
+			    <version>${zipkin.server.version}</version>
+			</dependency>
+			
+		    <dependency>
+		        <groupId>org.springframework.cloud</groupId>
+		        <artifactId>spring-cloud-starter-sleuth</artifactId>
+		        <version>${spring.cloud.zipkin.version}</version>
+		    </dependency>
+			
+			<dependency>
+			    <groupId>io.zipkin.java</groupId>
+			    <artifactId>zipkin-storage-elasticsearch-http</artifactId>
+			    <version>${zipkin.elasticsearch.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>io.zipkin.java</groupId>
+			    <artifactId>zipkin-autoconfigure-storage-elasticsearch-http</artifactId>
+			    <version>${zipkin.elasticsearch.version}</version>
+			</dependency>
+			
+	        <dependency>
+	            <groupId>net.logstash.logback</groupId>
+	            <artifactId>logstash-logback-encoder</artifactId>
+	            <version>${logstash-encoder.version}</version>
+	            <exclusions>
+	                <exclusion>
+	                    <groupId>ch.qos.logback</groupId>
+	                    <artifactId>logback-core</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>ch.qos.logback</groupId>
+	                    <artifactId>logback-classic</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>ch.qos.logback</groupId>
+	                    <artifactId>logback-access</artifactId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>
+	        
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
 	<repositories>
 		<repository>
 			<id>dcm4chee-maven</id>

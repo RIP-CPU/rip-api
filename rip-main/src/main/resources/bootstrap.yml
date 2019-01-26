@@ -1,9 +1,14 @@
+server:
+  port: 8085
+  address: localhost
+  servlet:
+    context-path: /rip
+
 spring:
   application:
     name: ${application.name}
   messages:
     basename: i18n/messages
-    cache-seconds: -1
     encoding: UTF-8
   aop:
     proxy-target-class: true
@@ -12,6 +17,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/rip
     username: postgres
     password: P@ssw0rd
+    platform: postgres
     type: com.mchange.v2.c3p0.ComboPooledDataSource
     tomcat:
       validation-query: SELECT 1
@@ -21,33 +27,48 @@ spring:
       max-wait: 3000
       test-while-idle: true
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: POSTGRESQL
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
-        temp.use_jdbc_metadata_defaults: false
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        temp:
+          use_jdbc_metadata_defaults: false
         show_sql: true
     show-sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    database: POSTGRESQL
     hibernate:
       ddl-auto: none
       naming:
-        strategy: org.hibernate.cfg.DefaultNamingStrategy
-        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
   mvc:
     locale: en_US
+  cloud:
+    discovery:
+      enabled: false
+    config:
+      enabled: false
+      discovery:
+        enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 
+          issuer-uri: http://${server.address}:${server.port}${server.servlet.context-path}/oauth/token
 
-server:
-  port: 8085
-  address: localhost
-endpoints:
-  shutdown:
+eureka:
+  client:
     enabled: false
-  restart:
+
+ribbon:
+  eureka:
     enabled: false
-  health:
-    sensitive: false
+
+rip-master:
+  ribbon:
+    listOfServers: localhost:8085
 
 security:
   oauth2:
@@ -62,11 +83,3 @@ security:
       client-id: rip-core
       client-secret: secretrip01
       access-token-uri: http://${server.address}:${server.port}/oauth/token
-
-ribbon:
-  eureka:
-    enabled: false
-
-rip-file:
-  ribbon:
-    listOfServers: localhost:8085

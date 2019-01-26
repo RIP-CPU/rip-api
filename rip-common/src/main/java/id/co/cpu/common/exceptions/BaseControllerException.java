@@ -8,7 +8,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,14 +20,14 @@ import id.co.cpu.common.utils.ErrorCode;
 
 public class BaseControllerException {
 
-	protected Logger logger = Logger.getLogger(this.getClass());
+	protected Log LOGGER = LogFactory.getLog(this.getClass());
 	
 	@Autowired
 	protected ApiErrorResponse errorResponse;
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<BaseResponse> handleException(HttpServletRequest request, Exception exception) {
-		logger.error(stackTrace(exception));
+		LOGGER.error(stackTrace(exception));
 		
 		Locale locale = null;
 		String acceptLanguage = request.getHeader("Accept-Language");
@@ -43,7 +44,7 @@ public class BaseControllerException {
 	
 	@ExceptionHandler(MissingServletRequestPartException.class)
 	public ResponseEntity<BaseResponse> handleMissingServletRequestPartException(HttpServletRequest request, MissingServletRequestPartException exception) {
-		logger.error(stackTrace(exception));
+		LOGGER.error(stackTrace(exception));
 		
 		Locale locale = null;
 		String acceptLanguage = request.getHeader("Accept-Language");
@@ -60,7 +61,7 @@ public class BaseControllerException {
 	
 	@ExceptionHandler(SystemErrorException.class)
 	public ResponseEntity<BaseResponse> handleSystemException(HttpServletRequest request, SystemErrorException exception) {
-		logger.error(stackTrace(exception));
+		LOGGER.error(stackTrace(exception));
 		
 		Locale locale = null;
 		String acceptLanguage = request.getHeader("Accept-Language");

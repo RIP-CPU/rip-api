@@ -31,12 +31,11 @@ public class IncomingFileHandler {
     @AllowConcurrentEvents
     public void handleIncomingFileEvent(ImageStreamEvent imageStream) {
 		try{
-			DicomReader reader = new DicomReader(imageStream);
+			DicomReader reader = new DicomReader(imageStream.getFile());
 			synchronized(dbService){
 				dbService.buildEntities(reader, imageStream);
 			}
 		}catch(Exception e){
-			e.printStackTrace();
 			LOGGER.error(e.getMessage());
 		}
 	}

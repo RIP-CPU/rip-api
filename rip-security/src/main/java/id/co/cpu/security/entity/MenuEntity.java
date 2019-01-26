@@ -85,8 +85,8 @@ public class MenuEntity extends BaseAuditEntity {
 	@JoinColumn(name = "parent_uuid", nullable = true, insertable = false, updatable = false)
 	private MenuEntity parentMenu;
 
-	@OneToMany(mappedBy = "parentMenu", fetch = FetchType.LAZY)
-	@Fetch(FetchMode.SELECT)
+	@OneToMany(mappedBy = "parentMenu", fetch = FetchType.EAGER)
+	@Fetch(FetchMode.JOIN)
 	@OrderBy("orderingStr ASC")
 	private Set<MenuEntity> childsMenu = new HashSet<MenuEntity>();
 	

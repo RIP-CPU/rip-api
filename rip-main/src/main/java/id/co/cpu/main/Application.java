@@ -6,8 +6,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableResourceServer
 @EnableConfigurationProperties
 @EnableFeignClients(basePackages = {"id.co.cpu.feign"})
+@EnableJpaRepositories(basePackages = { "id.co.cpu.*.dao" })
 public class Application extends SpringBootServletInitializer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Application.class);

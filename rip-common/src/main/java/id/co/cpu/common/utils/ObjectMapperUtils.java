@@ -2,7 +2,8 @@ package id.co.cpu.common.utils;
 
 import java.lang.reflect.Type;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ObjectMapperUtils {
+
 	private ModelMapper modelMapper;
-	Logger log = Logger.getLogger(ObjectMapperUtils.class);
+
+	protected Log LOGGER = LogFactory.getLog(this.getClass());
 
 	public ObjectMapperUtils() {
 		this.modelMapper = new ModelMapper();

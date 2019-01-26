@@ -51,7 +51,7 @@ public class UserImplService implements UserDetailsService {
 	}
 
 	public UserEntity loadUserByUserId(final String id) throws UsernameNotFoundException {
-		UserEntity user = userRepo.findById(id);
+		UserEntity user = userRepo.findById(id).get();
 		return user;
 	}
 
@@ -62,7 +62,7 @@ public class UserImplService implements UserDetailsService {
 
 	@SuppressWarnings("unused")
 	public void lockUser(UserEntity user, final Long lockDuration) throws Exception {
-		UserEntity fromDb = userRepo.findById(user.getId());
+		UserEntity fromDb = userRepo.findById(user.getId()).get();
 		user.setAccountNonLocked(false);
 
 		fromDb.setAccountNonLocked(false);
@@ -73,7 +73,7 @@ public class UserImplService implements UserDetailsService {
 	}
 
 	public void unlockUser(UserEntity user) {
-		UserEntity fromDb = userRepo.findById(user.getId());
+		UserEntity fromDb = userRepo.findById(user.getId()).get();
 		fromDb.setAccountNonLocked(true);
 		userRepo.save(fromDb);
 	}
@@ -101,7 +101,7 @@ public class UserImplService implements UserDetailsService {
 	}
 
 	public UserEntity updateUser(UserEntity result) {
-		UserEntity fromDb = userRepo.findById(result.getId());
+		UserEntity fromDb = userRepo.findById(result.getId()).get();
 		if (result.getPassword() != null && !result.getPassword().equalsIgnoreCase("")) {
 			if (!fromDb.getPassword().equals(result.getPassword()))
 				fromDb.setPassword(passwordEncoder.encode(result.getPassword()));
@@ -200,13 +200,13 @@ public class UserImplService implements UserDetailsService {
 	}
 
 	public void enableUser(UserEntity user) {
-		UserEntity fromDb = userRepo.findById(user.getId());
+		UserEntity fromDb = userRepo.findById(user.getId()).get();
 		fromDb.setEnabled(true);
 		userRepo.save(fromDb);
 	}
 
 	public void disableUser(UserEntity user) {
-		UserEntity fromDb = userRepo.findById(user.getId());
+		UserEntity fromDb = userRepo.findById(user.getId()).get();
 		fromDb.setEnabled(false);
 		userRepo.save(fromDb);
 	}
@@ -222,7 +222,7 @@ public class UserImplService implements UserDetailsService {
 	public void softDeleteUser(List<UserEntity> userEntities) throws Exception {
 
 		if (userEntities != null) {
-			userRepo.save(userEntities);
+			userRepo.saveAll(userEntities);
 		} else {
 			throw new SystemErrorException(ErrorCode.ERR_SYS0001);
 		}

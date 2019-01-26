@@ -2,7 +2,6 @@ package id.co.cpu.feign.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
 
 import feign.RequestInterceptor;
 import feign.Retryer;
@@ -11,8 +10,8 @@ import feign.Retryer;
 public class FeignConfiguration {
 	
 	@Bean
-	public RequestInterceptor oauth2BatchRequestInterceptor(OAuth2ClientContext oauth2ClientContext) {
-		return new BearerRequestInterceptor(oauth2ClientContext);
+	public RequestInterceptor oauth2FeignRequestInterceptor() {
+		return new BearerRequestInterceptor();
 	}	
 	
 	

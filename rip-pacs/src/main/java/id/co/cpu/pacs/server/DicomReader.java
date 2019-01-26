@@ -1,5 +1,6 @@
 package id.co.cpu.pacs.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
@@ -11,8 +12,6 @@ import org.dcm4che3.data.UID;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.io.DicomInputStream.IncludeBulkData;
 
-import id.co.cpu.pacs.event.ImageStreamEvent;
-
 public class DicomReader {
 
 	protected final Log LOGGER = LogFactory.getLog(getClass());
@@ -22,10 +21,10 @@ public class DicomReader {
 
     public DicomReader() {}
 
-    public DicomReader(ImageStreamEvent imageStream) throws IOException {
+    public DicomReader(File file) throws IOException {
     	DicomInputStream dis = null;
         try {
-        	dis = new DicomInputStream(imageStream.getFile());
+        	dis = new DicomInputStream(file);
             dis.setIncludeBulkData(IncludeBulkData.URI);
             this.attr = dis.readDataset(-1, -1);
             this.fmi = dis.readFileMetaInformation() != null?dis.readFileMetaInformation():attr.createFileMetaInformation(UID.ImplicitVRLittleEndian);

@@ -1,6 +1,7 @@
 package id.co.cpu.security.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -16,7 +17,7 @@ import id.co.cpu.security.entity.UserEntity;
 
 public interface UserRepo extends JpaRepository<UserEntity, String>, JpaSpecificationExecutor<UserEntity> {
 
-	UserEntity findById(String id);
+	Optional<UserEntity> findById(String id);
 
 	/**
 	 * Count user by username / email address

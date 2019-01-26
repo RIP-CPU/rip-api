@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +29,7 @@ public class JsonUtils {
 		this.objectMapper = objectMapper;
 	}
 
-
-	private Logger log = Logger.getLogger(this.getClass().getName());
+	protected Log LOGGER = LogFactory.getLog(this.getClass());
 
 	/**
 	 * Convert JSON formatted String Into Java POJO obj
@@ -62,7 +62,7 @@ public class JsonUtils {
 			listo = objectMapper.readValue(json,
 					TypeFactory.defaultInstance().constructCollectionType(List.class, typeKey));
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 		}
 		return listo;
 	}
@@ -74,7 +74,7 @@ public class JsonUtils {
 			mapto = objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
 			});
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 		}
 		return mapto;
 	}
@@ -90,7 +90,7 @@ public class JsonUtils {
 		try {
 			json = objectMapper.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
-			log.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 		}
 		return json;
 	}

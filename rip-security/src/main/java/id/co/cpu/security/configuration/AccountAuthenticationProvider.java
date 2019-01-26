@@ -3,6 +3,7 @@ package id.co.cpu.security.configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -33,6 +34,7 @@ public class AccountAuthenticationProvider extends AbstractUserDetailsAuthentica
      * A PasswordEncoder instance to hash clear test password values.
      */
     @Autowired
+    @Qualifier("passwordEncoder")
     private PasswordEncoder passwordEncoder;
 
     @Override

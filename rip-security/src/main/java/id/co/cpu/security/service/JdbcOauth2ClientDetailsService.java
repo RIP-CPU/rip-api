@@ -31,6 +31,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
+@SuppressWarnings("deprecation")
 public class JdbcOauth2ClientDetailsService extends JdbcClientDetailsService {
 
 	private static final Log LOGGER = LogFactory.getLog(JdbcOauth2ClientDetailsService.class);

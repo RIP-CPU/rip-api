@@ -45,7 +45,7 @@ public class FileMetadataImplService implements FileMetadataService {
 		try {
 			fileMetadataRepo.save(fileMetadata);
 		} catch (DataIntegrityViolationException e) {
-			LOGGER.warn(e.getLocalizedMessage());
+			LOGGER.warn(e.getMessage());
 		}
 		return fileMetadataDto;
 	}
@@ -68,9 +68,9 @@ public class FileMetadataImplService implements FileMetadataService {
 			fileMetadatas.add(fileMetadata);
 		});
 		try {
-			fileMetadataRepo.save(fileMetadatas);
+			fileMetadataRepo.saveAll(fileMetadatas);
 		} catch (DataIntegrityViolationException e) {
-			LOGGER.warn(e.getLocalizedMessage());
+			LOGGER.warn(e.getMessage());
 		}
 		return fileMetadataDtos;
 	}
