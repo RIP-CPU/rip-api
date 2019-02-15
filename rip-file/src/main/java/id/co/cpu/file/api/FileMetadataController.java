@@ -19,21 +19,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import id.co.cpu.common.exceptions.BaseControllerException;
 import id.co.cpu.feign.dto.file.FileMetadataDto;
-import id.co.cpu.file.service.FileMetadataImplService;
+import id.co.cpu.file.service.FileDicomImplService;
 
 @RestController
 @RequestMapping("/api/file")
 public class FileMetadataController extends BaseControllerException {
 
 	@Autowired
-	private FileMetadataImplService fileMetadataService;
+	private FileDicomImplService fileDicomService;
 	
 	@RequestMapping(value = "/trx/put/dicom-file/v.1", method = RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)	
 	public ResponseEntity<FileMetadataDto> putFileDicomDcm(Authentication authentication,
 			@RequestPart @Valid MultipartFile dicom,
 			@RequestParam @Valid String path,
 			@RequestHeader(name = "Accept-Language", required = false) String locale) throws Exception {
-		return new ResponseEntity<FileMetadataDto>(fileMetadataService.putFileDicomDcm(path, dicom.getOriginalFilename(), dicom.getBytes()), HttpStatus.OK);
+		return new ResponseEntity<FileMetadataDto>(fileDicomService.putFileDicomDcm(path, dicom.getOriginalFilename(), dicom.getBytes()), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/trx/put/dicom-zip/v.1", method = RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,7 +41,7 @@ public class FileMetadataController extends BaseControllerException {
 			@RequestPart @Valid MultipartFile zip,
 			@RequestParam @Valid String path,
 			@RequestHeader(name = "Accept-Language", required = false) String locale) throws Exception {
-		return new ResponseEntity<List<FileMetadataDto>>(fileMetadataService.putFileDicomZip(zip, path), HttpStatus.OK);
+		return new ResponseEntity<List<FileMetadataDto>>(fileDicomService.putFileDicomZip(zip, path), HttpStatus.OK);
 	}
 	
 }

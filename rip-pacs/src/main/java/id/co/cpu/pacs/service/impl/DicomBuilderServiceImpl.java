@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.io.Files;
 
 import id.co.cpu.feign.service.FileFeignService;
-import id.co.cpu.feign.service.file.FileMetadataService;
+import id.co.cpu.feign.service.file.FileDicomService;
 import id.co.cpu.pacs.component.ActiveDicoms;
 import id.co.cpu.pacs.dao.DicomEquipmentRepo;
 import id.co.cpu.pacs.dao.DicomInstanceRepo;
@@ -52,8 +52,8 @@ public class DicomBuilderServiceImpl implements DicomBuilderService {
 	private ActiveDicoms activeDicoms;
 
 	@Autowired
-	@Qualifier("fileMetadataService")
-	private FileMetadataService fileMetadataService;
+	@Qualifier("fileDicomService")
+	private FileDicomService fileDicomService;
 
 	@Autowired
 	@Qualifier("fileFeignService")
@@ -169,7 +169,7 @@ public class DicomBuilderServiceImpl implements DicomBuilderService {
 			}
 			activeDicoms.remove(reader.getMediaStorageSopInstanceUID());
 
-			this.fileMetadataService.putFileDicomDcm(imageStream.getAePath(), imageStream.getFile().getName(), Files.toByteArray(imageStream.getFile()));
+			this.fileDicomService.putFileDicomDcm(imageStream.getAePath(), imageStream.getFile().getName(), Files.toByteArray(imageStream.getFile()));
 			
 			printStats(reader.getPatientName() + " "+ reader.getPatientID() + " " + reader.getPatientAge() + " " + reader.getPatientSex() + " Ended");
 			

@@ -7,20 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import id.co.cpu.feign.dto.file.FileMetadataDto;
-import id.co.cpu.feign.service.file.FileMetadataFeign;
+import id.co.cpu.feign.service.file.FileDicomFeign;
 
 @Service
 public class FileFeignService {
 	
 	@Autowired
-	private FileMetadataFeign fileMetadataFeign;
+	private FileDicomFeign fileDicomFeign;
 	
 	public FileMetadataDto putFileDicomDcm(File dicom, String path, String locale) throws Exception {
-		return fileMetadataFeign.putFileDicomDcm(dicom, path, locale).getBody();
+		return fileDicomFeign.putFileDcm(dicom, path, locale).getBody();
 	}
 
 	public List<FileMetadataDto> putFileDicomZip(File zip, String path, String locale) throws Exception {
-		return fileMetadataFeign.putFileDicomZip(zip, path, locale).getBody();
+		return fileDicomFeign.putFileZip(zip, path, locale).getBody();
 	}
 
 }

@@ -17,31 +17,31 @@ import org.springframework.web.bind.annotation.RequestPart;
 import id.co.cpu.common.utils.RibbonContext;
 import id.co.cpu.feign.dto.file.FileMetadataDto;
 
-@FeignClient(value = RibbonContext.MASTER, fallback = FileMetadataFeign.FileMetadataFeignFallback.class)
+@FeignClient(value = RibbonContext.MASTER, fallback = FileDicomFeign.FileDicomFeignFallback.class)
 @RequestMapping(RibbonContext.PATH_MASTER+"/api/file")
-public interface FileMetadataFeign {
+public interface FileDicomFeign {
 	
 	@RequestMapping(value = "/trx/put/dicom-file/v.1", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)	
-	public ResponseEntity<FileMetadataDto> putFileDicomDcm(
+	public ResponseEntity<FileMetadataDto> putFileDcm(
 			@RequestPart("dicom") @Valid File dicom,
 			@RequestParam("path") @Valid String path,
 			@RequestHeader(name = "Accept-Language", required = false) String locale) throws Exception;
 	
 	@RequestMapping(value = "/trx/put/dicom-zip/v.1", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<FileMetadataDto>> putFileDicomZip(
+	public ResponseEntity<List<FileMetadataDto>> putFileZip(
 			@RequestPart("zip") @Valid File zip,
 			@RequestParam("path") @Valid String path,
 			@RequestHeader(name = "Accept-Language", required = false) String locale) throws Exception;
 	
-	static class FileMetadataFeignFallback implements FileMetadataFeign {
+	static class FileDicomFeignFallback implements FileDicomFeign {
 
 		@Override
-		public ResponseEntity<FileMetadataDto> putFileDicomDcm(File dicom, String path, String locale) throws Exception {
+		public ResponseEntity<FileMetadataDto> putFileDcm(File dicom, String path, String locale) throws Exception {
 			return null;
 		}
 
 		@Override
-		public ResponseEntity<List<FileMetadataDto>> putFileDicomZip(File zip, String path, String locale) throws Exception {
+		public ResponseEntity<List<FileMetadataDto>> putFileZip(File zip, String path, String locale) throws Exception {
 			return null;
 		}
 		

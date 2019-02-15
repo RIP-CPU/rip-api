@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import id.co.cpu.feign.dto.file.FileMetadataDto;
-import id.co.cpu.feign.service.file.FileMetadataService;
+import id.co.cpu.feign.service.file.FileDicomService;
 import id.co.cpu.file.dao.FileMetadataRepo;
 import id.co.cpu.file.entity.FileMetadataEntity;
 import id.co.cpu.file.utils.FileUtils;
 
-@Service("fileMetadataService")
-public class FileMetadataImplService implements FileMetadataService {
+@Service("fileDicomService")
+public class FileDicomImplService implements FileDicomService {
 
 	protected final Log LOGGER = LogFactory.getLog(getClass());
 

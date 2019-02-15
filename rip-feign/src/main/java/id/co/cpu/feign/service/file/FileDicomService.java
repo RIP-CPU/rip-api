@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import id.co.cpu.feign.dto.file.FileMetadataDto;
 
-public interface FileMetadataService {
+public interface FileDicomService {
 	
 	public FileMetadataDto putFileDicomDcm(String filePath, String filename, byte[] fileContent) throws Exception;
 	
